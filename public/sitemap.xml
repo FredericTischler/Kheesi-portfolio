@@ -1,15 +1,21 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
-    <loc>https://kheesi.design/</loc>
+    <loc>https://frederictischler.dev/</loc>
   </url>
   <url>
-    <loc>https://kheesi.design/gallery</loc>
+    <loc>https://frederictischler.dev/about</loc>
   </url>
   <url>
-    <loc>https://kheesi.design/about</loc>
+    <loc>https://frederictischler.dev/experience</loc>
   </url>
   <url>
-    <loc>https://kheesi.design/contact</loc>
+    <loc>https://frederictischler.dev/projects</loc>
+  </url>
+  <url>
+    <loc>https://frederictischler.dev/redbubble</loc>
+  </url>
+  <url>
+    <loc>https://frederictischler.dev/contact</loc>
   </url>
 </urlset>

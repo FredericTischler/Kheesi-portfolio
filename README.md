@@ -1,73 +1,84 @@
-# React + TypeScript + Vite
+# Portfolio – Frédéric Tischler
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+Portfolio React/TypeScript ultra-moderne construit avec Vite, Tailwind CSS, Framer Motion et shadcn/ui. Il sert de vitrine générale : bio, expérience, projets GitHub dynamiques et galerie RedBubble.
 
-Currently, two official plugins are available:
+## 🚀 Stack
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+- **Build** : Vite + React 19 + TypeScript strict
+- **UI** : Tailwind CSS, shadcn/ui, design tokens personnalisés (dark/light)
+- **Animations** : Framer Motion (stagger, parallax léger, respect `prefers-reduced-motion`)
+- **Intégrations** : lucide-react, API GitHub, Command Palette ⌘K
 
-## React Compiler
+## 📁 Structure principale
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
-
-## Expanding the ESLint configuration
-
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
-
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
-
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+```
+src/
+  App.tsx              // Router + layout global
+  main.tsx             // Entrée React
+  styles/index.css     // Styles Tailwind & variables
+  components/          // Navbar, CommandPalette, cards, filtres, modals...
+  pages/               // Home, About, Experience, Projects, Redbubble, Contact
+  data/                // profile.ts, redbubble.ts
+  lib/                 // github.ts, format.ts, queryParams.ts, clipboard.ts, metadata.ts
+public/
+  assets/projects/     // Thumbnails optionnels pour les projets
+  assets/designs/      // Visuels RedBubble (remplacez par vos images)
+  robots.txt, sitemap.xml
 ```
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+## 🔄 Projets GitHub auto-chargés
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
+- `src/lib/github.ts` interroge `https://api.github.com/users/FredericTischler/repos?per_page=100&sort=updated`.
+- Les résultats sont normalisés en objets `Project` (name, description, tech, stars, updatedAt...).
+- Si la description GitHub est vide, un extrait du README (branche par défaut) est utilisé.
+- Les projets mis en avant ou enrichis sont définis dans `FEATURED`: overrides de description, tech et flag `featured`.
+- Le cache est stocké dans `localStorage` (`ft-projects-v1`) pendant 24h.
+- Le hook `useGitHubProjects()` renvoie `{ projects, featured, status, error }` pour les pages et la Command Palette.
 
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+## 🎨 Galerie RedBubble
+
+- Données exemples dans `src/data/redbubble.ts` (type `RBItem`).
+- Remplacez `src`/`src2x` par vos visuels déposés dans `public/assets/designs/`.
+- Les liens `rbLink` pointent actuellement vers des placeholders.
+- Filtres : tags, recherche plein texte, tri `recent/featured/A→Z`.
+- Aperçu rapide via modal (code-splitting) + copy link.
+
+## 🧾 Données profil
+
+- `src/data/profile.ts` : informations personnelles, compétences, intérêts, société actuelle.
+- `src/data/navigation.ts` : libellé + path utilisés par la navbar et la Command Palette.
+
+## 🛠️ Mise à jour des contenus
+
+1. **Profil** : modifiez `PROFILE` (nom, rôle, socials, company...).
+2. **Projets favoris** : ajustez `FEATURED` (descriptions, tech, flag `featured`).
+3. **Images RedBubble / projets** : placez vos fichiers dans `public/assets/designs/` et `public/assets/projects/` (nom du projet slugifié : `slug.jpg`).
+4. **SEO** : titres/meta dynamiques via `usePageMetadata`. L’`index.html` contient les balises OG/Twitter par défaut.
+
+## 🧪 Scripts
+
+```bash
+npm install      # installer les dépendances
+npm run dev      # serveur de développement (http://localhost:5173)
+npm run lint     # ESLint (TS strict)
+npm run build    # build de production
 ```
+
+## 📦 Déploiement
+
+Le projet est un site statique. Déployez le dossier `dist/` généré par `npm run build` sur la plateforme de votre choix (Vercel, Netlify, GitHub Pages...).
+
+### Netlify / Vercel (exemple)
+
+- **Commande build** : `npm run build`
+- **Dossier à publier** : `dist`
+
+## 🙌 Accessibilité & UX
+
+- Mode sombre/clair persistant (`localStorage`).
+- Focus visibles, contraste AA, navigation clavier.
+- Animations limitées si `prefers-reduced-motion` est actif.
+- Images lazy-loaded avec dégradés et ratio fixes.
+- Command Palette globale (⌘K / Ctrl+K) pour accéder rapidement aux pages/projets.
+
+Bon hacking !
