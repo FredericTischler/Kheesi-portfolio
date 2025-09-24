@@ -19,15 +19,34 @@ export const PROFILE = {
     "HTML/CSS",
   ],
   interests: ["IA", "Java", "produits web", "UX"],
-  company: {
-    name: "WeNégoce",
-    role: "Développeur",
-    start: "2025-01",
-    stack: ["TypeScript", "React", "Java", "SQL"],
-    highlights: [
-      "Dév. de composants réutilisables",
-      "Modernisation d’apps métier",
-      "Optimisations performance/UX",
-    ],
-  },
+  experiences: [
+    {
+      id: "wenegoce",
+      company: "WeNégoce",
+      role: "Développeur full-stack Java/Angular",
+      period: { start: "2025-01" },
+      description:
+        "Refonte de l’application mobilité en une application full web en lecture seule. Mise en place de composants génériques Angular/Java réutilisables pour accélérer les futurs modules métiers.",
+      stack: ["Java", "Angular", "TypeScript", "REST", "SQL"],
+      highlights: [
+        "Conception d’une bibliothèque de composants réutilisables",
+        "Synchronisation des flux de données en lecture seule",
+        "Collaboration avec les équipes métiers pour la nouvelle UX",
+      ],
+    },
+    {
+      id: "dii",
+      company: "Développement Informatique International",
+      role: "Stagiaire / CDD Développeur",
+      period: { start: "2023-05", end: "2023-08" },
+      description:
+        "Stage de deux mois suivi d’un CDD d’un mois pour initier la modernisation de leur application métier en solution web Java + Angular.",
+      stack: ["Java", "Angular", "TypeScript", "SQL"],
+      highlights: [
+        "Audit de l’application legacy et définition des modules prioritaires",
+        "Mise en place d’un socle Angular/Java sécurisé pour la suite du projet",
+        "Transfert de connaissances auprès de l’équipe interne",
+      ],
+    },
+  ],
 } as const;

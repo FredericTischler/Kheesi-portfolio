@@ -187,13 +187,13 @@ export function HomePage() {
                   : { scale: 1.02, y: -6, transition: { duration: 0.3, ease: "easeOut" } }
               }
             >
-              <div className="relative overflow-hidden rounded-t-[2rem]">
+              <div className="relative overflow-hidden rounded-t-[2rem] bg-secondary/30">
                 <img
                   src={design.src}
                   srcSet={design.src2x ? `${design.src2x} 2x` : undefined}
                   alt={design.title}
                   loading="lazy"
-                  className="h-48 w-full object-cover brightness-[.98] transition duration-500 ease-out group-hover:scale-105"
+                  className="aspect-square w-full object-contain p-4 transition duration-500 ease-out group-hover:scale-[1.02]"
                 />
               </div>
               <div className="flex flex-1 flex-col gap-4 p-6">

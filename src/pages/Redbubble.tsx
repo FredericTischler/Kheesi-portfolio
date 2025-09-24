@@ -75,13 +75,13 @@ export default function RedbubblePage() {
                 }
                 className="group flex h-full flex-col rounded-[2rem] border border-border/60 bg-background/80 shadow-lg"
               >
-                <div className="relative overflow-hidden rounded-t-[2rem]">
+                <div className="relative overflow-hidden rounded-t-[2rem] bg-secondary/30">
                   <img
                     src={item.src}
                     srcSet={item.src2x ? `${item.src2x} 2x` : undefined}
                     alt={item.title}
                     loading="lazy"
-                    className="h-56 w-full object-cover brightness-[.98] transition duration-500 ease-out group-hover:scale-105"
+                    className="aspect-square w-full object-contain p-4 transition duration-500 ease-out group-hover:scale-[1.02]"
                   />
                 </div>
                 <div className="flex flex-1 flex-col gap-4 p-6">
