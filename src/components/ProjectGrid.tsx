@@ -1,6 +1,4 @@
-import { AnimatePresence, motion } from "framer-motion";
-
-import type { Project } from "@/lib/github";
+import type { Project } from "@/data/projects";
 
 import { ProjectCard } from "@/components/ProjectCard";
 import { Skeleton } from "@/components/ui/skeleton";
@@ -31,17 +29,10 @@ export function ProjectGrid({ projects, loading, onQuickView }: ProjectGridProps
   }
 
   return (
-    <motion.div
-      layout
-      className="[column-gap:1.75rem] sm:[column-gap:2rem] [&>*]:mb-6 columns-1 sm:columns-2 xl:columns-3"
-    >
-      <AnimatePresence>
-        {projects.map((project) => (
-          <div key={project.slug} className="break-inside-avoid">
-            <ProjectCard project={project} onQuickView={onQuickView} />
-          </div>
-        ))}
-      </AnimatePresence>
-    </motion.div>
+    <div className="grid gap-6 sm:grid-cols-2 xl:grid-cols-3">
+      {projects.map((project) => (
+        <ProjectCard key={project.slug} project={project} onQuickView={onQuickView} />
+      ))}
+    </div>
   );
 }

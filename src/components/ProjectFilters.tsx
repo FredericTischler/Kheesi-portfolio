@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 
-export type ProjectSort = "recent" | "stars" | "az";
+export type ProjectSort = "default" | "az" | "highlighted";
 
 type ProjectFiltersProps = {
   techList: string[];
@@ -56,8 +56,8 @@ export function ProjectFilters({
               onChange={(event) => onSortChange(event.target.value as ProjectSort)}
               className="h-11 w-full rounded-full border border-border/60 bg-background/80 px-4 text-sm text-foreground shadow-sm focus:outline-none focus:ring-2 focus:ring-primary/40"
             >
-              <option value="recent">Plus récents</option>
-              <option value="stars">Populaire (stars)</option>
+              <option value="default">Ordre d’origine</option>
+              <option value="highlighted">Projets à la une d’abord</option>
               <option value="az">A → Z</option>
             </select>
           </div>

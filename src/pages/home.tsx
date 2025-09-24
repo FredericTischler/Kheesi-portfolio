@@ -6,8 +6,10 @@ import { ArrowRight, Download } from "lucide-react";
 import { Section } from "@/components/Section";
 import { StatCard } from "@/components/StatCard";
 import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
 import { PROFILE } from "@/data/profile";
-import { useGitHubProjects, type Project } from "@/lib/github";
+import { getHighlightedProjects, PROJECTS, type Project } from "@/data/projects";
+import { REDBUBBLE_ITEMS } from "@/data/redbubble";
 import { usePageMetadata } from "@/lib/metadata";
 
 const ProjectModal = lazy(() => import("@/components/ProjectModal"));
@@ -20,20 +22,29 @@ export function HomePage() {
   });
 
   const prefersReducedMotion = useReducedMotion();
-  const { featured } = useGitHubProjects();
+  const highlightedProjects = useMemo(() => getHighlightedProjects(), []);
+  const featuredDesigns = useMemo(() => REDBUBBLE_ITEMS.slice(0, 3), []);
   const [selectedProject, setSelectedProject] = useState<Project | null>(null);
   const [modalOpen, setModalOpen] = useState(false);
 
   const stats = useMemo(
     () => [
-      { label: "Projets", value: `${Math.max(featured.length * 2, 12)}+` },
-      { label: "Langages", value: `${PROFILE.skills.length}` },
-      { label: "Expérience", value: "Zone01", description: "Formation & projets intensifs" },
+      { label: "Projets", value: `${PROJECTS.length}` },
+      { label: "Compétences", value: `${PROFILE.skills.length}` },
+      { label: "Parcours", value: "Licence + Zone01", description: "Fondations théoriques & pratique intensive" },
     ],
-    [featured.length],
+    [],
   );
 
-  const logos = ["Go", "TypeScript", "React", "SQLite", "Docker"];
+  const skills = useMemo(() => {
+    const list = [...PROFILE.skills];
+    const javaIndex = list.findIndex((skill) => skill.toLowerCase() === "java");
+    if (javaIndex > 0) {
+      const [java] = list.splice(javaIndex, 1);
+      list.unshift(java);
+    }
+    return list;
+  }, []);
 
   return (
     <div className="space-y-24 pb-20">
@@ -55,6 +66,10 @@ export function HomePage() {
               Passionné par les stacks Go, TypeScript et React, je conçois des architectures fiables,
               des interfaces soignées et des expériences réactives. De la composante UI au backend temps réel.
             </p>
+            <p className="max-w-xl text-balance text-muted-foreground">
+              Avant d’intégrer Zone01 pour une formation en continu par projets, j’ai validé une licence en
+              informatique qui m’a donné un socle algorithmique solide et une maîtrise approfondie de Java.
+            </p>
             <div className="flex flex-wrap gap-4">
               <Button asChild size="lg" className="gap-2">
                 <Link to="/projects">
@@ -73,12 +88,16 @@ export function HomePage() {
               </Button>
             </div>
             <div className="flex flex-wrap items-center gap-3 rounded-[2rem] border border-border/60 bg-background/80 p-5 shadow-lg backdrop-blur-xl">
-              {logos.map((logo) => (
+              {skills.map((skill, index) => (
                 <span
-                  key={logo}
-                  className="rounded-full border border-border/40 bg-secondary/40 px-4 py-2 text-xs uppercase tracking-[0.35em] text-muted-foreground"
+                  key={skill}
+                  className={`rounded-full px-4 py-2 text-xs uppercase tracking-[0.35em] ${
+                    index === 0
+                      ? "border border-primary/50 bg-primary/15 text-primary"
+                      : "border border-border/40 bg-secondary/40 text-muted-foreground"
+                  }`}
                 >
-                  {logo}
+                  {skill}
                 </span>
               ))}
             </div>
@@ -104,23 +123,20 @@ export function HomePage() {
           <p className="text-xs uppercase tracking-[0.4em] text-muted-foreground">À la une</p>
           <h2 className="text-3xl font-semibold md:text-4xl">Projets notables</h2>
           <p className="max-w-2xl text-muted-foreground">
-            Un aperçu des développements récents : temps réel, interfaces immersives et outils internes. Les
-            projets sont synchronisés depuis mon profil GitHub.
+            Un aperçu des développements récents : temps réel, interfaces immersives et outils internes. Sélection
+            extraite des projets les plus représentatifs.
           </p>
         </div>
         <div className="grid gap-6 md:grid-cols-2">
-          {featured.slice(0, 4).map((project) => (
+          {highlightedProjects.slice(0, 2).map((project) => (
             <div key={project.slug}>
               <div className="flex flex-col gap-4 rounded-[2rem] border border-border/60 bg-background/80 p-6 shadow-lg">
                 <div className="flex items-baseline justify-between">
                   <h3 className="text-xl font-semibold">{project.name}</h3>
-                  <span className="text-xs uppercase tracking-[0.3em] text-muted-foreground">
-                    {project.updated}
-                  </span>
                 </div>
                 <p className="text-sm text-muted-foreground">{project.description}</p>
                 <div className="flex flex-wrap gap-2 text-xs text-muted-foreground">
-                  {project.tech.slice(0, 4).map((tech) => (
+                  {project.stacks.slice(0, 4).map((tech) => (
                     <span key={tech} className="rounded-full bg-secondary/40 px-3 py-1 uppercase tracking-[0.25em]">
                       {tech}
                     </span>
@@ -131,7 +147,11 @@ export function HomePage() {
                     Aperçu
                   </Button>
                   <Button asChild variant="outline" size="sm" className="gap-2">
-                    <a href={project.url} target="_blank" rel="noreferrer">
+                    <a
+                      href={`https://github.com/FredericTischler/${project.slug}`}
+                      target="_blank"
+                      rel="noreferrer"
+                    >
                       GitHub
                     </a>
                   </Button>
@@ -139,12 +159,74 @@ export function HomePage() {
               </div>
             </div>
           ))}
-          {featured.length === 0 ? (
-            <p className="text-sm text-muted-foreground">
-              Les projets sont en cours de chargement depuis GitHub...
-            </p>
-          ) : null}
         </div>
+      </Section>
+
+      <Section className="space-y-10">
+        <div className="space-y-3">
+          <p className="text-xs uppercase tracking-[0.4em] text-muted-foreground">Designs favoris</p>
+          <h2 className="text-3xl font-semibold md:text-4xl">Sélection RedBubble mise en avant</h2>
+          <p className="max-w-2xl text-muted-foreground">
+            Entre deux sprints de développement, j’explore l’illustration pour RedBubble. Voici trois designs qui
+            reflètent le style de ma boutique : couleurs lumineuses, typographies affirmées et atmosphères immersives.
+          </p>
+        </div>
+        <motion.div
+          className="grid gap-6 md:grid-cols-3"
+          initial={prefersReducedMotion ? undefined : { opacity: 0, y: 24 }}
+          animate={prefersReducedMotion ? undefined : { opacity: 1, y: 0 }}
+          transition={{ duration: prefersReducedMotion ? 0 : 0.4, ease: "easeOut" }}
+        >
+          {featuredDesigns.map((design) => (
+            <motion.article
+              key={design.id}
+              className="group flex h-full flex-col rounded-[2rem] border border-border/60 bg-background/80 shadow-lg"
+              whileHover={
+                prefersReducedMotion
+                  ? undefined
+                  : { scale: 1.02, y: -6, transition: { duration: 0.3, ease: "easeOut" } }
+              }
+            >
+              <div className="relative overflow-hidden rounded-t-[2rem]">
+                <img
+                  src={design.src}
+                  srcSet={design.src2x ? `${design.src2x} 2x` : undefined}
+                  alt={design.title}
+                  loading="lazy"
+                  className="h-48 w-full object-cover brightness-[.98] transition duration-500 ease-out group-hover:scale-105"
+                />
+              </div>
+              <div className="flex flex-1 flex-col gap-4 p-6">
+                <div className="space-y-2">
+                  <h3 className="text-lg font-semibold text-foreground">{design.title}</h3>
+                  {design.createdAt ? (
+                    <p className="text-xs uppercase tracking-[0.3em] text-muted-foreground">
+                      {new Date(design.createdAt).toLocaleDateString("fr-FR", {
+                        year: "numeric",
+                        month: "short",
+                        day: "numeric",
+                      })}
+                    </p>
+                  ) : null}
+                </div>
+                <div className="flex flex-wrap gap-2">
+                  {design.tags.slice(0, 3).map((tag) => (
+                    <Badge key={tag} variant="secondary" className="px-3 py-1 text-xs uppercase tracking-[0.25em]">
+                      {tag}
+                    </Badge>
+                  ))}
+                </div>
+                <div className="mt-auto">
+                  <Button asChild variant="outline" size="sm" className="w-full gap-2">
+                    <a href={design.rbLink} target="_blank" rel="noreferrer">
+                      Voir sur RedBubble
+                    </a>
+                  </Button>
+                </div>
+              </div>
+            </motion.article>
+          ))}
+        </motion.div>
       </Section>
 
       <Suspense fallback={null}>

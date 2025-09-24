@@ -50,7 +50,7 @@ export function Navbar() {
         className="fixed inset-x-0 top-0 z-50 flex justify-center px-4"
       >
         <nav className="mt-6 flex w-full max-w-6xl items-center justify-between rounded-3xl border border-border/60 bg-background/70 px-5 py-3 shadow-lg backdrop-blur-2xl">
-          <NavLink to="/" className="flex items-center gap-2 font-heading text-lg tracking-tight">
+          <NavLink to="/" end className="flex items-center gap-2 font-heading text-lg tracking-tight" aria-label="Accueil">
             <span className="h-2 w-2 rounded-full bg-primary" aria-hidden="true" />
             frt.dev
           </NavLink>
@@ -59,6 +59,7 @@ export function Navbar() {
               <NavLink
                 key={item.path}
                 to={item.path}
+                end={item.path === "/"}
                 className={({ isActive }) =>
                   `${navClass} ${isActive ? "text-primary" : "text-muted-foreground"}`
                 }
@@ -103,6 +104,7 @@ export function Navbar() {
                   <li key={item.path}>
                     <NavLink
                       to={item.path}
+                      end={item.path === "/"}
                       className={({ isActive }) =>
                         `flex w-full items-center justify-between rounded-2xl px-4 py-3 text-sm font-semibold transition hover:bg-secondary/60 ${
                           isActive ? "text-primary" : "text-muted-foreground"

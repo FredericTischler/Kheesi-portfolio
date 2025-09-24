@@ -1,9 +1,9 @@
 import { useEffect, useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { Command, Loader2, Search, SquareArrowOutUpRight } from "lucide-react";
+import { Command, Search, SquareArrowOutUpRight } from "lucide-react";
 
 import { NAV_LINKS } from "@/data/navigation";
-import { useGitHubProjects } from "@/lib/github";
+import { PROJECTS } from "@/data/projects";
 import { cn } from "@/lib/utils";
 
 import { Dialog, DialogContent } from "@/components/ui/dialog";
@@ -16,7 +16,6 @@ type CommandPaletteProps = {
 
 export function CommandPalette({ open, onOpenChange }: CommandPaletteProps) {
   const navigate = useNavigate();
-  const { projects, status } = useGitHubProjects();
   const [query, setQuery] = useState("");
   const [activeIndex, setActiveIndex] = useState(0);
 
@@ -58,13 +57,13 @@ export function CommandPalette({ open, onOpenChange }: CommandPaletteProps) {
       normalized ? item.title.toLowerCase().includes(normalized) : true,
     );
 
-    const projectResults = projects
+    const projectResults = PROJECTS
       .map((project) => ({
         type: "project" as const,
         title: project.name,
-        subtitle: project.tech.join(" · ") || project.description,
+        subtitle: project.stacks.join(" · ") || project.description,
         action: () => {
-          window.open(project.url, "_blank", "noopener");
+          window.open(`https://github.com/FredericTischler/${project.slug}`, "_blank", "noopener");
           onOpenChange(false);
         },
       }))
@@ -78,7 +77,7 @@ export function CommandPalette({ open, onOpenChange }: CommandPaletteProps) {
 
     const merged = [...pageResults, ...projectResults];
     return merged.slice(0, 12);
-  }, [navigate, onOpenChange, projects, query]);
+  }, [navigate, onOpenChange, query]);
 
   useEffect(() => {
     if (activeIndex >= results.length) {
@@ -122,12 +121,7 @@ export function CommandPalette({ open, onOpenChange }: CommandPaletteProps) {
           </span>
         </div>
         <div className="max-h-[400px] overflow-y-auto px-2 py-3">
-          {status === "loading" ? (
-            <div className="flex items-center gap-2 px-4 py-3 text-sm text-muted-foreground">
-              <Loader2 className="h-4 w-4 animate-spin" /> Chargement des projets GitHub...
-            </div>
-          ) : null}
-          {results.length === 0 && status === "success" ? (
+          {results.length === 0 ? (
             <p className="px-4 py-3 text-sm text-muted-foreground">
               Aucun résultat. Essayez un autre mot-clé.
             </p>
