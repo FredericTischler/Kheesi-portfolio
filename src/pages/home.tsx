@@ -9,7 +9,7 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { PROFILE } from "@/data/profile";
 import { getHighlightedProjects, PROJECTS, type Project } from "@/data/projects";
-import { REDBUBBLE_ITEMS } from "@/data/redbubble";
+import { REDBUBBLE_CATEGORIES, type RBCategory, type RBItem } from "@/data/redbubble";
 import { usePageMetadata } from "@/lib/metadata";
 
 type SkillItem = {
@@ -87,7 +87,17 @@ export function HomePage() {
 
   const prefersReducedMotion = useReducedMotion();
   const highlightedProjects = useMemo(() => getHighlightedProjects(), []);
-  const featuredDesigns = useMemo(() => REDBUBBLE_ITEMS.slice(0, 3), []);
+  const featuredDesigns = useMemo(
+    () =>
+      REDBUBBLE_CATEGORIES.map((category) => {
+        const item = category.items.find((design) => design.featured) ?? category.items[0];
+        if (!item) {
+          return null;
+        }
+        return { category, item };
+      }).filter(Boolean) as Array<{ category: RBCategory; item: RBItem }>,
+    [],
+  );
   const [selectedProject, setSelectedProject] = useState<Project | null>(null);
   const [modalOpen, setModalOpen] = useState(false);
 
@@ -283,19 +293,19 @@ export function HomePage() {
           <p className="text-xs uppercase tracking-[0.4em] text-muted-foreground">Designs favoris</p>
           <h2 className="text-3xl font-semibold md:text-4xl">Sélection RedBubble mise en avant</h2>
           <p className="max-w-2xl text-muted-foreground">
-            Entre deux sprints de développement, j’explore l’illustration pour RedBubble. Voici trois designs qui
-            reflètent le style de ma boutique : couleurs lumineuses, typographies affirmées et atmosphères immersives.
+            Entre deux sprints de développement, j’explore l’illustration pour RedBubble. Chaque aperçu ci-dessous met en
+            avant une catégorie de la boutique pour donner un panorama rapide des univers proposés.
           </p>
         </div>
         <motion.div
-          className="grid gap-6 md:grid-cols-3"
+          className="grid gap-6 md:grid-cols-2 xl:grid-cols-4"
           initial={prefersReducedMotion ? undefined : { opacity: 0, y: 24 }}
           animate={prefersReducedMotion ? undefined : { opacity: 1, y: 0 }}
           transition={{ duration: prefersReducedMotion ? 0 : 0.4, ease: "easeOut" }}
         >
-          {featuredDesigns.map((design) => (
+          {featuredDesigns.map(({ category, item }) => (
             <motion.article
-              key={design.id}
+              key={item.id}
               className="group flex h-full flex-col rounded-[2rem] border border-border/60 bg-background/80 shadow-lg"
               whileHover={
                 prefersReducedMotion
@@ -305,19 +315,24 @@ export function HomePage() {
             >
               <div className="relative overflow-hidden rounded-t-[2rem] bg-secondary/30">
                 <img
-                  src={design.src}
-                  srcSet={design.src2x ? `${design.src2x} 2x` : undefined}
-                  alt={design.title}
+                  src={item.src}
+                  srcSet={item.src2x ? `${item.src2x} 2x` : undefined}
+                  alt={item.title}
                   loading="lazy"
                   className="aspect-square w-full object-contain p-4 transition duration-500 ease-out group-hover:scale-[1.02]"
                 />
               </div>
               <div className="flex flex-1 flex-col gap-4 p-6">
                 <div className="space-y-2">
-                  <h3 className="text-lg font-semibold text-foreground">{design.title}</h3>
-                  {design.createdAt ? (
+                  <div className="flex items-center justify-between gap-3">
+                    <h3 className="text-lg font-semibold text-foreground">{item.title}</h3>
+                    <Badge variant="outline" className="whitespace-nowrap px-3 py-1 text-[10px] uppercase tracking-[0.3em]">
+                      {category.name}
+                    </Badge>
+                  </div>
+                  {item.createdAt ? (
                     <p className="text-xs uppercase tracking-[0.3em] text-muted-foreground">
-                      {new Date(design.createdAt).toLocaleDateString("fr-FR", {
+                      {new Date(item.createdAt).toLocaleDateString("fr-FR", {
                         year: "numeric",
                         month: "short",
                         day: "numeric",
@@ -326,7 +341,7 @@ export function HomePage() {
                   ) : null}
                 </div>
                 <div className="flex flex-wrap gap-2">
-                  {design.tags.slice(0, 3).map((tag) => (
+                  {item.tags.slice(0, 3).map((tag) => (
                     <Badge key={tag} variant="secondary" className="px-3 py-1 text-xs uppercase tracking-[0.25em]">
                       {tag}
                     </Badge>
@@ -334,7 +349,7 @@ export function HomePage() {
                 </div>
                 <div className="mt-auto">
                   <Button asChild variant="outline" size="sm" className="w-full gap-2">
-                    <a href={design.rbLink} target="_blank" rel="noreferrer">
+                    <a href={item.rbLink} target="_blank" rel="noreferrer">
                       Voir sur RedBubble
                     </a>
                   </Button>

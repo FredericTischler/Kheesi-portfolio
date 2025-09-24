@@ -4,7 +4,7 @@ import { ExternalLink } from "lucide-react";
 
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { REDBUBBLE_ITEMS } from "@/data/redbubble";
+import { REDBUBBLE_CATEGORIES } from "@/data/redbubble";
 import { usePageMetadata } from "@/lib/metadata";
 
 const GRID_CLASSES = "grid gap-6 sm:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-4";
@@ -16,7 +16,8 @@ export default function RedbubblePage() {
   });
 
   const prefersReducedMotion = useReducedMotion();
-  const items = REDBUBBLE_ITEMS;
+  const categories = REDBUBBLE_CATEGORIES;
+  const designCount = categories.reduce((count, category) => count + category.items.length, 0);
 
   const containerVariants = useMemo(
     () => ({
@@ -49,7 +50,7 @@ export default function RedbubblePage() {
       </section>
 
       <section className="container space-y-10">
-        {items.length === 0 ? (
+        {designCount === 0 ? (
           <div className="space-y-6 rounded-[2rem] border border-border/60 bg-background/80 p-10 text-center">
             <h2 className="text-xl font-semibold text-foreground">Aucun design disponible pour le moment</h2>
             <p className="text-sm text-muted-foreground">
@@ -58,63 +59,81 @@ export default function RedbubblePage() {
             </p>
           </div>
         ) : (
-          <motion.div
-            className={GRID_CLASSES}
-            initial={prefersReducedMotion ? undefined : "hidden"}
-            animate={prefersReducedMotion ? undefined : "visible"}
-            variants={prefersReducedMotion ? undefined : containerVariants}
-          >
-            {items.map((item) => (
-              <motion.article
-                key={item.id}
-                variants={prefersReducedMotion ? undefined : itemVariants}
-                whileHover={
-                  prefersReducedMotion
-                    ? undefined
-                    : { scale: 1.02, y: -4, transition: { duration: 0.3, ease: "easeOut" } }
-                }
-                className="group flex h-full flex-col rounded-[2rem] border border-border/60 bg-background/80 shadow-lg"
-              >
-                <div className="relative overflow-hidden rounded-t-[2rem] bg-secondary/30">
-                  <img
-                    src={item.src}
-                    srcSet={item.src2x ? `${item.src2x} 2x` : undefined}
-                    alt={item.title}
-                    loading="lazy"
-                    className="aspect-square w-full object-contain p-4 transition duration-500 ease-out group-hover:scale-[1.02]"
-                  />
-                </div>
-                <div className="flex flex-1 flex-col gap-4 p-6">
+          <div className="space-y-14">
+            {categories.map((category) => (
+              <div key={category.id} className="space-y-6">
+                <div className="flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
                   <div className="space-y-2">
-                    <h3 className="text-lg font-semibold text-foreground">{item.title}</h3>
-                    {typeof item.createdAt === "string" && !Number.isNaN(new Date(item.createdAt).getTime()) ? (
-                      <p className="text-xs uppercase tracking-[0.3em] text-muted-foreground">
-                        {new Date(item.createdAt).toLocaleDateString("fr-FR", {
-                          year: "numeric",
-                          month: "short",
-                          day: "numeric",
-                        })}
-                      </p>
+                    <h2 className="text-2xl font-semibold text-foreground">{category.name}</h2>
+                    {category.description ? (
+                      <p className="text-sm text-muted-foreground">{category.description}</p>
                     ) : null}
                   </div>
-                  <div className="flex flex-wrap gap-2">
-                    {item.tags.slice(0, 5).map((tag) => (
-                      <Badge key={tag} variant="secondary" className="px-3 py-1 text-xs uppercase tracking-[0.25em]">
-                        {tag}
-                      </Badge>
-                    ))}
-                  </div>
-                  <div className="mt-auto">
-                    <Button asChild variant="outline" className="w-full gap-2" size="sm">
-                      <a href={item.rbLink} target="_blank" rel="noreferrer" aria-label={`Voir ${item.title} sur RedBubble`}>
-                        <ExternalLink className="h-4 w-4" /> Voir sur RedBubble
-                      </a>
-                    </Button>
-                  </div>
+                  <Badge variant="outline" className="self-start px-4 py-1 text-xs uppercase tracking-[0.25em]">
+                    {category.items.length} designs
+                  </Badge>
                 </div>
-              </motion.article>
+
+                <motion.div
+                  className={GRID_CLASSES}
+                  initial={prefersReducedMotion ? undefined : "hidden"}
+                  animate={prefersReducedMotion ? undefined : "visible"}
+                  variants={prefersReducedMotion ? undefined : containerVariants}
+                >
+                  {category.items.map((item) => (
+                    <motion.article
+                      key={item.id}
+                      variants={prefersReducedMotion ? undefined : itemVariants}
+                      whileHover={
+                        prefersReducedMotion
+                          ? undefined
+                          : { scale: 1.02, y: -4, transition: { duration: 0.3, ease: "easeOut" } }
+                      }
+                      className="group flex h-full flex-col rounded-[2rem] border border-border/60 bg-background/80 shadow-lg"
+                    >
+                      <div className="relative overflow-hidden rounded-t-[2rem] bg-secondary/30">
+                        <img
+                          src={item.src}
+                          srcSet={item.src2x ? `${item.src2x} 2x` : undefined}
+                          alt={item.title}
+                          loading="lazy"
+                          className="aspect-square w-full object-contain p-4 transition duration-500 ease-out group-hover:scale-[1.02]"
+                        />
+                      </div>
+                      <div className="flex flex-1 flex-col gap-4 p-6">
+                        <div className="space-y-2">
+                          <h3 className="text-lg font-semibold text-foreground">{item.title}</h3>
+                          {typeof item.createdAt === "string" && !Number.isNaN(new Date(item.createdAt).getTime()) ? (
+                            <p className="text-xs uppercase tracking-[0.3em] text-muted-foreground">
+                              {new Date(item.createdAt).toLocaleDateString("fr-FR", {
+                                year: "numeric",
+                                month: "short",
+                                day: "numeric",
+                              })}
+                            </p>
+                          ) : null}
+                        </div>
+                        <div className="flex flex-wrap gap-2">
+                          {item.tags.slice(0, 5).map((tag) => (
+                            <Badge key={tag} variant="secondary" className="px-3 py-1 text-xs uppercase tracking-[0.25em]">
+                              {tag}
+                            </Badge>
+                          ))}
+                        </div>
+                        <div className="mt-auto">
+                          <Button asChild variant="outline" className="w-full gap-2" size="sm">
+                            <a href={item.rbLink} target="_blank" rel="noreferrer" aria-label={`Voir ${item.title} sur RedBubble`}>
+                              <ExternalLink className="h-4 w-4" /> Voir sur RedBubble
+                            </a>
+                          </Button>
+                        </div>
+                      </div>
+                    </motion.article>
+                  ))}
+                </motion.div>
+              </div>
             ))}
-          </motion.div>
+          </div>
         )}
       </section>
     </div>
