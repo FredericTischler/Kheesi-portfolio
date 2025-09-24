@@ -136,7 +136,7 @@ export function HomePage() {
               J’aide à concevoir des applications web modernes et performantes.
             </h1>
             <p className="max-w-xl text-balance text-muted-foreground">
-              Passionné par les stacks Go, TypeScript et React, je conçois des architectures fiables,
+              Passionné par les stacks Java, TypeScript et Angular, je conçois des architectures fiables,
               des interfaces soignées et des expériences réactives. De la composante UI au backend temps réel.
             </p>
             <p className="max-w-xl text-balance text-muted-foreground">
