@@ -52,7 +52,7 @@ export function Navbar() {
         <nav className="mt-6 flex w-full max-w-6xl items-center justify-between rounded-3xl border border-border/60 bg-background/70 px-5 py-3 shadow-lg backdrop-blur-2xl">
           <NavLink to="/" end className="flex items-center gap-2 font-heading text-lg tracking-tight" aria-label="Accueil">
             <span className="h-2 w-2 rounded-full bg-primary" aria-hidden="true" />
-            frt.dev
+            Frédéric Tischler
           </NavLink>
           <div className="hidden items-center gap-1 lg:flex">
             {NAV_LINKS.map((item) => (

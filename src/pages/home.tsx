@@ -1,4 +1,4 @@
-import { lazy, Suspense, useMemo, useState } from "react";
+import { lazy, Suspense, useCallback, useMemo, useState } from "react";
 import { Link } from "react-router-dom";
 import { motion, useReducedMotion } from "framer-motion";
 import { ArrowRight, Download } from "lucide-react";
@@ -11,6 +11,70 @@ import { PROFILE } from "@/data/profile";
 import { getHighlightedProjects, PROJECTS, type Project } from "@/data/projects";
 import { REDBUBBLE_ITEMS } from "@/data/redbubble";
 import { usePageMetadata } from "@/lib/metadata";
+
+type SkillItem = {
+  name: string;
+  icon: string;
+  color: string;
+  category: string;
+};
+
+const SKILL_ITEMS: SkillItem[] = [
+  {
+    name: "Java",
+    icon: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/java/java-original.svg",
+    color: "#f89820",
+    category: "Langages",
+  },
+  {
+    name: "TypeScript",
+    icon: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/typescript/typescript-original.svg",
+    color: "#3178c6",
+    category: "Langages",
+  },
+  {
+    name: "Go",
+    icon: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/go/go-original.svg",
+    color: "#00add8",
+    category: "Langages",
+  },
+  {
+    name: "React",
+    icon: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/react/react-original.svg",
+    color: "#61dafb",
+    category: "Frontend",
+  },
+  {
+    name: "HTML/CSS",
+    icon: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/html5/html5-original.svg",
+    color: "#e44d26",
+    category: "Frontend",
+  },
+  {
+    name: "Node.js",
+    icon: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/nodejs/nodejs-original.svg",
+    color: "#539e43",
+    category: "Backend & DevOps",
+  },
+  {
+    name: "Docker",
+    icon: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/docker/docker-original.svg",
+    color: "#0db7ed",
+    category: "Backend & DevOps",
+  },
+  {
+    name: "PostgreSQL",
+    icon: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/postgresql/postgresql-original.svg",
+    color: "#336791",
+    category: "Bases de données",
+  },
+  {
+    name: "SQLite",
+    icon: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/sqlite/sqlite-original.svg",
+    color: "#003b57",
+    category: "Bases de données",
+  },
+];
 
 const ProjectModal = lazy(() => import("@/components/ProjectModal"));
 
@@ -36,14 +100,13 @@ export function HomePage() {
     [],
   );
 
-  const skills = useMemo(() => {
-    const list = [...PROFILE.skills];
-    const javaIndex = list.findIndex((skill) => skill.toLowerCase() === "java");
-    if (javaIndex > 0) {
-      const [java] = list.splice(javaIndex, 1);
-      list.unshift(java);
-    }
-    return list;
+  const hexToRgba = useCallback((hex: string, alpha: number) => {
+    const value = hex.replace("#", "");
+    const bigint = parseInt(value, 16);
+    const r = (bigint >> 16) & 255;
+    const g = (bigint >> 8) & 255;
+    const b = bigint & 255;
+    return `rgba(${r}, ${g}, ${b}, ${alpha})`;
   }, []);
 
   return (
@@ -87,19 +150,72 @@ export function HomePage() {
                 </a>
               </Button>
             </div>
-            <div className="flex flex-wrap items-center gap-3 rounded-[2rem] border border-border/60 bg-background/80 p-5 shadow-lg backdrop-blur-xl">
-              {skills.map((skill, index) => (
-                <span
-                  key={skill}
-                  className={`rounded-full px-4 py-2 text-xs uppercase tracking-[0.35em] ${
-                    index === 0
-                      ? "border border-primary/50 bg-primary/15 text-primary"
-                      : "border border-border/40 bg-secondary/40 text-muted-foreground"
-                  }`}
-                >
-                  {skill}
-                </span>
-              ))}
+            <div className="space-y-4 rounded-[2rem] border border-border/60 bg-background/80 p-5 shadow-lg backdrop-blur-xl">
+              <div className="flex items-center justify-between">
+                <span className="text-xs uppercase tracking-[0.35em] text-muted-foreground">Stacks maîtrisées</span>
+              </div>
+              <div className="relative mx-auto max-w-3xl overflow-hidden rounded-xl border border-border/60">
+                {prefersReducedMotion ? (
+                  <div className="flex flex-wrap justify-center gap-3 p-4">
+                    {SKILL_ITEMS.map((item) => (
+                      <div
+                        key={item.name}
+                        className="flex items-center gap-3 rounded-lg border px-4 py-3"
+                        style={{
+                          backgroundColor: hexToRgba(item.color, 0.12),
+                          borderColor: hexToRgba(item.color, 0.35),
+                          color: item.color,
+                        }}
+                      >
+                        <img src={item.icon} alt="" loading="lazy" className="h-6 w-6" />
+                        <div className="flex flex-col">
+                          <span className="text-sm font-semibold uppercase tracking-[0.2em]">{item.name}</span>
+                          <span className="text-[11px] uppercase tracking-[0.3em] text-muted-foreground/80">
+                            {item.category}
+                          </span>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                ) : (
+                  <div className="relative">
+                    <div
+                      className="pointer-events-none absolute inset-y-0 left-0 w-12 bg-gradient-to-r from-background/95 via-background/40 to-transparent"
+                      aria-hidden="true"
+                    />
+                    <div
+                      className="pointer-events-none absolute inset-y-0 right-0 w-12 bg-gradient-to-l from-background/95 via-background/40 to-transparent"
+                      aria-hidden="true"
+                    />
+                    <motion.div
+                      className="flex min-w-max gap-4 p-4"
+                      initial={{ x: 0 }}
+                      animate={{ x: ["0%", "-50%"] }}
+                      transition={{ repeat: Infinity, duration: Math.max(SKILL_ITEMS.length * 3, 18), ease: "linear" }}
+                    >
+                      {[...SKILL_ITEMS, ...SKILL_ITEMS].map((item, index) => (
+                        <div
+                          key={`${item.name}-${index}`}
+                          className="flex items-center gap-3 rounded-lg border px-4 py-3"
+                          style={{
+                            backgroundColor: hexToRgba(item.color, 0.12),
+                            borderColor: hexToRgba(item.color, 0.35),
+                            color: item.color,
+                          }}
+                        >
+                          <img src={item.icon} alt="" loading="lazy" className="h-6 w-6" />
+                          <div className="flex flex-col">
+                            <span className="text-sm font-semibold uppercase tracking-[0.2em]">{item.name}</span>
+                            <span className="text-[11px] uppercase tracking-[0.3em] text-muted-foreground/80">
+                              {item.category}
+                            </span>
+                          </div>
+                        </div>
+                      ))}
+                    </motion.div>
+                  </div>
+                )}
+              </div>
             </div>
           </motion.div>
           <motion.div

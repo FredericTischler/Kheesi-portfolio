@@ -61,14 +61,14 @@ export function AboutPage() {
               Curieux, orienté produit et passionné par la création d’outils utiles.
             </h1>
             <p className="text-muted-foreground">
-              Après une licence d’informatique axée sur la théorie et l'algorithmie, j’ai intégré Zone01 pour renforcer mes
+              Après une licence d’informatique axée sur la théorie et l'algorithmique, j’ai intégré Zone01 pour renforcer mes
               réflexes projet : pair-programming, feedback continu et livraison incrémentale. Cette double culture me
               permet de plonger dans les détails métier tout en gardant une vision produit.
             </p>
             <p className="text-muted-foreground">
               Aujourd’hui, je modernise des applications métier en Java + Angular chez WeNégoce et j’ai amorcé la même
               transition chez Développement Informatique International. Je compose des bibliothèques de composants,
-              structure des API en lecture seule et garantis la cohérence UX entre les modules.
+              structure des API et garantis la cohérence UX entre les modules.
             </p>
             <p className="text-muted-foreground">
               J’aime croiser design system, data visualisation et performance. Mes inspirations viennent autant des
