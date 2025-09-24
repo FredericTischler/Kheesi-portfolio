@@ -47,7 +47,7 @@ export const PROFILE = {
       id: "dii",
       company: "Développement Informatique International",
       role: "Stagiaire / CDD Développeur",
-      period: { start: "2023-05", end: "2023-08" },
+      period: { start: "2023-04", end: "2023-07" },
       description:
         "Stage de deux mois suivi d’un CDD d’un mois pour initier la modernisation de leur application métier en solution web Java + Angular.",
       stack: ["Java", "Angular", "TypeScript", "SQL"],
