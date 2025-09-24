@@ -21,12 +21,35 @@ const VALUES = [
   },
 ];
 
+const FORMATION = [
+  {
+    title: "Licence Informatique",
+    description:
+      "Bases solides en algorithmique, conception objet et Java — mon langage principal depuis mes études.",
+  },
+  {
+    title: "Zone01",
+    description:
+      "Formation par projets intensifs : pair-programming, sprints et mise en production rapide d’applications web.",
+  },
+];
+
 export function AboutPage() {
   usePageMetadata({
     title: "À propos",
     description:
-      "Bio de Frédéric Tischler : parcours Zone01, compétences full-stack Go/TypeScript, valeurs de développement.",
+      "Parcours de Frédéric Tischler : licence informatique, Zone01, modernisation d’applications Java/Angular.",
   });
+
+  const orderedSkills = (() => {
+    const list = [...PROFILE.skills];
+    const javaIndex = list.findIndex((skill) => skill.toLowerCase() === "java");
+    if (javaIndex > 0) {
+      const [java] = list.splice(javaIndex, 1);
+      list.unshift(java);
+    }
+    return list;
+  })();
 
   return (
     <div className="space-y-24 pb-20 pt-36">
@@ -38,13 +61,18 @@ export function AboutPage() {
               Curieux, orienté produit et passionné par la création d’outils utiles.
             </h1>
             <p className="text-muted-foreground">
-              Formé à Zone01, je m’intéresse à la fois aux problématiques backend (scalabilité, data) et à
-              l’expérience utilisateur. Les projets d’IA, de finance et d’UX me stimulent particulièrement.
-              J’aime explorer les interactions entre design système, data visualisation et performance.
+              Après une licence d’informatique axée sur la théorie et l'algorithmie, j’ai intégré Zone01 pour renforcer mes
+              réflexes projet : pair-programming, feedback continu et livraison incrémentale. Cette double culture me
+              permet de plonger dans les détails métier tout en gardant une vision produit.
             </p>
             <p className="text-muted-foreground">
-              Aujourd’hui je me concentre sur des stacks Go/TypeScript/React en gardant un œil sur l’outillage
-              DevOps et la qualité : tests end-to-end, observabilité et documentation vivante.
+              Aujourd’hui, je modernise des applications métier en Java + Angular chez WeNégoce et j’ai amorcé la même
+              transition chez Développement Informatique International. Je compose des bibliothèques de composants,
+              structure des API en lecture seule et garantis la cohérence UX entre les modules.
+            </p>
+            <p className="text-muted-foreground">
+              J’aime croiser design system, data visualisation et performance. Mes inspirations viennent autant des
+              dashboards financiers que des expériences d’IA et des produits craftés autour des besoins utilisateurs.
             </p>
           </div>
           <div className="space-y-6">
@@ -57,12 +85,24 @@ export function AboutPage() {
             <div className="rounded-[2rem] border border-border/60 bg-background/80 p-6 shadow-lg">
               <h2 className="text-lg font-semibold">Compétences clés</h2>
               <div className="mt-4 flex flex-wrap gap-3">
-                {PROFILE.skills.map((skill, index) => (
+                {orderedSkills.map((skill, index) => (
                   <TechBadge key={skill} label={skill} index={index} />
                 ))}
               </div>
             </div>
           </div>
+        </div>
+      </Section>
+
+      <Section className="space-y-8">
+        <h2 className="text-3xl font-semibold md:text-4xl">Parcours en deux temps</h2>
+        <div className="grid gap-6 md:grid-cols-2">
+          {FORMATION.map((item) => (
+            <div key={item.title} className="rounded-[2rem] border border-border/60 bg-background/80 p-6 shadow-lg">
+              <h3 className="text-xl font-semibold">{item.title}</h3>
+              <p className="mt-3 text-sm text-muted-foreground">{item.description}</p>
+            </div>
+          ))}
         </div>
       </Section>
 
