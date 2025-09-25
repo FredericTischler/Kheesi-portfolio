@@ -16,7 +16,7 @@ export function ContrastToggle() {
       whileTap={prefersReducedMotion ? undefined : { scale: 0.92, transition: { type: "spring", stiffness: 320, damping: 20 } }}
       onClick={toggleHighContrast}
     >
-      <AnimatePresence mode="wait" initial={false}>
+      <AnimatePresence initial={false}>
         {!prefersReducedMotion ? (
           <motion.span
             key={`contrast-ripple-${highContrast}`}
@@ -28,6 +28,8 @@ export function ContrastToggle() {
             aria-hidden="true"
           />
         ) : null}
+      </AnimatePresence>
+      <AnimatePresence mode="wait" initial={false}>
         <motion.span
           key={highContrast ? "on" : "off"}
           className="relative grid h-full w-full place-items-center"

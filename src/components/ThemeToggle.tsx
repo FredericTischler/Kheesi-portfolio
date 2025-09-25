@@ -16,7 +16,7 @@ export function ThemeToggle() {
       whileTap={prefersReducedMotion ? undefined : { scale: 0.92, transition: { type: "spring", stiffness: 320, damping: 20 } }}
       onClick={toggleTheme}
     >
-      <AnimatePresence mode="wait" initial={false}>
+      <AnimatePresence initial={false}>
         {!prefersReducedMotion ? (
           <motion.span
             key={`ripple-${theme}`}
@@ -28,6 +28,8 @@ export function ThemeToggle() {
             aria-hidden="true"
           />
         ) : null}
+      </AnimatePresence>
+      <AnimatePresence mode="wait" initial={false}>
         <motion.span
           key={theme}
           className="relative grid h-full w-full place-items-center"
