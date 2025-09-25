@@ -20,6 +20,14 @@
   --input: 220 22% 18%;
   --ring: 176 100% 41%;
   --radius: 1.25rem;
+  --badge-neutral-1: 36 92% 90%;
+  --badge-neutral-2: 192 94% 90%;
+  --badge-neutral-3: 268 86% 90%;
+  --badge-neutral-4: 120 62% 88%;
+  --badge-neutral-foreground: 220 32% 20%;
+  --stat-card-bg: 216 22% 14%;
+  --stat-card-border: 216 20% 26%;
+  --stat-card-foreground: 210 46% 96%;
 }
 
 .dark {
@@ -39,6 +47,14 @@
   --border-muted: 218 20% 10%;
   --input: 220 22% 18%;
   --ring: 262 83% 64%;
+  --badge-neutral-1: 36 92% 28%;
+  --badge-neutral-2: 192 88% 32%;
+  --badge-neutral-3: 268 70% 36%;
+  --badge-neutral-4: 142 66% 30%;
+  --badge-neutral-foreground: 210 40% 94%;
+  --stat-card-bg: 220 22% 14%;
+  --stat-card-border: 220 32% 32%;
+  --stat-card-foreground: 210 42% 96%;
 }
 
 .light.contrast {
@@ -58,6 +74,14 @@
   --border-muted: 210 28% 80%;
   --input: 210 30% 78%;
   --ring: 48 100% 45%;
+  --badge-neutral-1: 36 92% 88%;
+  --badge-neutral-2: 192 92% 88%;
+  --badge-neutral-3: 268 86% 88%;
+  --badge-neutral-4: 120 62% 86%;
+  --badge-neutral-foreground: 220 70% 12%;
+  --stat-card-bg: 210 28% 94%;
+  --stat-card-border: 210 32% 70%;
+  --stat-card-foreground: 220 74% 12%;
 }
 
 .dark.contrast {
@@ -77,6 +101,14 @@
   --border-muted: 220 26% 22%;
   --input: 220 30% 22%;
   --ring: 48 100% 55%;
+  --badge-neutral-1: 36 92% 32%;
+  --badge-neutral-2: 192 90% 36%;
+  --badge-neutral-3: 268 72% 38%;
+  --badge-neutral-4: 142 66% 34%;
+  --badge-neutral-foreground: 210 46% 98%;
+  --stat-card-bg: 220 22% 12%;
+  --stat-card-border: 220 34% 40%;
+  --stat-card-foreground: 210 60% 98%;
 }
 
 @layer base {
@@ -117,5 +149,84 @@
   }
   .blur-up.lazyloaded {
     filter: blur(0);
+  }
+  .btn-cta {
+    @apply relative inline-flex items-center justify-center overflow-hidden rounded-full border border-transparent font-semibold text-sm uppercase tracking-[0.35em];
+    background-image: linear-gradient(135deg, hsl(var(--primary)) 0%, hsl(var(--accent)) 100%);
+    color: hsl(var(--primary-foreground));
+    transition: transform 180ms ease, box-shadow 200ms ease;
+    box-shadow: 0 16px 38px -18px hsl(var(--primary) / 0.6);
+  }
+  .btn-cta::after {
+    content: "";
+    position: absolute;
+    inset: -120%;
+    background: linear-gradient(120deg, transparent 20%, rgba(255,255,255,0.35) 50%, transparent 80%);
+    animation: btn-sweep 3s linear infinite;
+    opacity: 0.7;
+    pointer-events: none;
+  }
+  .btn-cta:hover {
+    transform: translateY(-2px) scale(1.01);
+    box-shadow: 0 20px 44px -18px hsl(var(--primary) / 0.8);
+  }
+  .btn-cta:focus-visible {
+    outline: 3px solid hsl(var(--ring));
+    outline-offset: 4px;
+  }
+  .btn-cta-outline {
+    @apply relative inline-flex items-center justify-center overflow-hidden rounded-full border font-semibold text-sm uppercase tracking-[0.35em];
+    background: transparent;
+    color: hsl(var(--primary));
+    border-color: hsl(var(--primary));
+    transition: transform 180ms ease, color 180ms ease, border-color 180ms ease;
+  }
+  .btn-cta-outline::after {
+    content: "";
+    position: absolute;
+    inset: -120%;
+    background: linear-gradient(120deg, transparent 20%, hsl(var(--primary) / 0.4) 50%, transparent 80%);
+    animation: btn-sweep 3.4s linear infinite;
+    opacity: 0.4;
+    pointer-events: none;
+  }
+  .btn-cta-outline:hover {
+    transform: translateY(-2px) scale(1.01);
+    color: hsl(var(--primary));
+    border-color: hsl(var(--primary));
+  }
+  .stat-card {
+    background: hsla(var(--stat-card-bg), 0.95);
+    border-color: hsl(var(--stat-card-border));
+    color: hsl(var(--stat-card-foreground));
+  }
+  .stat-card span {
+    color: hsla(var(--stat-card-foreground), 0.85);
+  }
+  .tech-badge {
+    background-color: hsl(var(--badge-neutral-1));
+    border-color: hsla(var(--badge-neutral-foreground), 0.35);
+    color: hsl(var(--badge-neutral-foreground));
+  }
+  .tech-badge-2 {
+    background-color: hsl(var(--badge-neutral-2));
+  }
+  .tech-badge-3 {
+    background-color: hsl(var(--badge-neutral-3));
+  }
+  .tech-badge-4 {
+    background-color: hsl(var(--badge-neutral-4));
+  }
+}
+
+@keyframes btn-sweep {
+  0% {
+    transform: translateX(-30%) skewX(-12deg);
+  }
+  50% {
+    transform: translateX(120%) skewX(-12deg);
+  }
+  100% {
+    transform: translateX(220%) skewX(-12deg);
   }
 }

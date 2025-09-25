@@ -85,7 +85,7 @@ export function ContactForm({ mailto }: { mailto: string }) {
         {errors.message ? <p className="text-xs text-destructive">{errors.message}</p> : null}
       </div>
       <div className="flex flex-col gap-4">
-        <Button type="submit" size="md" className="gap-2">
+        <Button type="submit" size="md" className="gap-2 btn-cta">
           Envoyer
         </Button>
         <a

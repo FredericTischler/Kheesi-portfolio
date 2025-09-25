@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
 import {Link} from "react-router-dom";
 import {motion, useReducedMotion} from "framer-motion";
-import {ArrowRight, Download, ExternalLink, Link as LinkIcon} from "lucide-react";
+import {ArrowRight, Download, ExternalLink, Github, Link as LinkIcon} from "lucide-react";
 
 import {Section} from "@/components/Section";
 import {StatCard} from "@/components/StatCard";
@@ -11,7 +11,7 @@ import {Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, Di
 import {Skeleton} from "@/components/ui/skeleton";
 import {PROFILE} from "@/data/profile";
 import {PROJECTS, type Project} from "@/data/projects";
-import type {RBCategory, RBItem} from "@/data/print-on-demand";
+import type {RBCategory, RBItem, RBFormat, RBPalette} from "@/data/print-on-demand";
 import {useClipboard} from "@/lib/clipboard";
 import {usePageMetadata} from "@/lib/metadata";
 
@@ -108,6 +108,21 @@ const SKILL_ITEMS: SkillItem[] = [
         category: "Langages",
     },
 ];
+
+const FORMAT_LABELS: Record<RBFormat, string> = {
+    poster: "Poster",
+    sticker: "Stickers",
+    textile: "Textile",
+};
+
+const PALETTE_LABELS: Record<RBPalette, string> = {
+    pastel: "Pastel",
+    vibrant: "Vibrant",
+    monochrome: "Monochrome",
+};
+
+const PROJECT_PLACEHOLDER_CLASSES =
+    "flex h-48 w-full items-center justify-center rounded-[1.75rem] bg-gradient-to-br from-secondary/40 via-secondary/20 to-secondary/40 text-xs uppercase tracking-[0.35em] text-muted-foreground";
 type FeaturedDesign = {
     category: Pick<RBCategory, "id" | "name" | "description">;
     item: RBItem;
@@ -251,7 +266,7 @@ export function HomePage() {
                             informatique qui m’a donné un socle algorithmique solide et une maîtrise approfondie de Java.
                         </p>
                         <div className="flex flex-wrap gap-4">
-                            <Button asChild size="lg" className="gap-2">
+                            <Button asChild size="lg" className="gap-2 btn-cta">
                                 <Link to="/projects">
                                     Voir mes projets <ArrowRight className="h-4 w-4"/>
                                 </Link>
@@ -260,7 +275,7 @@ export function HomePage() {
                                 asChild
                                 variant="outline"
                                 size="lg"
-                                className="gap-2"
+                                className="gap-2 btn-cta-outline"
                             >
                                 <a href="/assets/cv-frederic-tischler.pdf" download>
                                     <Download className="h-4 w-4"/> Télécharger mon CV
@@ -376,39 +391,97 @@ export function HomePage() {
                         extraite des projets les plus représentatifs.
                     </p>
                 </div>
-                <div className="grid gap-6 md:grid-cols-2">
+                <motion.div
+                    className="grid gap-6 md:grid-cols-2"
+                    initial={prefersReducedMotion ? undefined : {opacity: 0, y: 32}}
+                    animate={prefersReducedMotion ? undefined : {opacity: 1, y: 0}}
+                    transition={{duration: prefersReducedMotion ? 0 : 0.4, ease: "easeOut"}}
+                >
                     {highlightedProjects.slice(0, 2).map((project) => (
-                        <div key={project.slug}>
-                            <div className="flex flex-col gap-4 rounded-[2rem] border border-border/60 bg-background/80 p-6 shadow-lg">
-                                <div className="flex items-baseline justify-between">
-                                    <h3 className="text-xl font-semibold">{project.name}</h3>
+                        <motion.article
+                            key={project.slug}
+                            className="group flex h-full flex-col gap-6 rounded-[2rem] border border-border/60 bg-background/80 p-6 text-left shadow-lg"
+                            whileHover={
+                                prefersReducedMotion
+                                    ? undefined
+                                    : {scale: 1.02, y: -6, transition: {duration: 0.3, ease: "easeOut"}}
+                            }
+                            role="listitem"
+                            tabIndex={0}
+                            aria-label={`Aperçu du projet ${project.name}`}
+                            aria-describedby={`project-${project.slug}-summary`}
+                            onClick={() => {
+                                setSelectedProject(project);
+                                setModalOpen(true);
+                            }}
+                            onKeyDown={(event) => {
+                                if (event.key === "Enter" || event.key === " ") {
+                                    event.preventDefault();
+                                    setSelectedProject(project);
+                                    setModalOpen(true);
+                                }
+                            }}
+                        >
+                            {project.thumbnail ? (
+                                <img
+                                    src={project.thumbnail}
+                                    alt=""
+                                    loading="lazy"
+                                    decoding="async"
+                                    className="h-48 w-full rounded-[1.75rem] object-cover"
+                                />
+                            ) : (
+                                <div className={PROJECT_PLACEHOLDER_CLASSES}>Aperçu indisponible</div>
+                            )}
+                            <div className="flex flex-1 flex-col gap-4">
+                                <div className="space-y-3">
+                                    <div className="flex items-start justify-between gap-4">
+                                        <h3 className="text-lg font-semibold text-foreground">{project.name}</h3>
+                                    </div>
+                                    <p className="text-sm text-muted-foreground line-clamp-3">{project.description}</p>
+                                    <div className="flex flex-wrap gap-2">
+                                        {project.tech.slice(0, 5).map((tech) => (
+                                            <Badge
+                                                key={`${project.slug}-${tech}`}
+                                                variant="secondary"
+                                                className="px-3 py-1 text-xs uppercase tracking-[0.3em]"
+                                            >
+                                                {tech}
+                                            </Badge>
+                                        ))}
+                                    </div>
                                 </div>
-                                <p className="text-sm text-muted-foreground">{project.description}</p>
-                                <div className="flex flex-wrap gap-2 text-xs text-muted-foreground">
-                                    {project.tech.slice(0, 4).map((tech) => (
-                                        <span key={`${project.slug}-${tech}`} className="rounded-full bg-secondary/40 px-3 py-1 uppercase tracking-[0.25em]">
-                                            {tech}
-                                        </span>
-                                    ))}
-                                </div>
-                                <div className="flex items-center gap-3 pt-2">
-                                    <Button size="sm" onClick={() => {
-                                        setSelectedProject(project);
-                                        setModalOpen(true);
-                                    }}>
+                                <p id={`project-${project.slug}-summary`} className="sr-only">
+                                    {`Technologies principales : ${project.tech.join(", ")}.`}
+                                </p>
+                                <div className="mt-auto flex flex-wrap gap-3">
+                                    <Button
+                                        size="sm"
+                                        onClick={(event) => {
+                                            event.stopPropagation();
+                                            setSelectedProject(project);
+                                            setModalOpen(true);
+                                        }}
+                                    >
                                         Aperçu
                                     </Button>
-                                    <Button asChild variant="outline" size="sm" className="gap-2">
+                                    <Button
+                                        asChild
+                                        variant="outline"
+                                        size="sm"
+                                        className="gap-2"
+                                        onClick={(event) => event.stopPropagation()}
+                                    >
                                         <a href={project.url} target="_blank" rel="noreferrer">
-                                            GitHub
+                                            <Github className="h-4 w-4" aria-hidden="true" /> Voir sur GitHub
                                         </a>
                                     </Button>
                                 </div>
                             </div>
-                        </div>
+                        </motion.article>
                     ))}
-                </div>
-      </Section>
+                </motion.div>
+            </Section>
 
       <Section className="space-y-10">
         <div className="space-y-3">
@@ -464,32 +537,45 @@ export function HomePage() {
             animate={prefersReducedMotion ? undefined : { opacity: 1, y: 0 }}
             transition={{ duration: prefersReducedMotion ? 0 : 0.4, ease: "easeOut" }}
           >
-            {featuredDesigns.map(({ category, item }) => (
-              <motion.article
-                key={`${category.id}-${item.id}`}
-                className="group flex h-full flex-col rounded-[2rem] border border-border/60 bg-background/80 shadow-lg"
-                whileHover={
-                  prefersReducedMotion
-                    ? undefined
-                    : { scale: 1.02, y: -6, transition: { duration: 0.3, ease: "easeOut" } }
-                }
-              >
-                <div className="relative overflow-hidden rounded-t-[2rem] bg-secondary/30">
-                  <img
-                    src={item.src}
-                    srcSet={item.src2x ? `${item.src2x} 2x` : undefined}
-                    alt={item.title}
-                    loading="lazy"
-                    className="aspect-square w-full object-contain p-4 transition duration-500 ease-out group-hover:scale-[1.02]"
-                  />
-                </div>
-                <div className="flex flex-1 flex-col gap-4 p-6" aria-live="polite">
-                  <div className="space-y-2">
-                    <div className="flex items-center justify-between gap-3">
-                      <h3 className="text-lg font-semibold text-foreground">{item.title}</h3>
-                      <Badge variant="outline" className="whitespace-nowrap px-3 py-1 text-[10px] uppercase tracking-[0.3em]">
-                        {category.name}
-                      </Badge>
+            {featuredDesigns.map(({ category, item }) => {
+              const previewImage = item.gallery && item.gallery.length > 0 ? item.gallery[0] : item.src;
+              const previewSrcSet = item.src2x ? `${item.src2x} 2x` : undefined;
+
+              return (
+                <motion.article
+                  key={`${category.id}-${item.id}`}
+                  className="group flex h-full flex-col rounded-[2rem] border border-border/60 bg-background/80 shadow-lg"
+                  whileHover={
+                    prefersReducedMotion
+                      ? undefined
+                      : { scale: 1.02, y: -6, transition: { duration: 0.3, ease: "easeOut" } }
+                  }
+                >
+                  <div className="relative overflow-hidden rounded-t-[2rem] bg-secondary/30">
+                    <img
+                      src={previewImage}
+                      srcSet={previewSrcSet}
+                      alt={`Illustration print on demand : ${item.title} – ${item.tags.join(", ")}`}
+                      loading="lazy"
+                      className="aspect-square w-full object-contain p-4 transition duration-500 ease-out group-hover:scale-[1.02]"
+                    />
+                  </div>
+                  <div className="flex flex-1 flex-col gap-5 p-6" aria-live="polite">
+                    <div className="space-y-3">
+                      <div className="flex items-start justify-between gap-3">
+                        <h3 className="text-lg font-semibold text-foreground">{item.title}</h3>
+                        <Badge variant="outline" className="self-start px-4 py-1 text-xs uppercase tracking-[0.25em]">
+                          {category.name}
+                        </Badge>
+                      </div>
+                      <div className="flex flex-wrap gap-2 text-[10px] uppercase tracking-[0.35em] text-muted-foreground">
+                        <span className="rounded-full bg-secondary/30 px-3 py-1 text-muted-foreground">
+                          {FORMAT_LABELS[item.format]}
+                        </span>
+                        <span className="rounded-full bg-secondary/30 px-3 py-1 text-muted-foreground">
+                          {PALETTE_LABELS[item.palette]}
+                        </span>
+                      </div>
                     </div>
                     {item.createdAt ? (
                       <p className="text-xs uppercase tracking-[0.3em] text-muted-foreground">
@@ -500,24 +586,30 @@ export function HomePage() {
                         })}
                       </p>
                     ) : null}
+                    <p className="text-xs text-muted-foreground">{item.usage}</p>
+                    <div className="flex flex-wrap gap-2" id={`design-${item.id}-tags`}>
+                      {item.tags.slice(0, 5).map((tag, index) => (
+                        <Badge
+                          key={`${item.id}-${tag}`}
+                          variant="outline"
+                          className={`tech-badge tech-badge-${(index % 4) + 1}`}
+                        >
+                          #{tag}
+                        </Badge>
+                      ))}
+                    </div>
+                    <p className="sr-only">{`Description : ${item.title}. Tags : ${item.tags.join(", ")}.`}</p>
+                    <div className="mt-auto">
+                      <Button asChild variant="outline" size="sm" className="w-full gap-2">
+                        <a href={item.rbLink} target="_blank" rel="noreferrer">
+                          <ExternalLink className="h-4 w-4" /> Voir sur RedBubble
+                        </a>
+                      </Button>
+                    </div>
                   </div>
-                  <div className="flex flex-wrap gap-2">
-                    {item.tags.slice(0, 3).map((tag) => (
-                      <Badge key={tag} variant="secondary" className="px-3 py-1 text-xs uppercase tracking-[0.25em]">
-                        {tag}
-                      </Badge>
-                    ))}
-                  </div>
-                  <div className="mt-auto">
-                    <Button asChild variant="outline" size="sm" className="w-full gap-2">
-                      <a href={item.rbLink} target="_blank" rel="noreferrer">
-                        Voir sur RedBubble
-                      </a>
-                    </Button>
-                  </div>
-                </div>
-              </motion.article>
-            ))}
+                </motion.article>
+              );
+            })}
           </motion.div>
         )}
       </Section>

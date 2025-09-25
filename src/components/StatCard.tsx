@@ -1,5 +1,7 @@
 import { motion, useReducedMotion } from "framer-motion";
 
+import { cn } from "@/lib/utils";
+
 interface StatCardProps {
   label: string;
   value: string;
@@ -12,7 +14,9 @@ export function StatCard({ label, value, description, index = 0 }: StatCardProps
 
   return (
     <motion.div
-      className="flex flex-col gap-3 rounded-[2rem] border border-border/60 bg-background/80 p-6 shadow-lg backdrop-blur-xl"
+      className={cn(
+        "stat-card flex flex-col gap-3 rounded-[2rem] border p-6 shadow-lg backdrop-blur-xl",
+      )}
       initial={prefersReducedMotion ? undefined : { opacity: 0, y: 20 }}
       whileInView={prefersReducedMotion ? undefined : { opacity: 1, y: 0 }}
       viewport={{ once: true, amount: 0.3 }}

@@ -6,6 +6,7 @@ Portfolio React/TypeScript ultra-moderne construit avec Vite, Tailwind CSS, Fram
 
 - **Build** : Vite + React 19 + TypeScript strict
 - **UI** : Tailwind CSS, shadcn/ui, design tokens personnalisés (dark/light)
+- **Tokens pastel** : `--badge-neutral-{1..4}` et `--stat-card-*` pilotent badges & cartes (versions clair / sombre / contraste).
 - **Animations** : Framer Motion (stagger, parallax léger, respect `prefers-reduced-motion`)
 - **Intégrations** : lucide-react, API GitHub, Command Palette ⌘K
 

@@ -67,7 +67,7 @@ export function RBModal({ item, open, onOpenChange }: RBModalProps) {
             <DialogFooter className="flex-row items-center justify-start gap-3 border-none bg-transparent px-0 py-0">
               <Button asChild size="md" className="gap-2">
                 <a href={item.rbLink} target="_blank" rel="noreferrer">
-                  <ExternalLink className="h-4 w-4" /> Voir sur Print on demand
+                  <ExternalLink className="h-4 w-4" /> Voir sur RedBubble
                 </a>
               </Button>
               <Button

@@ -64,8 +64,12 @@ export function ProjectCard({ project, onQuickView }: ProjectCardProps) {
           ) : null}
         </div>
         <div className="flex flex-wrap gap-2">
-          {project.tech.slice(0, 5).map((tech) => (
-            <Badge key={`${project.slug}-${tech}`} variant="secondary" className="px-3 py-1 text-xs uppercase tracking-[0.3em]">
+          {project.tech.slice(0, 5).map((tech, index) => (
+            <Badge
+              key={`${project.slug}-${tech}`}
+              variant="outline"
+              className={`tech-badge tech-badge-${(index % 4) + 1}`}
+            >
               {tech}
             </Badge>
           ))}

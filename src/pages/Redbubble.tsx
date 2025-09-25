@@ -1,17 +1,28 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
-import { motion, useReducedMotion } from "framer-motion";
-import { ExternalLink, ZoomIn } from "lucide-react";
+import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
+import { ExternalLink, Sparkles, ZoomIn, ChevronLeft, ChevronRight } from "lucide-react";
 
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { PRINT_ON_DEMAND_CATEGORIES, PRINT_ON_DEMAND_ITEMS } from "@/data/print-on-demand";
+import { PRINT_ON_DEMAND_CATEGORIES, PRINT_ON_DEMAND_ITEMS, type RBItem, type RBFormat, type RBPalette } from "@/data/print-on-demand";
 import { usePageMetadata } from "@/lib/metadata";
-import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog";
-import type { RBItem } from "@/data/print-on-demand";
+import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 
 const GRID_CLASSES = "grid gap-6 sm:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-4";
 const NAV_WIDTH = 220;
 const NAV_GAP = 24;
+
+const FORMAT_LABELS: Record<RBFormat, string> = {
+  poster: "Poster",
+  sticker: "Stickers",
+  textile: "Textile",
+};
+
+const PALETTE_LABELS: Record<RBPalette, string> = {
+  pastel: "Pastel",
+  vibrant: "Vibrant",
+  monochrome: "Monochrome",
+};
 
 export default function PrintOnDemandPage() {
   usePageMetadata({
@@ -21,19 +32,42 @@ export default function PrintOnDemandPage() {
 
   const prefersReducedMotion = useReducedMotion();
   const categories = useMemo(() => PRINT_ON_DEMAND_CATEGORIES, []);
-  const flatItems = useMemo(() => PRINT_ON_DEMAND_ITEMS, []);
+  const allItems = useMemo(() => PRINT_ON_DEMAND_ITEMS, []);
+
   const [activeCategory, setActiveCategory] = useState(() => categories[0]?.id ?? "");
   const [navLayout, setNavLayout] = useState<{ left: number; padding: number; isDesktop: boolean }>({
     left: 24,
     padding: NAV_WIDTH + NAV_GAP,
     isDesktop: false,
   });
-  const designCount = categories.reduce((count, category) => count + category.items.length, 0);
   const containerRef = useRef<HTMLDivElement | null>(null);
   const [lightboxIndex, setLightboxIndex] = useState<number | null>(null);
-  const lightboxItem = lightboxIndex !== null ? flatItems[lightboxIndex] : null;
   const touchStartX = useRef<number | null>(null);
   const touchEndX = useRef<number | null>(null);
+
+  const filteredItems = allItems;
+
+  const filteredIds = useMemo(() => new Set(filteredItems.map((item) => item.id)), [filteredItems]);
+
+  const filteredCategories = useMemo(
+    () =>
+      categories
+        .map((category) => ({
+          ...category,
+          items: category.items.filter((item) => filteredIds.has(item.id)),
+        }))
+        .filter((category) => category.items.length > 0),
+    [categories, filteredIds],
+  );
+
+  useEffect(() => {
+    if (!filteredCategories.some((category) => category.id === activeCategory)) {
+      setActiveCategory(filteredCategories[0]?.id ?? "");
+    }
+  }, [filteredCategories, activeCategory]);
+
+  const filteredDesignCount = filteredItems.length;
+  const lightboxItem = lightboxIndex !== null ? filteredItems[lightboxIndex] : null;
 
   const handleLightboxOpenChange = useCallback((open: boolean) => {
     if (!open) {
@@ -43,83 +77,42 @@ export default function PrintOnDemandPage() {
 
   const openLightbox = useCallback(
     (item: RBItem) => {
-      const index = flatItems.findIndex((candidate) => candidate.id === item.id);
+      const index = filteredItems.findIndex((candidate) => candidate.id === item.id);
       if (index !== -1) {
         setLightboxIndex(index);
       }
     },
-    [flatItems],
-  );
-
-  const containerVariants = useMemo(
-    () => ({
-      hidden: { opacity: 0 },
-      visible: {
-        opacity: 1,
-        transition: { staggerChildren: 0.08, delayChildren: 0.05 },
-      },
-    }),
-    [],
-  );
-
-  const itemVariants = useMemo(
-    () => ({
-      hidden: { opacity: 0, y: 16 },
-      visible: { opacity: 1, y: 0 },
-    }),
-    [],
-  );
-
-  const handleCategoryClick = useCallback(
-    (categoryId: string) => {
-      const element = document.getElementById(`category-${categoryId}`);
-      if (!element) {
-        return;
-      }
-      element.scrollIntoView({ behavior: prefersReducedMotion ? "auto" : "smooth", block: "start" });
-      setActiveCategory(categoryId);
-    },
-    [prefersReducedMotion],
+    [filteredItems],
   );
 
   useEffect(() => {
-    if (categories.length === 0 || typeof window === "undefined") {
+    if (lightboxIndex === null || filteredItems.length === 0) {
       return;
     }
 
-    const sectionElements = categories
-      .map((category) => document.getElementById(`category-${category.id}`))
-      .filter((element): element is HTMLElement => Boolean(element));
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if (event.defaultPrevented) {
+        return;
+      }
 
-    if (sectionElements.length === 0) {
-      return;
-    }
-
-    const observer = new IntersectionObserver(
-      (entries) => {
-        const visibleEntry = entries
-          .filter((entry) => entry.isIntersecting)
-          .sort((a, b) => b.intersectionRatio - a.intersectionRatio)[0];
-
-        if (visibleEntry?.target) {
-          const categoryId = visibleEntry.target.getAttribute("data-category-id");
-          if (categoryId) {
-            setActiveCategory(categoryId);
-          }
-        }
-      },
-      {
-        rootMargin: "-20% 0px -55% 0px",
-        threshold: [0.25, 0.4, 0.6],
-      },
-    );
-
-    sectionElements.forEach((element) => observer.observe(element));
-
-    return () => {
-      observer.disconnect();
+      if (event.key === "ArrowRight") {
+        event.preventDefault();
+        setLightboxIndex((current) => {
+          if (current === null) return current;
+          return (current + 1) % filteredItems.length;
+        });
+      } else if (event.key === "ArrowLeft") {
+        event.preventDefault();
+        setLightboxIndex((current) => {
+          if (current === null) return current;
+          return (current - 1 + filteredItems.length) % filteredItems.length;
+        });
+      }
     };
-  }, [categories]);
+
+    window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
+  }, [filteredItems, lightboxIndex]);
 
   useEffect(() => {
     if (typeof window === "undefined") {
@@ -153,56 +146,65 @@ export default function PrintOnDemandPage() {
     };
   }, []);
 
-  useEffect(() => {
-    if (lightboxIndex === null || flatItems.length === 0) {
-      return;
-    }
+  const containerVariants = useMemo(
+    () => ({
+      hidden: { opacity: 0 },
+      visible: {
+        opacity: 1,
+        transition: { staggerChildren: 0.1, delayChildren: 0.06 },
+      },
+    }),
+    [],
+  );
 
-    const handleKeyDown = (event: KeyboardEvent) => {
-      if (event.defaultPrevented) {
+  const itemVariants = useMemo(
+    () => ({
+      hidden: { opacity: 0, y: 16 },
+      visible: { opacity: 1, y: 0 },
+    }),
+    [],
+  );
+
+  const handleCategoryClick = useCallback(
+    (categoryId: string) => {
+      setActiveCategory(categoryId);
+
+      if (typeof window === "undefined") {
         return;
       }
 
-      if (event.key === "ArrowRight") {
-        event.preventDefault();
-        setLightboxIndex((current) => {
-          if (current === null) return current;
-          return (current + 1) % flatItems.length;
-        });
-      } else if (event.key === "ArrowLeft") {
-        event.preventDefault();
-        setLightboxIndex((current) => {
-          if (current === null) return current;
-          return (current - 1 + flatItems.length) % flatItems.length;
-        });
+      const element = document.getElementById(`category-${categoryId}`);
+      if (!element) {
+        return;
       }
-    };
 
-    window.addEventListener("keydown", handleKeyDown);
-    return () => {
-      window.removeEventListener("keydown", handleKeyDown);
-    };
-  }, [flatItems.length, lightboxIndex]);
+      const headerOffset = navLayout.isDesktop ? 120 : 96;
+      const elementTop = element.getBoundingClientRect().top + window.scrollY;
+      window.scrollTo({ top: Math.max(elementTop - headerOffset, 0), behavior: "smooth" });
+    },
+    [navLayout.isDesktop],
+  );
 
   return (
     <div className="space-y-14 pb-20 pt-36">
-      <section className="container space-y-6">
-        <p className="text-xs uppercase tracking-[0.45em] text-muted-foreground">Print on demand</p>
-        <h1 className="text-4xl font-semibold md:text-5xl">Designs illustrés et impression à la demande</h1>
-        <p className="max-w-3xl text-muted-foreground">
-          Une sélection de visuels destinés aux produits Print on demand : stickers, textiles, impressions murales. Chaque
-          carte présente l’aperçu du design, ses tags principaux et un lien direct vers la boutique.
-        </p>
+      <section className="container space-y-8">
+        <header className="space-y-4">
+          <p className="text-xs uppercase tracking-[0.45em] text-muted-foreground">Print on demand</p>
+          <h1 className="text-4xl font-semibold md:text-5xl">Atelier Print on demand</h1>
+          <p className="max-w-3xl text-muted-foreground">
+            Une galerie pensée pour présenter les visuels destinés aux produits print on demand : stickers, textiles ou affiches.
+            Explore les catégories et découvre rapidement les visuels adaptés à ta boutique.
+          </p>
+        </header>
       </section>
 
       <section className="relative">
-        {designCount === 0 ? (
+        {filteredDesignCount === 0 ? (
           <div className="container" role="region" aria-live="polite">
             <div className="space-y-6 rounded-[2rem] border border-border/60 bg-background/80 p-10 text-center">
               <h2 className="text-xl font-semibold text-foreground">Aucun design disponible pour le moment</h2>
               <p className="text-sm text-muted-foreground">
-                Ajoutez vos images dans <code>public/assets/designs</code> et remplissez <code>src/data/print-on-demand.ts</code>
-                pour afficher la galerie automatiquement.
+                Ajoute de nouveaux visuels dans <code>public/assets/designs</code> pour alimenter la galerie.
               </p>
             </div>
           </div>
@@ -216,7 +218,7 @@ export default function PrintOnDemandPage() {
           >
             <div className="rounded-full border border-border/60 bg-background/80 p-2 shadow-lg backdrop-blur supports-[backdrop-filter]:backdrop-blur-xl lg:hidden" role="tablist" aria-label="Catégories Print on demand">
               <nav className="flex flex-wrap gap-2">
-                {categories.map((category) => (
+                {filteredCategories.map((category) => (
                   <button
                     key={category.id}
                     type="button"
@@ -245,7 +247,7 @@ export default function PrintOnDemandPage() {
                   aria-label="Navigation Print on demand"
                 >
                   <nav className="flex flex-col gap-3" role="tablist" aria-label="Catégories Print on demand">
-                    {categories.map((category) => (
+                    {filteredCategories.map((category) => (
                       <button
                         key={category.id}
                         type="button"
@@ -270,7 +272,7 @@ export default function PrintOnDemandPage() {
                 className="space-y-14"
                 style={navLayout.isDesktop ? { paddingLeft: navLayout.padding } : undefined}
               >
-                {categories.map((category) => (
+                {filteredCategories.map((category) => (
                   <div
                     key={category.id}
                     id={`category-${category.id}`}
@@ -321,43 +323,55 @@ export default function PrintOnDemandPage() {
                               <ZoomIn className="h-3.5 w-3.5" /> Zoom
                             </button>
                             <img
-                              src={item.src}
-                              srcSet={item.src2x ? `${item.src2x} 2x` : undefined}
+                              src={item.gallery && item.gallery.length > 0 ? item.gallery[0] : item.src}
                               alt={`Illustration print on demand : ${item.title} – ${item.tags.join(", ")}`}
                               loading="lazy"
                               className="aspect-square w-full object-contain p-4 transition duration-500 ease-out group-hover:scale-[1.02]"
                               onClick={() => openLightbox(item)}
                             />
                           </div>
-                          <div className="flex flex-1 flex-col gap-4 p-6">
-                            <div className="space-y-2">
-                              <h3 id={`design-${item.id}-title`} className="text-lg font-semibold text-foreground">
-                                {item.title}
-                              </h3>
-                              {typeof item.createdAt === "string" && !Number.isNaN(new Date(item.createdAt).getTime()) ? (
-                                <p className="text-xs uppercase tracking-[0.3em] text-muted-foreground">
-                                  {new Date(item.createdAt).toLocaleDateString("fr-FR", {
-                                    year: "numeric",
-                                    month: "short",
-                                    day: "numeric",
-                                  })}
-                                </p>
-                              ) : null}
+                          <div className="flex flex-1 flex-col gap-5 p-6">
+                            <div className="space-y-3">
+                              <div className="flex items-start justify-between gap-3">
+                                <h3 id={`design-${item.id}-title`} className="text-lg font-semibold text-foreground">
+                                  {item.title}
+                                </h3>
+                              </div>
+                              <div className="flex flex-wrap gap-2 text-[10px] uppercase tracking-[0.35em] text-muted-foreground">
+                                <span className="rounded-full bg-secondary/30 px-3 py-1 text-muted-foreground">
+                                  {FORMAT_LABELS[item.format]}
+                                </span>
+                                <span className="rounded-full bg-secondary/30 px-3 py-1 text-muted-foreground">
+                                  {PALETTE_LABELS[item.palette]}
+                                </span>
+                              </div>
                             </div>
+                            {typeof item.createdAt === "string" && !Number.isNaN(new Date(item.createdAt).getTime()) ? (
+                              <p className="text-xs uppercase tracking-[0.3em] text-muted-foreground">
+                                {new Date(item.createdAt).toLocaleDateString("fr-FR", {
+                                  year: "numeric",
+                                  month: "short",
+                                  day: "numeric",
+                                })}
+                              </p>
+                            ) : null}
+                            <p className="text-xs text-muted-foreground">{item.usage}</p>
                             <div className="flex flex-wrap gap-2" id={`design-${item.id}-tags`}>
-                              {item.tags.slice(0, 5).map((tag) => (
-                                <Badge key={tag} variant="secondary" className="px-3 py-1 text-xs uppercase tracking-[0.25em]">
-                                  {tag}
+                              {item.tags.slice(0, 5).map((tag, index) => (
+                                <Badge
+                                  key={tag}
+                                  variant="outline"
+                                  className={`tech-badge tech-badge-${(index % 4) + 1}`}
+                                >
+                                  #{tag}
                                 </Badge>
                               ))}
                             </div>
-                            <p className="sr-only">
-                              {`Description détaillée : ${item.title}. Mots-clés : ${item.tags.join(", ")}.`}
-                            </p>
+                            <p className="sr-only">{`Description : ${item.title}. Tags : ${item.tags.join(", ")}.`}</p>
                             <div className="mt-auto">
                               <Button asChild variant="outline" className="w-full gap-2" size="sm">
                                 <a href={item.rbLink} target="_blank" rel="noreferrer" aria-label={`Voir ${item.title} sur Print on demand`}>
-                                  <ExternalLink className="h-4 w-4" /> Voir sur Print on demand
+                                  <ExternalLink className="h-4 w-4" /> Voir sur RedBubble
                                 </a>
                               </Button>
                             </div>
@@ -374,127 +388,211 @@ export default function PrintOnDemandPage() {
       </section>
 
       <Dialog open={Boolean(lightboxItem)} onOpenChange={handleLightboxOpenChange}>
-        {lightboxItem ? (
-          <DialogContent className="max-w-5xl border-border/70 bg-background/95 p-0 shadow-2xl">
-            <DialogHeader className="space-y-1 border-b border-border/60 p-6">
-              <DialogTitle className="text-2xl font-semibold">{lightboxItem.title}</DialogTitle>
-              <DialogDescription className="text-sm text-muted-foreground">
-                {lightboxItem.tags.slice(0, 4).join(" • ")}
-              </DialogDescription>
-            </DialogHeader>
-            <div className="grid gap-6 p-6 lg:grid-cols-[minmax(0,3fr)_minmax(0,1.2fr)]">
-              <div
-                className="relative overflow-hidden rounded-[1.75rem] border border-border/60 bg-secondary/30 p-4"
-                onTouchStart={(event) => {
-                  if (event.touches.length === 1) {
-                    touchStartX.current = event.touches[0].clientX;
-                    touchEndX.current = null;
-                  }
-                }}
-                onTouchMove={(event) => {
-                  if (event.touches.length === 1) {
-                    touchEndX.current = event.touches[0].clientX;
-                  }
-                }}
-                onTouchEnd={() => {
-                  if (touchStartX.current === null || touchEndX.current === null) {
-                    touchStartX.current = null;
-                    touchEndX.current = null;
-                    return;
-                  }
-
-                  const delta = touchEndX.current - touchStartX.current;
-                  const swipeThreshold = 60;
-
-                  if (Math.abs(delta) >= swipeThreshold) {
-                    if (delta < 0) {
-                      setLightboxIndex((current) => {
-                        if (current === null) return current;
-                        return (current + 1) % flatItems.length;
-                      });
-                    } else {
-                      setLightboxIndex((current) => {
-                        if (current === null) return current;
-                        return (current - 1 + flatItems.length) % flatItems.length;
-                      });
-                    }
-                  }
-
-                  touchStartX.current = null;
-                  touchEndX.current = null;
-                }}
+        <AnimatePresence>
+          {lightboxItem ? (
+            <DialogContent className="max-w-5xl border-border/70 bg-background/95 p-0 shadow-2xl">
+              <motion.div
+                initial={prefersReducedMotion ? { opacity: 1, scale: 1 } : { opacity: 0.85, scale: 0.98 }}
+                animate={{ opacity: 1, scale: 1 }}
+                exit={{ opacity: 0, scale: 0.98 }}
+                transition={{ duration: prefersReducedMotion ? 0 : 0.22, ease: "easeInOut" }}
+                className="grid gap-6 p-6 lg:grid-cols-[minmax(0,3fr)_minmax(0,1.2fr)]"
               >
-                <div className="pointer-events-none absolute inset-0 flex items-center justify-between px-3">
-                  <button
-                    type="button"
-                    className="pointer-events-auto inline-flex h-9 w-9 items-center justify-center rounded-full border border-border/60 bg-background/80 text-muted-foreground shadow-md transition hover:bg-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
-                    onClick={() =>
-                      setLightboxIndex((current) => {
-                        if (current === null) return current;
-                        return (current - 1 + flatItems.length) % flatItems.length;
-                      })
-                    }
-                    aria-label="Voir le design précédent"
-                  >
-                    <svg aria-hidden="true" className="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                      <path d="M15 6l-6 6 6 6" strokeLinecap="round" strokeLinejoin="round" />
-                    </svg>
-                  </button>
-                  <button
-                    type="button"
-                    className="pointer-events-auto hidden h-9 w-9 items-center justify-center rounded-full border border-border/60 bg-background/80 text-muted-foreground shadow-md transition hover:bg-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 sm:inline-flex"
-                    onClick={() =>
-                      setLightboxIndex((current) => {
-                        if (current === null) return current;
-                        return (current + 1) % flatItems.length;
-                      })
-                    }
-                    aria-label="Voir le design suivant"
-                  >
-                    <svg aria-hidden="true" className="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                      <path d="M9 6l6 6-6 6" strokeLinecap="round" strokeLinejoin="round" />
-                    </svg>
-                  </button>
-                </div>
-                <picture>
-                  {lightboxItem.src2x ? <source srcSet={`${lightboxItem.src2x} 2x`} /> : null}
-                  <img
-                    src={lightboxItem.src}
-                    alt={lightboxItem.title}
-                    className="mx-auto max-h-[70vh] w-full rounded-[1.25rem] object-contain"
-                  />
-                </picture>
-              </div>
-              <div className="flex flex-col gap-5 rounded-[1.75rem] border border-border/60 bg-secondary/20 p-5">
-                <div className="space-y-2">
-                  <p className="text-xs uppercase tracking-[0.35em] text-muted-foreground">Catégories & tags</p>
-                  <div className="flex flex-wrap gap-2">
-                    {lightboxItem.tags.map((tag) => (
-                      <Badge key={tag} variant="secondary" className="px-3 py-1 text-xs uppercase tracking-[0.25em]">
-                        {tag}
-                      </Badge>
-                    ))}
-                  </div>
-                </div>
-                <div className="rounded-[1.5rem] border border-border/60 bg-background/70 px-4 py-3 text-xs uppercase tracking-[0.35em] text-muted-foreground">
-                  {lightboxItem.createdAt
-                    ? new Date(lightboxItem.createdAt).toLocaleDateString("fr-FR", {
-                        year: "numeric",
-                        month: "short",
-                        day: "numeric",
-                      })
-                    : "Date non précisée"}
-                </div>
-                <Button asChild size="md" className="mt-auto gap-2">
-                  <a href={lightboxItem.rbLink} target="_blank" rel="noreferrer">
-                    <ExternalLink className="h-4 w-4" /> Voir sur RedBubble
-                  </a>
-                </Button>
-              </div>
-            </div>
-          </DialogContent>
-        ) : null}
+                <LightboxGallery
+                  item={lightboxItem}
+                  setLightboxIndex={setLightboxIndex}
+                  touchStartX={touchStartX}
+                  touchEndX={touchEndX}
+                  items={filteredItems}
+                />
+              </motion.div>
+            </DialogContent>
+          ) : null}
+        </AnimatePresence>
       </Dialog>
     </div>
+  );
+}
+
+function LightboxGallery({
+  item,
+  setLightboxIndex,
+  touchStartX,
+  touchEndX,
+  items,
+}: {
+  item: RBItem;
+  setLightboxIndex: (value: number | null | ((prev: number | null) => number | null)) => void;
+  touchStartX: React.MutableRefObject<number | null>;
+  touchEndX: React.MutableRefObject<number | null>;
+  items: RBItem[];
+}) {
+  const [activeImage, setActiveImage] = useState(0);
+  const gallery = useMemo(() => item.gallery && item.gallery.length > 0 ? item.gallery : [item.src], [item]);
+
+  useEffect(() => {
+    setActiveImage(0);
+  }, [item]);
+
+  const goPrevDesign = () => {
+    if (items.length === 0) return;
+    setLightboxIndex((current) => {
+      if (current === null) return current;
+      return (current - 1 + items.length) % items.length;
+    });
+  };
+  const goNextDesign = () => {
+    if (items.length === 0) return;
+    setLightboxIndex((current) => {
+      if (current === null) return current;
+      return (current + 1) % items.length;
+    });
+  };
+  const handleSwipeNavigation = () => {
+    if (touchStartX.current === null || touchEndX.current === null) {
+      touchStartX.current = null;
+      touchEndX.current = null;
+      return;
+    }
+    const delta = touchEndX.current - touchStartX.current;
+    const threshold = 60;
+    if (Math.abs(delta) >= threshold) {
+      setActiveImage((current) => {
+        if (delta < 0) {
+          return (current + 1) % gallery.length;
+        }
+        return (current - 1 + gallery.length) % gallery.length;
+      });
+    }
+    touchStartX.current = null;
+    touchEndX.current = null;
+  };
+
+  return (
+    <>
+      <div
+        className="relative overflow-hidden rounded-[1.75rem] border border-border/60 bg-secondary/30 p-4"
+        onTouchStart={(event) => {
+          if (event.touches.length === 1) {
+            touchStartX.current = event.touches[0].clientX;
+            touchEndX.current = null;
+          }
+        }}
+        onTouchMove={(event) => {
+          if (event.touches.length === 1) {
+            touchEndX.current = event.touches[0].clientX;
+          }
+        }}
+        onTouchEnd={handleSwipeNavigation}
+      >
+        <picture>
+          {item.src2x ? <source srcSet={`${gallery[activeImage]} 2x`} /> : null}
+          <img
+            src={gallery[activeImage]}
+            alt={`Illustration print on demand : ${item.title} – ${item.tags.join(", ")}`}
+            className="mx-auto max-h-[70vh] w-full rounded-[1.25rem] object-contain"
+            loading="lazy"
+          />
+        </picture>
+        <div className="pointer-events-none absolute inset-0 flex items-center justify-between px-3">
+          <button
+            type="button"
+            className="pointer-events-auto inline-flex h-9 w-9 items-center justify-center rounded-full border border-border/60 bg-background/80 text-muted-foreground shadow-md transition hover:bg-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
+            onClick={() =>
+              setActiveImage((current) => (current - 1 + gallery.length) % gallery.length)
+            }
+            aria-label="Voir l’image précédente"
+          >
+            <svg aria-hidden="true" className="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+              <path d="M15 6l-6 6 6 6" strokeLinecap="round" strokeLinejoin="round" />
+            </svg>
+          </button>
+          <button
+            type="button"
+            className="pointer-events-auto inline-flex h-9 w-9 items-center justify-center rounded-full border border-border/60 bg-background/80 text-muted-foreground shadow-md transition hover:bg-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
+            onClick={() =>
+              setActiveImage((current) => (current + 1) % gallery.length)
+            }
+            aria-label="Voir l’image suivante"
+          >
+            <svg aria-hidden="true" className="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+              <path d="M9 6l6 6-6 6" strokeLinecap="round" strokeLinejoin="round" />
+            </svg>
+          </button>
+        </div>
+      </div>
+      <div className="flex flex-col gap-4">
+        <DialogHeader className="space-y-2 border-none px-0 pb-0">
+          <DialogTitle>{item.title}</DialogTitle>
+          <DialogDescription>
+            {item.tags.slice(0, 4).join(" • ")}
+          </DialogDescription>
+        </DialogHeader>
+        <p className="rounded-[1.5rem] border border-border/60 bg-secondary/30 px-4 py-3 text-sm text-muted-foreground">
+          {item.usage}
+        </p>
+        <div className="flex items-center gap-2" aria-label="Variations visuelles">
+          {gallery.map((image, index) => (
+            <button
+              key={`${item.id}-thumb-${index}`}
+              type="button"
+              onClick={() => setActiveImage(index)}
+              aria-pressed={activeImage === index}
+              className={`h-14 w-14 overflow-hidden rounded-xl border transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ${
+                activeImage === index ? "border-primary" : "border-border/60"
+              }`}
+            >
+              <img src={image} alt={`Miniature ${index + 1} pour ${item.title}`} className="h-full w-full object-cover" />
+            </button>
+          ))}
+        </div>
+        <div className="flex flex-wrap gap-2">
+          {item.tags.map((tag) => (
+            <Badge key={`${item.id}-${tag}`} variant="outline" className="tech-badge tech-badge-2">
+              #{tag}
+            </Badge>
+          ))}
+        </div>
+        <DialogFooter className="flex flex-col gap-3 border-none bg-transparent px-0 py-0">
+          <div className="flex flex-wrap gap-3">
+            <div className="flex items-center gap-2" aria-label="Parcourir les designs">
+              <Button
+                type="button"
+                variant="outline"
+                size="icon"
+                onClick={goPrevDesign}
+                aria-label="Design précédent"
+                className="h-10 w-10"
+              >
+                <ChevronLeft className="h-4 w-4" aria-hidden="true" />
+              </Button>
+              <Button
+                type="button"
+                variant="outline"
+                size="icon"
+                onClick={goNextDesign}
+                aria-label="Design suivant"
+                className="h-10 w-10"
+              >
+                <ChevronRight className="h-4 w-4" aria-hidden="true" />
+              </Button>
+            </div>
+            <Button asChild className="gap-2 btn-cta">
+              <a href={item.rbLink} target="_blank" rel="noreferrer">
+                <ExternalLink className="h-4 w-4" /> Voir sur RedBubble
+              </a>
+            </Button>
+            <Button
+              type="button"
+              variant="outline"
+              className="gap-2"
+              onClick={() => navigator.clipboard.writeText(item.rbLink)}
+            >
+              <Sparkles className="h-4 w-4" aria-hidden="true" /> Copier le lien
+            </Button>
+          </div>
+        </DialogFooter>
+      </div>
+    </>
   );
 }
