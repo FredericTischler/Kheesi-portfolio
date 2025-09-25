@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
-import { ExternalLink, Sparkles, ZoomIn, ChevronLeft, ChevronRight } from "lucide-react";
+import { ExternalLink, ZoomIn, ChevronLeft, ChevronRight } from "lucide-react";
 
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -428,7 +428,7 @@ function LightboxGallery({
   items: RBItem[];
 }) {
   const [activeImage, setActiveImage] = useState(0);
-  const gallery = useMemo(() => item.gallery && item.gallery.length > 0 ? item.gallery : [item.src], [item]);
+  const gallery = useMemo(() => (item.gallery && item.gallery.length > 0 ? item.gallery : [item.src]), [item]);
 
   useEffect(() => {
     setActiveImage(0);
@@ -441,6 +441,7 @@ function LightboxGallery({
       return (current - 1 + items.length) % items.length;
     });
   };
+
   const goNextDesign = () => {
     if (items.length === 0) return;
     setLightboxIndex((current) => {
@@ -448,6 +449,7 @@ function LightboxGallery({
       return (current + 1) % items.length;
     });
   };
+
   const handleSwipeNavigation = () => {
     if (touchStartX.current === null || touchEndX.current === null) {
       touchStartX.current = null;
@@ -494,32 +496,26 @@ function LightboxGallery({
             loading="lazy"
           />
         </picture>
-        <div className="pointer-events-none absolute inset-0 flex items-center justify-between px-3">
-          <button
-            type="button"
-            className="pointer-events-auto inline-flex h-9 w-9 items-center justify-center rounded-full border border-border/60 bg-background/80 text-muted-foreground shadow-md transition hover:bg-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
-            onClick={() =>
-              setActiveImage((current) => (current - 1 + gallery.length) % gallery.length)
-            }
-            aria-label="Voir l’image précédente"
-          >
-            <svg aria-hidden="true" className="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-              <path d="M15 6l-6 6 6 6" strokeLinecap="round" strokeLinejoin="round" />
-            </svg>
-          </button>
-          <button
-            type="button"
-            className="pointer-events-auto inline-flex h-9 w-9 items-center justify-center rounded-full border border-border/60 bg-background/80 text-muted-foreground shadow-md transition hover:bg-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
-            onClick={() =>
-              setActiveImage((current) => (current + 1) % gallery.length)
-            }
-            aria-label="Voir l’image suivante"
-          >
-            <svg aria-hidden="true" className="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-              <path d="M9 6l6 6-6 6" strokeLinecap="round" strokeLinejoin="round" />
-            </svg>
-          </button>
-        </div>
+        {items.length > 1 ? (
+          <>
+            <button
+              type="button"
+              className="absolute left-2 top-1/2 -translate-y-1/2 inline-flex h-12 w-12 items-center justify-center rounded-full bg-background/90 text-muted-foreground shadow-lg transition hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
+              onClick={goPrevDesign}
+              aria-label="Voir l’image précédente"
+            >
+              <ChevronLeft className="h-6 w-6" aria-hidden="true" />
+            </button>
+            <button
+              type="button"
+              className="absolute right-2 top-1/2 -translate-y-1/2 inline-flex h-12 w-12 items-center justify-center rounded-full bg-background/90 text-muted-foreground shadow-lg transition hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
+              onClick={goNextDesign}
+              aria-label="Voir l’image suivante"
+            >
+              <ChevronRight className="h-6 w-6" aria-hidden="true" />
+            </button>
+          </>
+        ) : null}
       </div>
       <div className="flex flex-col gap-4">
         <DialogHeader className="space-y-2 border-none px-0 pb-0">
@@ -531,21 +527,6 @@ function LightboxGallery({
         <p className="rounded-[1.5rem] border border-border/60 bg-secondary/30 px-4 py-3 text-sm text-muted-foreground">
           {item.usage}
         </p>
-        <div className="flex items-center gap-2" aria-label="Variations visuelles">
-          {gallery.map((image, index) => (
-            <button
-              key={`${item.id}-thumb-${index}`}
-              type="button"
-              onClick={() => setActiveImage(index)}
-              aria-pressed={activeImage === index}
-              className={`h-14 w-14 overflow-hidden rounded-xl border transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ${
-                activeImage === index ? "border-primary" : "border-border/60"
-              }`}
-            >
-              <img src={image} alt={`Miniature ${index + 1} pour ${item.title}`} className="h-full w-full object-cover" />
-            </button>
-          ))}
-        </div>
         <div className="flex flex-wrap gap-2">
           {item.tags.map((tag) => (
             <Badge key={`${item.id}-${tag}`} variant="outline" className="tech-badge tech-badge-2">
@@ -555,40 +536,10 @@ function LightboxGallery({
         </div>
         <DialogFooter className="flex flex-col gap-3 border-none bg-transparent px-0 py-0">
           <div className="flex flex-wrap gap-3">
-            <div className="flex items-center gap-2" aria-label="Parcourir les designs">
-              <Button
-                type="button"
-                variant="outline"
-                size="icon"
-                onClick={goPrevDesign}
-                aria-label="Design précédent"
-                className="h-10 w-10"
-              >
-                <ChevronLeft className="h-4 w-4" aria-hidden="true" />
-              </Button>
-              <Button
-                type="button"
-                variant="outline"
-                size="icon"
-                onClick={goNextDesign}
-                aria-label="Design suivant"
-                className="h-10 w-10"
-              >
-                <ChevronRight className="h-4 w-4" aria-hidden="true" />
-              </Button>
-            </div>
             <Button asChild className="gap-2 btn-cta">
               <a href={item.rbLink} target="_blank" rel="noreferrer">
-                <ExternalLink className="h-4 w-4" /> Voir sur RedBubble
+                <ExternalLink className="h-4 w-4" aria-hidden="true" /> Voir sur RedBubble
               </a>
-            </Button>
-            <Button
-              type="button"
-              variant="outline"
-              className="gap-2"
-              onClick={() => navigator.clipboard.writeText(item.rbLink)}
-            >
-              <Sparkles className="h-4 w-4" aria-hidden="true" /> Copier le lien
             </Button>
           </div>
         </DialogFooter>
