@@ -242,7 +242,7 @@ export function HomePage() {
 
     // @ts-ignore
     return (
-        <div className="space-y-16 pb-16">
+        <div className="space-y-14 pb-14">
             <section className="pt-36">
                 <div className="container grid gap-12 lg:grid-cols-[1.25fr_0.75fr] lg:items-center">
                     <motion.div
@@ -382,7 +382,7 @@ export function HomePage() {
                 </div>
             </section>
 
-            <Section className="space-y-8">
+            <Section className="space-y-6">
                 <div className="space-y-3">
                     <p className="text-xs uppercase tracking-[0.4em] text-muted-foreground">À la une</p>
                     <h2 className="text-3xl font-semibold md:text-4xl">Projets notables</h2>
@@ -483,7 +483,7 @@ export function HomePage() {
                 </motion.div>
             </Section>
 
-      <Section className="space-y-8">
+      <Section className="space-y-6">
         <div className="space-y-3">
           <p className="text-xs uppercase tracking-[0.4em] text-muted-foreground">Designs favoris</p>
           <h2 className="text-3xl font-semibold md:text-4xl">Sélection Print on demand mise en avant</h2>
