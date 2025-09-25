@@ -1,4 +1,4 @@
-import { lazy, Suspense, useCallback, useMemo, useState } from "react";
+import { lazy, Suspense, useCallback, useEffect, useMemo, useState } from "react";
 import { Link } from "react-router-dom";
 import { motion, useReducedMotion } from "framer-motion";
 import { ArrowRight, Download } from "lucide-react";
@@ -7,9 +7,10 @@ import { Section } from "@/components/Section";
 import { StatCard } from "@/components/StatCard";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
+import { Skeleton } from "@/components/ui/skeleton";
 import { PROFILE } from "@/data/profile";
 import { getHighlightedProjects, PROJECTS, type Project } from "@/data/projects";
-import { REDBUBBLE_CATEGORIES, type RBCategory, type RBItem } from "@/data/redbubble";
+import type { RBCategory, RBItem } from "@/data/redbubble";
 import { usePageMetadata } from "@/lib/metadata";
 
 type SkillItem = {
@@ -105,8 +106,31 @@ const SKILL_ITEMS: SkillItem[] = [
     category: "Langages",
   },
 ];
+type FeaturedDesign = {
+  category: Pick<RBCategory, "id" | "name" | "description">;
+  item: RBItem;
+};
 
 const ProjectModal = lazy(() => import("@/components/ProjectModal"));
+
+function ensureFeaturedDesigns(categories: RBCategory[]): FeaturedDesign[] {
+  return categories
+    .map((category) => {
+      const item = category.items.find((design) => design.featured) ?? category.items[0];
+      if (!item) {
+        return null;
+      }
+      return {
+        category: {
+          id: category.id,
+          name: category.name,
+          description: category.description,
+        },
+        item,
+      } satisfies FeaturedDesign;
+    })
+    .filter(Boolean) as FeaturedDesign[];
+}
 
 export function HomePage() {
   usePageMetadata({
@@ -117,19 +141,67 @@ export function HomePage() {
 
   const prefersReducedMotion = useReducedMotion();
   const highlightedProjects = useMemo(() => getHighlightedProjects(), []);
-  const featuredDesigns = useMemo(
-    () =>
-      REDBUBBLE_CATEGORIES.map((category) => {
-        const item = category.items.find((design) => design.featured) ?? category.items[0];
-        if (!item) {
-          return null;
-        }
-        return { category, item };
-      }).filter(Boolean) as Array<{ category: RBCategory; item: RBItem }>,
-    [],
-  );
+  const [featuredDesigns, setFeaturedDesigns] = useState<FeaturedDesign[]>([]);
+  const [designsStatus, setDesignsStatus] = useState<"idle" | "loading" | "ready" | "error">("idle");
   const [selectedProject, setSelectedProject] = useState<Project | null>(null);
   const [modalOpen, setModalOpen] = useState(false);
+
+  useEffect(() => {
+    if (typeof window === "undefined") {
+      return;
+    }
+
+    const enhancedWindow = window as typeof window & {
+      requestIdleCallback?: (callback: IdleRequestCallback, options?: IdleRequestOptions) => number;
+      cancelIdleCallback?: (handle: number) => void;
+    };
+
+    let cancelled = false;
+    let idleHandle: number | undefined;
+    let timeoutHandle: number | undefined;
+
+    const loadFeaturedDesigns = async () => {
+      try {
+        setDesignsStatus((status) => (status === "ready" ? status : "loading"));
+        const { REDBUBBLE_CATEGORIES } = await import("@/data/redbubble");
+        if (cancelled) {
+          return;
+        }
+
+        setFeaturedDesigns(ensureFeaturedDesigns(REDBUBBLE_CATEGORIES));
+        setDesignsStatus("ready");
+      } catch (error) {
+        if (cancelled) {
+          return;
+        }
+        console.error("Impossible de charger les designs RedBubble", error);
+        setDesignsStatus("error");
+      }
+    };
+
+    const schedule = () => {
+      if (cancelled) {
+        return;
+      }
+      void loadFeaturedDesigns();
+    };
+
+    if (typeof enhancedWindow.requestIdleCallback === "function") {
+      idleHandle = enhancedWindow.requestIdleCallback(schedule, { timeout: 1000 });
+    } else {
+      timeoutHandle = enhancedWindow.setTimeout(schedule, 500);
+    }
+
+    return () => {
+      cancelled = true;
+      if (idleHandle !== undefined && typeof enhancedWindow.cancelIdleCallback === "function") {
+        enhancedWindow.cancelIdleCallback(idleHandle);
+      }
+      if (timeoutHandle !== undefined) {
+        enhancedWindow.clearTimeout(timeoutHandle);
+      }
+    };
+  }, []);
 
   const stats = useMemo(
     () => [
@@ -331,67 +403,107 @@ export function HomePage() {
             avant une catégorie de la boutique pour donner un panorama rapide des univers proposés.
           </p>
         </div>
-        <motion.div
-          className="grid gap-6 md:grid-cols-2 xl:grid-cols-4"
-          initial={prefersReducedMotion ? undefined : { opacity: 0, y: 24 }}
-          animate={prefersReducedMotion ? undefined : { opacity: 1, y: 0 }}
-          transition={{ duration: prefersReducedMotion ? 0 : 0.4, ease: "easeOut" }}
-        >
-          {featuredDesigns.map(({ category, item }) => (
-            <motion.article
-              key={item.id}
-              className="group flex h-full flex-col rounded-[2rem] border border-border/60 bg-background/80 shadow-lg"
-              whileHover={
-                prefersReducedMotion
-                  ? undefined
-                  : { scale: 1.02, y: -6, transition: { duration: 0.3, ease: "easeOut" } }
-              }
-            >
-              <div className="relative overflow-hidden rounded-t-[2rem] bg-secondary/30">
-                <img
-                  src={item.src}
-                  srcSet={item.src2x ? `${item.src2x} 2x` : undefined}
-                  alt={item.title}
-                  loading="lazy"
-                  className="aspect-square w-full object-contain p-4 transition duration-500 ease-out group-hover:scale-[1.02]"
-                />
+        {designsStatus === "error" ? (
+          <div className="rounded-[2rem] border border-border/60 bg-background/80 p-8 text-center shadow-lg">
+            <h3 className="text-lg font-semibold text-foreground">Designs indisponibles pour le moment</h3>
+            <p className="mt-3 text-sm text-muted-foreground">
+              Le chargement des visuels RedBubble a échoué. Rechargez la page ou rendez-vous directement sur la boutique.
+            </p>
+            <div className="mt-6 flex flex-wrap justify-center gap-3">
+              <Button
+                variant="outline"
+                asChild
+                size="sm"
+                className="gap-2"
+              >
+                <a href="https://www.redbubble.com/people/frederictischler" target="_blank" rel="noreferrer">
+                  Ouvrir la boutique
+                </a>
+              </Button>
+            </div>
+          </div>
+        ) : designsStatus !== "ready" ? (
+          <div className="grid gap-6 md:grid-cols-2 xl:grid-cols-4">
+            {Array.from({ length: 4 }).map((_, index) => (
+              <div
+                key={index}
+                className="flex h-full flex-col rounded-[2rem] border border-border/60 bg-background/70 p-6 shadow-sm"
+              >
+                <Skeleton className="mb-6 h-48 w-full rounded-[1.75rem]" />
+                <Skeleton className="h-5 w-3/4" />
+                <Skeleton className="mt-3 h-4 w-2/5" />
+                <div className="mt-6 flex gap-2">
+                  <Skeleton className="h-6 w-16 rounded-full" />
+                  <Skeleton className="h-6 w-20 rounded-full" />
+                  <Skeleton className="h-6 w-12 rounded-full" />
+                </div>
+                <Skeleton className="mt-auto h-10 w-full rounded-full" />
               </div>
-              <div className="flex flex-1 flex-col gap-4 p-6">
-                <div className="space-y-2">
-                  <div className="flex items-center justify-between gap-3">
-                    <h3 className="text-lg font-semibold text-foreground">{item.title}</h3>
-                    <Badge variant="outline" className="whitespace-nowrap px-3 py-1 text-[10px] uppercase tracking-[0.3em]">
-                      {category.name}
-                    </Badge>
+            ))}
+          </div>
+        ) : (
+          <motion.div
+            className="grid gap-6 md:grid-cols-2 xl:grid-cols-4"
+            initial={prefersReducedMotion ? undefined : { opacity: 0, y: 24 }}
+            animate={prefersReducedMotion ? undefined : { opacity: 1, y: 0 }}
+            transition={{ duration: prefersReducedMotion ? 0 : 0.4, ease: "easeOut" }}
+          >
+            {featuredDesigns.map(({ category, item }) => (
+              <motion.article
+                key={`${category.id}-${item.id}`}
+                className="group flex h-full flex-col rounded-[2rem] border border-border/60 bg-background/80 shadow-lg"
+                whileHover={
+                  prefersReducedMotion
+                    ? undefined
+                    : { scale: 1.02, y: -6, transition: { duration: 0.3, ease: "easeOut" } }
+                }
+              >
+                <div className="relative overflow-hidden rounded-t-[2rem] bg-secondary/30">
+                  <img
+                    src={item.src}
+                    srcSet={item.src2x ? `${item.src2x} 2x` : undefined}
+                    alt={item.title}
+                    loading="lazy"
+                    className="aspect-square w-full object-contain p-4 transition duration-500 ease-out group-hover:scale-[1.02]"
+                  />
+                </div>
+                <div className="flex flex-1 flex-col gap-4 p-6">
+                  <div className="space-y-2">
+                    <div className="flex items-center justify-between gap-3">
+                      <h3 className="text-lg font-semibold text-foreground">{item.title}</h3>
+                      <Badge variant="outline" className="whitespace-nowrap px-3 py-1 text-[10px] uppercase tracking-[0.3em]">
+                        {category.name}
+                      </Badge>
+                    </div>
+                    {item.createdAt ? (
+                      <p className="text-xs uppercase tracking-[0.3em] text-muted-foreground">
+                        {new Date(item.createdAt).toLocaleDateString("fr-FR", {
+                          year: "numeric",
+                          month: "short",
+                          day: "numeric",
+                        })}
+                      </p>
+                    ) : null}
                   </div>
-                  {item.createdAt ? (
-                    <p className="text-xs uppercase tracking-[0.3em] text-muted-foreground">
-                      {new Date(item.createdAt).toLocaleDateString("fr-FR", {
-                        year: "numeric",
-                        month: "short",
-                        day: "numeric",
-                      })}
-                    </p>
-                  ) : null}
+                  <div className="flex flex-wrap gap-2">
+                    {item.tags.slice(0, 3).map((tag) => (
+                      <Badge key={tag} variant="secondary" className="px-3 py-1 text-xs uppercase tracking-[0.25em]">
+                        {tag}
+                      </Badge>
+                    ))}
+                  </div>
+                  <div className="mt-auto">
+                    <Button asChild variant="outline" size="sm" className="w-full gap-2">
+                      <a href={item.rbLink} target="_blank" rel="noreferrer">
+                        Voir sur RedBubble
+                      </a>
+                    </Button>
+                  </div>
                 </div>
-                <div className="flex flex-wrap gap-2">
-                  {item.tags.slice(0, 3).map((tag) => (
-                    <Badge key={tag} variant="secondary" className="px-3 py-1 text-xs uppercase tracking-[0.25em]">
-                      {tag}
-                    </Badge>
-                  ))}
-                </div>
-                <div className="mt-auto">
-                  <Button asChild variant="outline" size="sm" className="w-full gap-2">
-                    <a href={item.rbLink} target="_blank" rel="noreferrer">
-                      Voir sur RedBubble
-                    </a>
-                  </Button>
-                </div>
-              </div>
-            </motion.article>
-          ))}
-        </motion.div>
+              </motion.article>
+            ))}
+          </motion.div>
+        )}
       </Section>
 
       <Suspense fallback={null}>
@@ -401,4 +513,5 @@ export function HomePage() {
   );
 }
 
+// @ts-ignore
 export default HomePage;
