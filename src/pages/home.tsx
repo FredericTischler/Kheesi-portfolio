@@ -33,6 +33,12 @@ const SKILL_ITEMS: SkillItem[] = [
     category: "Langages",
   },
   {
+    name: "JavaScript",
+    icon: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/javascript/javascript-original.svg",
+    color: "#f7df1e",
+    category: "Langages",
+  },
+  {
     name: "Go",
     icon: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/go/go-original.svg",
     color: "#00add8",
@@ -48,6 +54,12 @@ const SKILL_ITEMS: SkillItem[] = [
     name: "HTML/CSS",
     icon: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/html5/html5-original.svg",
     color: "#e44d26",
+    category: "Frontend",
+  },
+  {
+    name: "Angular",
+    icon: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/angularjs/angularjs-original.svg",
+    color: "#dd0031",
     category: "Frontend",
   },
   {
@@ -69,10 +81,28 @@ const SKILL_ITEMS: SkillItem[] = [
     category: "Bases de données",
   },
   {
+    name: "MySQL",
+    icon: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/mysql/mysql-original.svg",
+    color: "#00618a",
+    category: "Bases de données",
+  },
+  {
     name: "SQLite",
     icon: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/sqlite/sqlite-original.svg",
     color: "#003b57",
     category: "Bases de données",
+  },
+  {
+    name: "Python",
+    icon: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/python/python-original.svg",
+    color: "#3776ab",
+    category: "Langages",
+  },
+  {
+    name: "Langage C",
+    icon: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/c/c-original.svg",
+    color: "#283593",
+    category: "Langages",
   },
 ];
 
@@ -160,73 +190,6 @@ export function HomePage() {
                 </a>
               </Button>
             </div>
-            <div className="space-y-4 rounded-[2rem] border border-border/60 bg-background/80 p-5 shadow-lg backdrop-blur-xl">
-              <div className="flex items-center justify-between">
-                <span className="text-xs uppercase tracking-[0.35em] text-muted-foreground">Stacks maîtrisées</span>
-              </div>
-              <div className="relative mx-auto max-w-3xl overflow-hidden rounded-xl border border-border/60">
-                {prefersReducedMotion ? (
-                  <div className="flex flex-wrap justify-center gap-3 p-4">
-                    {SKILL_ITEMS.map((item) => (
-                      <div
-                        key={item.name}
-                        className="flex items-center gap-3 rounded-lg border px-4 py-3"
-                        style={{
-                          backgroundColor: hexToRgba(item.color, 0.12),
-                          borderColor: hexToRgba(item.color, 0.35),
-                          color: item.color,
-                        }}
-                      >
-                        <img src={item.icon} alt="" loading="lazy" className="h-6 w-6" />
-                        <div className="flex flex-col">
-                          <span className="text-sm font-semibold uppercase tracking-[0.2em]">{item.name}</span>
-                          <span className="text-[11px] uppercase tracking-[0.3em] text-muted-foreground/80">
-                            {item.category}
-                          </span>
-                        </div>
-                      </div>
-                    ))}
-                  </div>
-                ) : (
-                  <div className="relative">
-                    <div
-                      className="pointer-events-none absolute inset-y-0 left-0 w-12 bg-gradient-to-r from-background/95 via-background/40 to-transparent"
-                      aria-hidden="true"
-                    />
-                    <div
-                      className="pointer-events-none absolute inset-y-0 right-0 w-12 bg-gradient-to-l from-background/95 via-background/40 to-transparent"
-                      aria-hidden="true"
-                    />
-                    <motion.div
-                      className="flex min-w-max gap-4 p-4"
-                      initial={{ x: 0 }}
-                      animate={{ x: ["0%", "-50%"] }}
-                      transition={{ repeat: Infinity, duration: Math.max(SKILL_ITEMS.length * 3, 18), ease: "linear" }}
-                    >
-                      {[...SKILL_ITEMS, ...SKILL_ITEMS].map((item, index) => (
-                        <div
-                          key={`${item.name}-${index}`}
-                          className="flex items-center gap-3 rounded-lg border px-4 py-3"
-                          style={{
-                            backgroundColor: hexToRgba(item.color, 0.12),
-                            borderColor: hexToRgba(item.color, 0.35),
-                            color: item.color,
-                          }}
-                        >
-                          <img src={item.icon} alt="" loading="lazy" className="h-6 w-6" />
-                          <div className="flex flex-col">
-                            <span className="text-sm font-semibold uppercase tracking-[0.2em]">{item.name}</span>
-                            <span className="text-[11px] uppercase tracking-[0.3em] text-muted-foreground/80">
-                              {item.category}
-                            </span>
-                          </div>
-                        </div>
-                      ))}
-                    </motion.div>
-                  </div>
-                )}
-              </div>
-            </div>
           </motion.div>
           <motion.div
             className="relative"
@@ -241,6 +204,77 @@ export function HomePage() {
               ))}
             </div>
           </motion.div>
+        </div>
+      </section>
+
+      <section className="bg-background/80 py-12">
+        <div className="container">
+          <div className="space-y-8 py-10">
+            <div className="flex flex-col gap-2">
+              <span className="text-xs uppercase tracking-[0.45em] text-muted-foreground">Stacks maîtrisées</span>
+              <h2 className="text-3xl font-semibold text-foreground md:text-4xl">Compétences principales</h2>
+              <p className="max-w-3xl text-sm text-muted-foreground">
+                Focus sur les technologies que j’utilise au quotidien : architecture backend robuste, interfaces réactives et
+                industrialisation de la livraison.
+              </p>
+            </div>
+            <div className="relative overflow-hidden">
+              <div
+                className="pointer-events-none absolute inset-y-0 left-0 w-16 bg-gradient-to-r from-background/95 via-background/40 to-transparent"
+                aria-hidden="true"
+              />
+              <div
+                className="pointer-events-none absolute inset-y-0 right-0 w-16 bg-gradient-to-l from-background/95 via-background/40 to-transparent"
+                aria-hidden="true"
+              />
+              {prefersReducedMotion ? (
+                <div className="flex flex-wrap justify-center gap-3 py-4">
+                  {SKILL_ITEMS.map((item) => (
+                    <div
+                      key={item.name}
+                      className="flex items-center gap-3 rounded-lg border px-4 py-3"
+                      style={{
+                        backgroundColor: hexToRgba(item.color, 0.12),
+                        borderColor: hexToRgba(item.color, 0.35),
+                        color: item.color,
+                      }}
+                    >
+                      <img src={item.icon} alt="" loading="lazy" className="h-6 w-6" />
+                      <div className="flex flex-col">
+                        <span className="text-sm font-semibold uppercase tracking-[0.2em]">{item.name}</span>
+                        <span className="text-[11px] uppercase tracking-[0.3em] text-muted-foreground/80">{item.category}</span>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              ) : (
+                <motion.div
+                  className="flex min-w-max gap-4 py-4 pl-2 pr-16"
+                  initial={{ x: 0 }}
+                  animate={{ x: ["0%", "-50%"] }}
+                  transition={{ repeat: Infinity, duration: Math.max(SKILL_ITEMS.length * 3, 18), ease: "linear" }}
+                >
+                  {[...SKILL_ITEMS, ...SKILL_ITEMS].map((item, index) => (
+                    <div
+                      key={`${item.name}-${index}`}
+                      className="flex items-center gap-3 rounded-lg border px-4 py-3"
+                      style={{
+                        backgroundColor: hexToRgba(item.color, 0.12),
+                        borderColor: hexToRgba(item.color, 0.35),
+                        color: item.color,
+                      }}
+                    >
+                      <img src={item.icon} alt="" loading="lazy" className="h-6 w-6" />
+                      <div className="flex flex-col">
+                        <span className="text-sm font-semibold uppercase tracking-[0.2em]">{item.name}</span>
+                        <span className="text-[11px] uppercase tracking-[0.3em] text-muted-foreground/80">{item.category}</span>
+                      </div>
+                    </div>
+                  ))}
+                </motion.div>
+              )}
+            </div>
+          </div>
         </div>
       </section>
 
