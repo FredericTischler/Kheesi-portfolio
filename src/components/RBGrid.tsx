@@ -31,7 +31,13 @@ export function RBGrid({ items, loading, onQuickView }: RBGridProps) {
   }
 
   return (
-    <motion.div layout className="grid gap-6 sm:grid-cols-2 xl:grid-cols-3">
+    <motion.div
+      layout
+      className="grid gap-6 sm:grid-cols-2 xl:grid-cols-3"
+      role="list"
+      aria-live="polite"
+      aria-label="Liste des visuels print on demand"
+    >
       <AnimatePresence>
         {items.map((item) => (
           <RBCard key={item.id} item={item} onQuickView={onQuickView} />

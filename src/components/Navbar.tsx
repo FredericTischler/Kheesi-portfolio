@@ -7,6 +7,7 @@ import { NAV_LINKS } from "@/data/navigation";
 
 import { CommandPalette } from "@/components/CommandPalette";
 import { ThemeToggle } from "@/components/ThemeToggle";
+import { ContrastToggle } from "@/components/ContrastToggle";
 import { Button } from "@/components/ui/button";
 
 export function Navbar() {
@@ -78,6 +79,7 @@ export function Navbar() {
             >
               <Search className="h-4 w-4" />
             </Button>
+            <ContrastToggle />
             <ThemeToggle />
             <Button
               variant="ghost"
@@ -127,6 +129,12 @@ export function Navbar() {
                   >
                     Recherche globale <Search className="h-4 w-4" />
                   </button>
+                </li>
+                <li>
+                  <div className="flex items-center justify-between gap-3 rounded-2xl bg-secondary/40 px-4 py-3">
+                    <ContrastToggle />
+                    <ThemeToggle />
+                  </div>
                 </li>
               </ul>
             </motion.div>

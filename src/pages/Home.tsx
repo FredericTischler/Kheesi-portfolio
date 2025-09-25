@@ -167,12 +167,12 @@ export function HomePage() {
         const loadFeaturedDesigns = async () => {
             try {
                 setDesignsStatus((status) => (status === "ready" ? status : "loading"));
-                const {REDBUBBLE_CATEGORIES} = await import("@/data/print-on-demand");
+                const {PRINT_ON_DEMAND_CATEGORIES} = await import("@/data/print-on-demand");
                 if (cancelled) {
                     return;
                 }
 
-                setFeaturedDesigns(ensureFeaturedDesigns(REDBUBBLE_CATEGORIES));
+                setFeaturedDesigns(ensureFeaturedDesigns(PRINT_ON_DEMAND_CATEGORIES));
                 setDesignsStatus("ready");
             } catch (error) {
                 if (cancelled) {
@@ -285,7 +285,7 @@ export function HomePage() {
                 </div>
             </section>
 
-            <section className="bg-background/80 py-12">
+            <section className="relative bg-background/80 py-12 overflow-hidden">
                 <div className="container">
                     <div className="space-y-8 py-10">
                         <div className="flex flex-col gap-2">
@@ -307,11 +307,16 @@ export function HomePage() {
                                 aria-hidden="true"
                             />
                             {prefersReducedMotion ? (
-                                <div className="flex flex-wrap justify-center gap-3 py-4">
+                                <div
+                                    className="flex flex-wrap justify-center gap-3 py-4"
+                                    role="list"
+                                    aria-label="Compétences principales"
+                                >
                                     {SKILL_ITEMS.map((item) => (
                                         <div
                                             key={item.name}
                                             className="flex items-center gap-3 rounded-lg border px-4 py-3"
+                                            role="listitem"
                                             style={{
                                                 backgroundColor: hexToRgba(item.color, 0.12),
                                                 borderColor: hexToRgba(item.color, 0.35),
@@ -330,6 +335,8 @@ export function HomePage() {
                             ) : (
                                 <motion.div
                                     className="flex min-w-max gap-4 py-4 pl-2 pr-16"
+                                    role="list"
+                                    aria-label="Compétences principales défilantes"
                                     initial={{x: 0}}
                                     animate={{x: ["0%", "-50%"]}}
                                     transition={{repeat: Infinity, duration: Math.max(SKILL_ITEMS.length * 3, 18), ease: "linear"}}
@@ -338,6 +345,7 @@ export function HomePage() {
                                         <div
                                             key={`${item.name}-${index}`}
                                             className="flex items-center gap-3 rounded-lg border px-4 py-3"
+                                            role="listitem"
                                             style={{
                                                 backgroundColor: hexToRgba(item.color, 0.12),
                                                 borderColor: hexToRgba(item.color, 0.35),
@@ -452,7 +460,7 @@ export function HomePage() {
         ) : (
           <motion.div
             className="grid gap-6 md:grid-cols-2 xl:grid-cols-4"
-            initial={prefersReducedMotion ? undefined : { opacity: 0, y: 24 }}
+            initial={prefersReducedMotion ? undefined : { opacity: 0, y: 32 }}
             animate={prefersReducedMotion ? undefined : { opacity: 1, y: 0 }}
             transition={{ duration: prefersReducedMotion ? 0 : 0.4, ease: "easeOut" }}
           >
@@ -475,7 +483,7 @@ export function HomePage() {
                     className="aspect-square w-full object-contain p-4 transition duration-500 ease-out group-hover:scale-[1.02]"
                   />
                 </div>
-                <div className="flex flex-1 flex-col gap-4 p-6">
+                <div className="flex flex-1 flex-col gap-4 p-6" aria-live="polite">
                   <div className="space-y-2">
                     <div className="flex items-center justify-between gap-3">
                       <h3 className="text-lg font-semibold text-foreground">{item.title}</h3>

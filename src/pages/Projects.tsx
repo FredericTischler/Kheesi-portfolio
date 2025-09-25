@@ -145,7 +145,7 @@ export default function ProjectsPage() {
   const gridVariants = useMemo(
     () => ({
       hidden: { opacity: 0, y: 24 },
-      visible: { opacity: 1, y: 0, transition: { staggerChildren: 0.12, delayChildren: 0.08 } },
+      visible: { opacity: 1, y: 0, transition: { staggerChildren: 0.18, delayChildren: 0.06, ease: "easeInOut" as const } },
     }),
     [],
   );
@@ -169,9 +169,10 @@ export default function ProjectsPage() {
       whileHover={
         prefersReducedMotion ? undefined : { scale: 1.02, y: -6, transition: { duration: 0.3, ease: "easeOut" } }
       }
-      role="button"
+      role="listitem"
       tabIndex={0}
-      aria-label={`Voir le projet ${project.name}`}
+      aria-label={`Aperçu du projet ${project.name}`}
+      aria-describedby={`project-${project.slug}-summary`}
       onClick={() => setQuickView(project)}
       onKeyDown={(event) => {
         if (event.key === "Enter" || event.key === " ") {
@@ -187,13 +188,16 @@ export default function ProjectsPage() {
           <h3 className="text-lg font-semibold text-foreground">{project.name}</h3>
         </div>
         <p className="text-sm text-muted-foreground line-clamp-3">{project.description}</p>
-        <div className="flex flex-wrap gap-2">
-          {project.tech.slice(0, 5).map((tech) => (
+       <div className="flex flex-wrap gap-2">
+         {project.tech.slice(0, 5).map((tech) => (
             <Badge key={`${project.slug}-${tech}`} variant="secondary" className="px-3 py-1 text-xs uppercase tracking-[0.3em]">
               {tech}
             </Badge>
           ))}
-        </div>
+       </div>
+        <p id={`project-${project.slug}-summary`} className="sr-only">
+          {`Technologies principales : ${project.tech.join(", ")}.`}
+        </p>
       </div>
       <div className="flex items-center gap-3">
         <Button
@@ -217,7 +221,7 @@ export default function ProjectsPage() {
         <p className="text-xs uppercase tracking-[0.45em] text-muted-foreground">Projets</p>
         <h1 className="text-4xl font-semibold md:text-5xl">Réalisations & expérimentations</h1>
         <p className="max-w-3xl text-muted-foreground">
-          Explorez mes développements en Go, TypeScript, React et OCaml : applications temps réel, algorithmes de graphes, tooling et prototypes pédagogiques.
+            Java, TypeScript, Angular, SQL : je conçois des applications temps réel et des solutions full-stack performantes.
         </p>
       </section>
 
@@ -295,7 +299,7 @@ export default function ProjectsPage() {
             <AnimatePresence mode="popLayout">
               <motion.div
                 key={`${state.sort}-${state.tech.size}-${deferredQuery}`}
-                className="grid gap-6 md:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4"
+                className="grid gap-6 md:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4" role="list" aria-live="polite" aria-label="Liste des projets filtrés"
                 variants={prefersReducedMotion ? undefined : gridVariants}
                 initial={prefersReducedMotion ? undefined : "hidden"}
                 animate={prefersReducedMotion ? undefined : "visible"}

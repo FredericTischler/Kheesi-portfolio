@@ -32,7 +32,12 @@ export function RBModal({ item, open, onOpenChange }: RBModalProps) {
           <div className="relative overflow-hidden rounded-[2rem]">
             <picture>
               {item.src2x ? <source srcSet={`${item.src2x} 2x`} /> : null}
-              <img src={item.src} alt={item.title} className="h-full w-full object-cover" loading="lazy" />
+              <img
+                src={item.src}
+                alt={`Illustration print on demand : ${item.title} – ${item.tags.join(", ")}`}
+                className="h-full w-full object-cover"
+                loading="lazy"
+              />
             </picture>
             <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-background/40 via-transparent to-transparent" />
           </div>
@@ -62,7 +67,7 @@ export function RBModal({ item, open, onOpenChange }: RBModalProps) {
             <DialogFooter className="flex-row items-center justify-start gap-3 border-none bg-transparent px-0 py-0">
               <Button asChild size="md" className="gap-2">
                 <a href={item.rbLink} target="_blank" rel="noreferrer">
-                  <ExternalLink className="h-4 w-4" /> Voir sur RedBubble
+                  <ExternalLink className="h-4 w-4" /> Voir sur Print on demand
                 </a>
               </Button>
               <Button

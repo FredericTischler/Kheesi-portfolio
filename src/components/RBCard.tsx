@@ -19,13 +19,16 @@ export function RBCard({ item, onQuickView }: RBCardProps) {
       layout
       transition={{ duration: prefersReducedMotion ? 0 : 0.35, ease: "easeOut" }}
       className="group relative flex flex-col overflow-hidden rounded-[2rem] border border-border/50 bg-background/80 shadow-lg transition hover:-translate-y-1 hover:shadow-elevated"
+      role="listitem"
+      aria-labelledby={`pod-card-${item.id}-title`}
+      aria-describedby={`pod-card-${item.id}-summary`}
     >
       <div className="relative aspect-square overflow-hidden">
         <picture>
           {item.src2x ? <source srcSet={`${item.src2x} 2x`} /> : null}
           <img
             src={item.src}
-            alt={item.title}
+            alt={`Illustration print on demand : ${item.title} – ${item.tags.join(", ")}`}
             loading="lazy"
             className="h-full w-full object-cover transition duration-700 ease-out group-hover:scale-105"
           />
@@ -36,14 +39,16 @@ export function RBCard({ item, onQuickView }: RBCardProps) {
           </Button>
           <Button asChild variant="outline" size="md" className="gap-2">
             <a href={item.rbLink} target="_blank" rel="noreferrer">
-              <ExternalLink className="h-4 w-4" /> Voir sur RedBubble
+              <ExternalLink className="h-4 w-4" /> Voir sur Print on demand
             </a>
           </Button>
         </div>
       </div>
       <div className="flex flex-col gap-4 p-6">
         <div className="flex items-center justify-between">
-          <h3 className="text-lg font-semibold text-foreground">{item.title}</h3>
+          <h3 id={`pod-card-${item.id}-title`} className="text-lg font-semibold text-foreground">
+            {item.title}
+          </h3>
           {item.featured ? (
             <span className="rounded-full bg-primary/15 px-3 py-1 text-xs font-medium text-primary">
               À la une
@@ -57,7 +62,10 @@ export function RBCard({ item, onQuickView }: RBCardProps) {
             </Badge>
           ))}
         </div>
-        <span className={cn("text-xs uppercase tracking-[0.3em] text-muted-foreground")}> 
+        <p className="sr-only" id={`pod-card-${item.id}-summary`}>
+          {`Description : ${item.title}. Tags : ${item.tags.join(", ")}. ${item.createdAt ? `Publié le ${new Date(item.createdAt).toLocaleDateString("fr-FR")}.` : ""}`}
+        </p>
+        <span className={cn("text-xs uppercase tracking-[0.3em] text-muted-foreground")}>
           {item.createdAt
             ? new Date(item.createdAt).toLocaleDateString("fr-FR", {
                 year: "numeric",

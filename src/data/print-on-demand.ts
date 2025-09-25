@@ -22,7 +22,7 @@ const buildSrc = (fileName: string) => `/assets/designs/${encodeURIComponent(fil
 
 const buildLink = (slug: string) => `${RB_BASE_LINK}${slug}`;
 
-export const REDBUBBLE_CATEGORIES: RBCategory[] = [
+export const PRINT_ON_DEMAND_CATEGORIES: RBCategory[] = [
   {
     id: "kawaii-cats",
     name: "Kawaii Cats",
@@ -281,4 +281,4 @@ export const REDBUBBLE_CATEGORIES: RBCategory[] = [
   },
 ];
 
-export const REDBUBBLE_ITEMS: RBItem[] = REDBUBBLE_CATEGORIES.flatMap((category) => category.items);
+export const PRINT_ON_DEMAND_ITEMS: RBItem[] = PRINT_ON_DEMAND_CATEGORIES.flatMap((category) => category.items);

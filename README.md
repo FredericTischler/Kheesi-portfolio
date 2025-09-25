@@ -31,7 +31,7 @@ public/
 - `src/data/projects.ts` contient la totalité des fiches (type `Project`).
 - Chaque entrée définit : `slug`, `name`, `description`, `tech`, `url`, options `updated`, `stars`, `featured`, `thumbnail`.
 - Les projets marqués `featured: true` sont mis en avant en tête de la page `/projects`.
-- Les miniatures sont optionnelles : placez vos images dans `public/assets/projects/<slug>.jpg`.
+- Les miniatures sont optionnelles : placez vos images dans `public/assets/projects/<slug>.svg`.
 - Aucun appel API n’est nécessaire : le contenu est statique, idéal pour un portfolio rapide.
 
 ## 🎨 Galerie Print on demand
@@ -51,7 +51,7 @@ public/
 
 1. **Profil** : modifiez `PROFILE` (nom, rôle, socials, company...).
 2. **Projets** : ajoutez/modifiez une fiche dans `src/data/projects.ts` (respectez le type `Project`).
-3. **Images Print on demand / projets** : placez vos fichiers dans `public/assets/designs/` et `public/assets/projects/` (nom du projet slugifié : `slug.jpg`).
+3. **Images Print on demand / projets** : placez vos fichiers dans `public/assets/designs/` et `public/assets/projects/` (nom du projet slugifié : `slug.svg`).
 4. **SEO** : titres/meta dynamiques via `usePageMetadata`. L’`index.html` contient les balises OG/Twitter par défaut.
 
 ## 🧪 Scripts
@@ -74,7 +74,7 @@ Le projet est un site statique. Déployez le dossier `dist/` généré par `npm 
 
 ## 🙌 Accessibilité & UX
 
-- Mode sombre/clair persistant (`localStorage`).
+- Mode sombre/clair et contraste élevé persistants (`localStorage`).
 - Focus visibles, contraste AA, navigation clavier.
 - Animations limitées si `prefers-reduced-motion` est actif.
 - Images lazy-loaded avec dégradés et ratio fixes.

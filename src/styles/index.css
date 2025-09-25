@@ -41,6 +41,44 @@
   --ring: 262 83% 64%;
 }
 
+.light.contrast {
+  --background: 210 30% 96%;
+  --foreground: 220 60% 10%;
+  --muted: 210 30% 88%;
+  --muted-foreground: 210 42% 20%;
+  --accent: 212 100% 36%;
+  --accent-foreground: 0 0% 100%;
+  --primary: 200 100% 28%;
+  --primary-foreground: 0 0% 100%;
+  --secondary: 210 25% 86%;
+  --secondary-foreground: 220 60% 10%;
+  --destructive: 0 90% 42%;
+  --destructive-foreground: 0 0% 100%;
+  --border: 210 35% 65%;
+  --border-muted: 210 28% 80%;
+  --input: 210 30% 78%;
+  --ring: 48 100% 45%;
+}
+
+.dark.contrast {
+  --background: 220 25% 6%;
+  --foreground: 210 46% 99%;
+  --muted: 220 32% 18%;
+  --muted-foreground: 210 30% 92%;
+  --accent: 262 100% 65%;
+  --accent-foreground: 215 30% 12%;
+  --primary: 176 100% 50%;
+  --primary-foreground: 215 30% 12%;
+  --secondary: 220 28% 16%;
+  --secondary-foreground: 210 46% 99%;
+  --destructive: 0 90% 60%;
+  --destructive-foreground: 0 0% 100%;
+  --border: 220 36% 55%;
+  --border-muted: 220 26% 22%;
+  --input: 220 30% 22%;
+  --ring: 48 100% 55%;
+}
+
 @layer base {
   * {
     @apply border-border;
@@ -57,6 +95,15 @@
   h3,
   h4 {
     @apply font-heading tracking-tight;
+  }
+
+  .contrast body {
+    background-image: none;
+  }
+
+  .contrast *:focus-visible {
+    outline: 3px solid hsl(var(--ring));
+    outline-offset: 3px;
   }
 }
 

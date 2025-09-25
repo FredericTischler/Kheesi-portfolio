@@ -4,7 +4,7 @@ import { ExternalLink, ZoomIn } from "lucide-react";
 
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { REDBUBBLE_CATEGORIES, REDBUBBLE_ITEMS } from "@/data/print-on-demand";
+import { PRINT_ON_DEMAND_CATEGORIES, PRINT_ON_DEMAND_ITEMS } from "@/data/print-on-demand";
 import { usePageMetadata } from "@/lib/metadata";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import type { RBItem } from "@/data/print-on-demand";
@@ -20,8 +20,8 @@ export default function PrintOnDemandPage() {
   });
 
   const prefersReducedMotion = useReducedMotion();
-  const categories = useMemo(() => REDBUBBLE_CATEGORIES, []);
-  const flatItems = useMemo(() => REDBUBBLE_ITEMS, []);
+  const categories = useMemo(() => PRINT_ON_DEMAND_CATEGORIES, []);
+  const flatItems = useMemo(() => PRINT_ON_DEMAND_ITEMS, []);
   const [activeCategory, setActiveCategory] = useState(() => categories[0]?.id ?? "");
   const [navLayout, setNavLayout] = useState<{ left: number; padding: number; isDesktop: boolean }>({
     left: 24,
@@ -197,7 +197,7 @@ export default function PrintOnDemandPage() {
 
       <section className="relative">
         {designCount === 0 ? (
-          <div className="container">
+          <div className="container" role="region" aria-live="polite">
             <div className="space-y-6 rounded-[2rem] border border-border/60 bg-background/80 p-10 text-center">
               <h2 className="text-xl font-semibold text-foreground">Aucun design disponible pour le moment</h2>
               <p className="text-sm text-muted-foreground">
@@ -207,8 +207,14 @@ export default function PrintOnDemandPage() {
             </div>
           </div>
         ) : (
-          <div ref={containerRef} className="container space-y-10">
-            <div className="rounded-full border border-border/60 bg-background/80 p-2 shadow-lg backdrop-blur supports-[backdrop-filter]:backdrop-blur-xl lg:hidden">
+          <div
+            ref={containerRef}
+            className="container space-y-10"
+            role="region"
+            aria-live="polite"
+            aria-label="Catalogue Print on demand"
+          >
+            <div className="rounded-full border border-border/60 bg-background/80 p-2 shadow-lg backdrop-blur supports-[backdrop-filter]:backdrop-blur-xl lg:hidden" role="tablist" aria-label="Catégories Print on demand">
               <nav className="flex flex-wrap gap-2">
                 {categories.map((category) => (
                   <button
@@ -216,6 +222,8 @@ export default function PrintOnDemandPage() {
                     type="button"
                     onClick={() => handleCategoryClick(category.id)}
                     aria-current={activeCategory === category.id ? "true" : undefined}
+                    role="tab"
+                    aria-selected={activeCategory === category.id}
                     className={`rounded-full px-4 py-2 text-xs uppercase tracking-[0.4em] transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ${
                       activeCategory === category.id
                         ? "bg-primary text-primary-foreground shadow-sm"
@@ -233,14 +241,18 @@ export default function PrintOnDemandPage() {
                 <aside
                   className="fixed top-32 w-[220px] rounded-[1.75rem] border border-border/60 bg-background/70 p-4 shadow-lg backdrop-blur supports-[backdrop-filter]:backdrop-blur-xl"
                   style={{ left: navLayout.left }}
+                  role="navigation"
+                  aria-label="Navigation Print on demand"
                 >
-                  <nav className="flex flex-col gap-3">
+                  <nav className="flex flex-col gap-3" role="tablist" aria-label="Catégories Print on demand">
                     {categories.map((category) => (
                       <button
                         key={category.id}
                         type="button"
                         onClick={() => handleCategoryClick(category.id)}
                         aria-current={activeCategory === category.id ? "true" : undefined}
+                        role="tab"
+                        aria-selected={activeCategory === category.id}
                         className={`rounded-[1rem] px-3 py-2 text-xs uppercase tracking-[0.35em] transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ${
                           activeCategory === category.id
                             ? "bg-primary text-primary-foreground shadow-sm"
@@ -279,6 +291,8 @@ export default function PrintOnDemandPage() {
 
                     <motion.div
                       className={GRID_CLASSES}
+                      role="list"
+                      aria-label={`Designs ${category.name}`}
                       initial={prefersReducedMotion ? undefined : "hidden"}
                       animate={prefersReducedMotion ? undefined : "visible"}
                       variants={prefersReducedMotion ? undefined : containerVariants}
@@ -293,6 +307,9 @@ export default function PrintOnDemandPage() {
                               : { scale: 1.02, y: -4, transition: { duration: 0.3, ease: "easeOut" } }
                           }
                           className="group flex h-full flex-col rounded-[2rem] border border-border/60 bg-background/80 shadow-lg"
+                          role="listitem"
+                          aria-labelledby={`design-${item.id}-title`}
+                          aria-describedby={`design-${item.id}-tags`}
                         >
                           <div className="relative overflow-hidden rounded-t-[2rem] bg-secondary/30">
                             <button
@@ -306,7 +323,7 @@ export default function PrintOnDemandPage() {
                             <img
                               src={item.src}
                               srcSet={item.src2x ? `${item.src2x} 2x` : undefined}
-                              alt={item.title}
+                              alt={`Illustration print on demand : ${item.title} – ${item.tags.join(", ")}`}
                               loading="lazy"
                               className="aspect-square w-full object-contain p-4 transition duration-500 ease-out group-hover:scale-[1.02]"
                               onClick={() => openLightbox(item)}
@@ -314,7 +331,9 @@ export default function PrintOnDemandPage() {
                           </div>
                           <div className="flex flex-1 flex-col gap-4 p-6">
                             <div className="space-y-2">
-                              <h3 className="text-lg font-semibold text-foreground">{item.title}</h3>
+                              <h3 id={`design-${item.id}-title`} className="text-lg font-semibold text-foreground">
+                                {item.title}
+                              </h3>
                               {typeof item.createdAt === "string" && !Number.isNaN(new Date(item.createdAt).getTime()) ? (
                                 <p className="text-xs uppercase tracking-[0.3em] text-muted-foreground">
                                   {new Date(item.createdAt).toLocaleDateString("fr-FR", {
@@ -325,17 +344,20 @@ export default function PrintOnDemandPage() {
                                 </p>
                               ) : null}
                             </div>
-                            <div className="flex flex-wrap gap-2">
+                            <div className="flex flex-wrap gap-2" id={`design-${item.id}-tags`}>
                               {item.tags.slice(0, 5).map((tag) => (
                                 <Badge key={tag} variant="secondary" className="px-3 py-1 text-xs uppercase tracking-[0.25em]">
                                   {tag}
                                 </Badge>
                               ))}
                             </div>
+                            <p className="sr-only">
+                              {`Description détaillée : ${item.title}. Mots-clés : ${item.tags.join(", ")}.`}
+                            </p>
                             <div className="mt-auto">
                               <Button asChild variant="outline" className="w-full gap-2" size="sm">
                                 <a href={item.rbLink} target="_blank" rel="noreferrer" aria-label={`Voir ${item.title} sur Print on demand`}>
-                                  <ExternalLink className="h-4 w-4" /> Voir sur RedBubble
+                                  <ExternalLink className="h-4 w-4" /> Voir sur Print on demand
                                 </a>
                               </Button>
                             </div>

@@ -41,7 +41,7 @@ export function ProjectCard({ project, onQuickView }: ProjectCardProps) {
       {project.thumbnail ? (
         <img
           src={project.thumbnail}
-          alt=""
+          alt={`Illustration du projet ${project.name}`}
           className="h-44 w-full rounded-[1.75rem] object-cover"
           loading="lazy"
           decoding="async"
