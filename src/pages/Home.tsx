@@ -152,6 +152,7 @@ export function HomePage() {
         title: "Accueil",
         description:
             "Frédéric Tischler, développeur full-stack : créations d’applications web modernes, projets en Go, TypeScript et React.",
+        image: "/assets/social/home.svg",
     });
 
     const prefersReducedMotion = useReducedMotion();

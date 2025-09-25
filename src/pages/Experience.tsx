@@ -21,6 +21,7 @@ export default function ExperiencePage() {
     title: "Expérience",
     description:
       "Refonte d’applications métier chez WeNégoce et Développement Informatique International (Java + Angular).",
+    image: "/assets/social/experience.svg",
   });
 
   return (

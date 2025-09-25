@@ -28,6 +28,7 @@ export default function PrintOnDemandPage() {
   usePageMetadata({
     title: "Print on demand",
     description: "Galerie de designs Print on demand avec animations légères et tags thématiques.",
+    image: "/assets/social/print-on-demand.svg",
   });
 
   const prefersReducedMotion = useReducedMotion();

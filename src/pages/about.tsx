@@ -39,6 +39,7 @@ export function AboutPage() {
     title: "À propos",
     description:
       "Parcours de Frédéric Tischler : licence informatique, Zone01, modernisation d’applications Java/Angular.",
+    image: "/assets/social/about.svg",
   });
 
   const orderedSkills = (() => {

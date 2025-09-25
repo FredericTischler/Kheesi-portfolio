@@ -7,6 +7,7 @@ export function ContactPage() {
   usePageMetadata({
     title: "Contact",
     description: "Contactez Frédéric Tischler pour vos projets web : formulaire et email direct.",
+    image: "/assets/social/contact.svg",
   });
 
   return (

@@ -126,6 +126,7 @@ export default function ProjectsPage() {
   usePageMetadata({
     title: "Projets — Frédéric Tischler",
     description: "Découvrez les projets de Frédéric Tischler : Mellow, RealTimeForum, Forum, Groupie-tracker, Lem-in, et plus.",
+    image: "/assets/social/projects.svg",
   });
 
   const prefersReducedMotion = useReducedMotion();
