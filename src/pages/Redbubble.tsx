@@ -4,19 +4,19 @@ import { ExternalLink, ZoomIn } from "lucide-react";
 
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { REDBUBBLE_CATEGORIES, REDBUBBLE_ITEMS } from "@/data/redbubble";
+import { REDBUBBLE_CATEGORIES, REDBUBBLE_ITEMS } from "@/data/print-on-demand";
 import { usePageMetadata } from "@/lib/metadata";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog";
-import type { RBItem } from "@/data/redbubble";
+import type { RBItem } from "@/data/print-on-demand";
 
 const GRID_CLASSES = "grid gap-6 sm:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-4";
 const NAV_WIDTH = 220;
 const NAV_GAP = 24;
 
-export default function RedbubblePage() {
+export default function PrintOnDemandPage() {
   usePageMetadata({
-    title: "RedBubble",
-    description: "Galerie de designs RedBubble avec animations légères et tags thématiques.",
+    title: "Print on demand",
+    description: "Galerie de designs Print on demand avec animations légères et tags thématiques.",
   });
 
   const prefersReducedMotion = useReducedMotion();
@@ -187,10 +187,10 @@ export default function RedbubblePage() {
   return (
     <div className="space-y-14 pb-20 pt-36">
       <section className="container space-y-6">
-        <p className="text-xs uppercase tracking-[0.45em] text-muted-foreground">RedBubble</p>
+        <p className="text-xs uppercase tracking-[0.45em] text-muted-foreground">Print on demand</p>
         <h1 className="text-4xl font-semibold md:text-5xl">Designs illustrés et impression à la demande</h1>
         <p className="max-w-3xl text-muted-foreground">
-          Une sélection de visuels destinés aux produits RedBubble : stickers, textiles, impressions murales. Chaque
+          Une sélection de visuels destinés aux produits Print on demand : stickers, textiles, impressions murales. Chaque
           carte présente l’aperçu du design, ses tags principaux et un lien direct vers la boutique.
         </p>
       </section>
@@ -201,7 +201,7 @@ export default function RedbubblePage() {
             <div className="space-y-6 rounded-[2rem] border border-border/60 bg-background/80 p-10 text-center">
               <h2 className="text-xl font-semibold text-foreground">Aucun design disponible pour le moment</h2>
               <p className="text-sm text-muted-foreground">
-                Ajoutez vos images dans <code>public/assets/designs</code> et remplissez <code>src/data/redbubble.ts</code>
+                Ajoutez vos images dans <code>public/assets/designs</code> et remplissez <code>src/data/print-on-demand.ts</code>
                 pour afficher la galerie automatiquement.
               </p>
             </div>
@@ -334,7 +334,7 @@ export default function RedbubblePage() {
                             </div>
                             <div className="mt-auto">
                               <Button asChild variant="outline" className="w-full gap-2" size="sm">
-                                <a href={item.rbLink} target="_blank" rel="noreferrer" aria-label={`Voir ${item.title} sur RedBubble`}>
+                                <a href={item.rbLink} target="_blank" rel="noreferrer" aria-label={`Voir ${item.title} sur Print on demand`}>
                                   <ExternalLink className="h-4 w-4" /> Voir sur RedBubble
                                 </a>
                               </Button>

@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 675">
+  <defs>
+    <linearGradient id="grad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#0f172a" />
+      <stop offset="100%" stop-color="#1e3a8a" />
+    </linearGradient>
+  </defs>
+  <rect width="1200" height="675" rx="48" fill="url(#grad)" />
+  <g fill="#e0f2fe" font-family="'Inter', 'Segoe UI', sans-serif" text-anchor="middle">
+    <text x="600" y="320" font-size="88" font-weight="600">Mellow</text>
+    <text x="600" y="410" font-size="32" letter-spacing="6">SOCIAL GRAPH · GO · REACT</text>
+  </g>
+</svg>

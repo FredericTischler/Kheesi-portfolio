@@ -1,7 +1,7 @@
 import { motion, useReducedMotion } from "framer-motion";
 import { ExternalLink, Eye } from "lucide-react";
 
-import type { RBItem } from "@/data/redbubble";
+import type { RBItem } from "@/data/print-on-demand";
 import { cn } from "@/lib/utils";
 
 import { Button } from "@/components/ui/button";

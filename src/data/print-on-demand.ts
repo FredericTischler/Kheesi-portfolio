@@ -16,7 +16,7 @@ export type RBCategory = {
   items: RBItem[];
 };
 
-const RB_BASE_LINK = "https://www.redbubble.com/people/frederictischler/works/";
+const RB_BASE_LINK = "https://www.print-on-demand.com/people/frederictischler/works/";
 
 const buildSrc = (fileName: string) => `/assets/designs/${encodeURIComponent(fileName)}`;
 

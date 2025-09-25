@@ -12,7 +12,7 @@ const HomePage = lazy(() => import("@/pages/Home"));
 const AboutPage = lazy(() => import("@/pages/About"));
 const ExperiencePage = lazy(() => import("@/pages/Experience"));
 const ProjectsPage = lazy(() => import("@/pages/Projects"));
-const RedbubblePage = lazy(() => import("@/pages/Redbubble"));
+const PrintOnDemandPage = lazy(() => import("@/pages/Redbubble"));
 const ContactPage = lazy(() => import("@/pages/Contact"));
 
 type RouteErrorBoundaryProps = {
@@ -131,7 +131,7 @@ export function App() {
                 <Route path="/about" element={withBoundary(<AboutPage />)} />
                 <Route path="/experience" element={withBoundary(<ExperiencePage />)} />
                 <Route path="/projects" element={withBoundary(<ProjectsPage />)} />
-                <Route path="/redbubble" element={withBoundary(<RedbubblePage />)} />
+                <Route path="/print-on-demand" element={withBoundary(<PrintOnDemandPage />)} />
                 <Route path="/contact" element={withBoundary(<ContactPage />)} />
                 <Route path="*" element={<Navigate to="/" replace />} />
               </Routes>

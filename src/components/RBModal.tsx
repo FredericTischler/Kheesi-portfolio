@@ -1,6 +1,6 @@
 import { ExternalLink, LinkIcon } from "lucide-react";
 
-import type { RBItem } from "@/data/redbubble";
+import type { RBItem } from "@/data/print-on-demand";
 import { useClipboard } from "@/lib/clipboard";
 
 import {
@@ -40,7 +40,7 @@ export function RBModal({ item, open, onOpenChange }: RBModalProps) {
             <DialogHeader className="border-none px-0 pb-0">
               <DialogTitle>{item.title}</DialogTitle>
               <DialogDescription>
-                Visuel RedBubble composé de {item.tags.slice(0, 3).join(", ")}.
+                Visuel Print on demand composé de {item.tags.slice(0, 3).join(", ")}.
               </DialogDescription>
             </DialogHeader>
             <div className="flex flex-wrap gap-2">

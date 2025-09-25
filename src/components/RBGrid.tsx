@@ -1,6 +1,6 @@
 import { AnimatePresence, motion } from "framer-motion";
 
-import type { RBItem } from "@/data/redbubble";
+import type { RBItem } from "@/data/print-on-demand";
 
 import { RBCard } from "@/components/RBCard";
 import { Skeleton } from "@/components/ui/skeleton";

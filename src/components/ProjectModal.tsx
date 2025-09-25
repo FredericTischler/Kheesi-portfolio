@@ -1,4 +1,4 @@
-import { Github, LinkIcon } from "lucide-react";
+import { Github, LinkIcon, Star } from "lucide-react";
 
 import type { Project } from "@/data/projects";
 import { useClipboard } from "@/lib/clipboard";
@@ -25,7 +25,7 @@ export function ProjectModal({ project, open, onOpenChange }: ProjectModalProps)
 
   if (!project) return null;
 
-  const githubUrl = `https://github.com/FredericTischler/${project.slug}`;
+  const githubUrl = project.url;
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
@@ -35,17 +35,35 @@ export function ProjectModal({ project, open, onOpenChange }: ProjectModalProps)
           <DialogDescription>{project.description}</DialogDescription>
         </DialogHeader>
         <div className="space-y-6 px-0">
+          {project.thumbnail ? (
+            <img
+              src={project.thumbnail}
+              alt=""
+              className="h-56 w-full rounded-[1.75rem] object-cover"
+              loading="lazy"
+              decoding="async"
+            />
+          ) : null}
           <div className="flex flex-wrap gap-2">
-            {project.stacks.map((tech) => (
+            {project.tech.map((tech) => (
               <Badge key={tech} variant="secondary">
                 {tech}
               </Badge>
             ))}
           </div>
-          <p className="rounded-[1.5rem] border border-border/60 bg-secondary/30 p-6 text-sm text-muted-foreground">
-            Ces projets mettent en avant des stacks variées : temps réel, algorithmes et front-end. Consultez la
-            page GitHub correspondante pour un aperçu du code et de la documentation.
-          </p>
+          <div className="flex flex-wrap items-center gap-3 text-xs uppercase tracking-[0.35em] text-muted-foreground">
+            {project.updated ? (
+              <span className="rounded-full border border-border/60 px-3 py-1">
+                {new Date(project.updated).toLocaleDateString("fr-FR")}
+              </span>
+            ) : null}
+            {typeof project.stars === "number" ? (
+              <span className="inline-flex items-center gap-1 rounded-full border border-border/60 px-3 py-1">
+                <Star className="h-3 w-3 text-amber-400" aria-hidden="true" />
+                {project.stars}
+              </span>
+            ) : null}
+          </div>
         </div>
         <DialogFooter className="flex-row items-center gap-3 border-none bg-transparent px-0 py-0">
           <Button asChild size="md" className="gap-2">

@@ -61,9 +61,9 @@ export function CommandPalette({ open, onOpenChange }: CommandPaletteProps) {
       .map((project) => ({
         type: "project" as const,
         title: project.name,
-        subtitle: project.stacks.join(" · ") || project.description,
+        subtitle: project.tech.slice(0, 6).join(" · ") || project.description,
         action: () => {
-          window.open(`https://github.com/FredericTischler/${project.slug}`, "_blank", "noopener");
+          window.open(project.url, "_blank", "noopener");
           onOpenChange(false);
         },
       }))
