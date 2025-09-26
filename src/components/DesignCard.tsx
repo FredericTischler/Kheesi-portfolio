@@ -156,4 +156,4 @@ export function DesignCard({
   );
 }
 
-export default DesignCard;
+

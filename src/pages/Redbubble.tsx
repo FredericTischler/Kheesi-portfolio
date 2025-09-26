@@ -311,13 +311,15 @@ export default function PrintOnDemandPage() {
                           onZoom={() => openLightbox(item)}
                           zoomLabel="Zoom"
                           actionHref={item.rbLink}
-                          role="listitem"
-                          aria-labelledby={`design-${item.id}-title`}
-                          aria-describedby={`design-${item.id}-tags`}
+                          actionLabel="Voir sur RedBubble"
+                          actionIcon={<ExternalLink className="h-4 w-4" />}
                           titleId={`design-${item.id}-title`}
                           tagsId={`design-${item.id}-tags`}
                           descriptionId={`design-${item.id}-summary`}
                           variants={prefersReducedMotion ? undefined : itemVariants}
+                          role="listitem"
+                          aria-labelledby={`design-${item.id}-title`}
+                          aria-describedby={`design-${item.id}-tags`}
                           whileHover={
                             prefersReducedMotion
                               ? undefined

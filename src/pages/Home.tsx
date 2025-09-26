@@ -4,6 +4,7 @@ import {motion, useReducedMotion} from "framer-motion";
 import {ArrowRight, Download, ExternalLink, Github, Link as LinkIcon} from "lucide-react";
 
 import {DesignCard} from "@/components/DesignCard";
+import {DesignSkeleton} from "@/components/DesignSkeleton";
 import {ProjectPreviewCard} from "@/components/ProjectPreviewCard";
 import {Section} from "@/components/Section";
 import {SkillPill} from "@/components/SkillPill";
@@ -11,7 +12,6 @@ import {StatCard} from "@/components/StatCard";
 import {Button} from "@/components/ui/button";
 import {Badge} from "@/components/ui/badge";
 import {Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle} from "@/components/ui/dialog";
-import {Skeleton} from "@/components/ui/skeleton";
 import {PROFILE} from "@/data/profile";
 import {PROJECTS, type Project} from "@/data/projects";
 import type {RBCategory, RBItem, RBFormat, RBPalette} from "@/data/print-on-demand";
@@ -445,24 +445,7 @@ export function HomePage() {
             </div>
           </div>
         ) : designsStatus !== "ready" ? (
-          <div className="grid gap-6 md:grid-cols-2 xl:grid-cols-4">
-            {Array.from({ length: 4 }).map((_, index) => (
-              <div
-                key={index}
-                className="flex h-full flex-col rounded-[2rem] border border-border/60 bg-background/70 p-6 shadow-sm"
-              >
-                <Skeleton className="mb-6 h-48 w-full rounded-[1.75rem]" />
-                <Skeleton className="h-5 w-3/4" />
-                <Skeleton className="mt-3 h-4 w-2/5" />
-                <div className="mt-6 flex gap-2">
-                  <Skeleton className="h-6 w-16 rounded-full" />
-                  <Skeleton className="h-6 w-20 rounded-full" />
-                  <Skeleton className="h-6 w-12 rounded-full" />
-                </div>
-                <Skeleton className="mt-auto h-10 w-full rounded-full" />
-              </div>
-            ))}
-          </div>
+          <DesignSkeleton />
         ) : (
           <motion.div
             className="grid gap-6 md:grid-cols-2 xl:grid-cols-4"
