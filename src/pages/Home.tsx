@@ -3,10 +3,11 @@ import {Link} from "react-router-dom";
 import {motion, useReducedMotion} from "framer-motion";
 import {ArrowRight, Download, ExternalLink, Github, Link as LinkIcon} from "lucide-react";
 
+import {DesignCard} from "@/components/DesignCard";
+import {ProjectPreviewCard} from "@/components/ProjectPreviewCard";
 import {Section} from "@/components/Section";
 import {SkillPill} from "@/components/SkillPill";
 import {StatCard} from "@/components/StatCard";
-import {ProjectPreviewCard} from "@/components/ProjectPreviewCard";
 import {Button} from "@/components/ui/button";
 import {Badge} from "@/components/ui/badge";
 import {Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle} from "@/components/ui/dialog";
@@ -469,97 +470,22 @@ export function HomePage() {
             animate={prefersReducedMotion ? undefined : { opacity: 1, y: 0 }}
             transition={{ duration: prefersReducedMotion ? 0 : 0.4, ease: "easeOut" }}
           >
-            {featuredDesigns.map(({ category, item }) => {
-              const previewImage = item.gallery && item.gallery.length > 0 ? item.gallery[0] : item.src;
-              const previewFallback = (() => {
-                if (item.fallback && !previewImage.includes("/assets/designs-webp/")) {
-                  return item.fallback;
+            {featuredDesigns.map(({ category, item }) => (
+              <DesignCard
+                key={`${category.id}-${item.id}`}
+                item={item}
+                categoryLabel={category.name}
+                formatLabel={FORMAT_LABELS[item.format]}
+                paletteLabel={PALETTE_LABELS[item.palette]}
+                actionLabel="Voir sur RedBubble"
+                actionIcon={<ExternalLink className="h-4 w-4" />}
+                whileHover={
+                  prefersReducedMotion
+                    ? undefined
+                    : { scale: 1.02, y: -6, transition: { duration: 0.3, ease: "easeOut" } }
                 }
-                if (previewImage.includes("/assets/designs-webp/")) {
-                  const [base, query] = previewImage.split("?");
-                  const fallbackBase = base
-                    .replace("/assets/designs-webp/", "/assets/designs/")
-                    .replace(/\.webp$/, ".png");
-                  return query ? `${fallbackBase}?${query}` : fallbackBase;
-                }
-                return item.fallback ?? previewImage;
-              })();
-
-              return (
-                <motion.article
-                  key={`${category.id}-${item.id}`}
-                  className="group flex h-full flex-col rounded-[2rem] border border-border/60 bg-background/80 shadow-lg"
-                  whileHover={
-                    prefersReducedMotion
-                      ? undefined
-                      : { scale: 1.02, y: -6, transition: { duration: 0.3, ease: "easeOut" } }
-                  }
-                >
-                  <div className="relative overflow-hidden rounded-t-[2rem] bg-secondary/30">
-                    <picture>
-                      <source srcSet={previewImage} type="image/webp" />
-                      {previewFallback ? (
-                        <source srcSet={previewFallback} type="image/png" />
-                      ) : null}
-                      <img
-                        src={previewFallback ?? previewImage}
-                        alt={`Illustration print on demand : ${item.title} – ${item.tags.join(", ")}`}
-                        loading="lazy"
-                        decoding="async"
-                        className="aspect-square w-full object-contain p-4 transition duration-500 ease-out group-hover:scale-[1.02]"
-                      />
-                    </picture>
-                  </div>
-                  <div className="flex flex-1 flex-col gap-5 p-6" aria-live="polite">
-                    <div className="space-y-3">
-                      <div className="flex items-start justify-between gap-3">
-                        <h3 className="text-lg font-semibold text-foreground">{item.title}</h3>
-                        <Badge variant="outline" className="self-start px-4 py-1 text-xs uppercase tracking-[0.25em]">
-                          {category.name}
-                        </Badge>
-                      </div>
-                      <div className="flex flex-wrap gap-2 text-[10px] uppercase tracking-[0.35em] text-muted-foreground">
-                        <span className="rounded-full bg-secondary/30 px-3 py-1 text-muted-foreground">
-                          {FORMAT_LABELS[item.format]}
-                        </span>
-                        <span className="rounded-full bg-secondary/30 px-3 py-1 text-muted-foreground">
-                          {PALETTE_LABELS[item.palette]}
-                        </span>
-                      </div>
-                    </div>
-                    {item.createdAt ? (
-                      <p className="text-xs uppercase tracking-[0.3em] text-muted-foreground">
-                        {new Date(item.createdAt).toLocaleDateString("fr-FR", {
-                          year: "numeric",
-                          month: "short",
-                          day: "numeric",
-                        })}
-                      </p>
-                    ) : null}
-                    <p className="text-xs text-muted-foreground">{item.usage}</p>
-                    <div className="flex flex-wrap gap-2" id={`design-${item.id}-tags`}>
-                      {item.tags.slice(0, 5).map((tag, index) => (
-                        <Badge
-                          key={`${item.id}-${tag}`}
-                          variant="outline"
-                          className={`tech-badge tech-badge-${(index % 4) + 1}`}
-                        >
-                          #{tag}
-                        </Badge>
-                      ))}
-                    </div>
-                    <p className="sr-only">{`Description : ${item.title}. Tags : ${item.tags.join(", ")}.`}</p>
-                    <div className="mt-auto">
-                      <Button asChild variant="outline" size="sm" className="w-full gap-2">
-                        <a href={item.rbLink} target="_blank" rel="noreferrer">
-                          <ExternalLink className="h-4 w-4" /> Voir sur RedBubble
-                        </a>
-                      </Button>
-                    </div>
-                  </div>
-                </motion.article>
-              );
-            })}
+              />
+            ))}
           </motion.div>
         )}
       </Section>

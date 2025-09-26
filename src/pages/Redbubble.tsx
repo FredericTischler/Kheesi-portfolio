@@ -1,7 +1,8 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
-import { ExternalLink, ZoomIn, ChevronLeft, ChevronRight } from "lucide-react";
+import { ExternalLink, ChevronLeft, ChevronRight } from "lucide-react";
 
+import { DesignCard } from "@/components/DesignCard";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { PRINT_ON_DEMAND_CATEGORIES, PRINT_ON_DEMAND_ITEMS, type RBItem, type RBFormat, type RBPalette } from "@/data/print-on-demand";
@@ -300,106 +301,30 @@ export default function PrintOnDemandPage() {
                       animate={prefersReducedMotion ? undefined : "visible"}
                       variants={prefersReducedMotion ? undefined : containerVariants}
                     >
-                      {category.items.map((item) => {
-                        const galleryImage = item.gallery && item.gallery.length > 0 ? item.gallery[0] : item.src;
-                        const galleryFallback = (() => {
-                          if (galleryImage.includes("/assets/designs-webp/")) {
-                            const [base, query] = galleryImage.split("?");
-                            const fallbackBase = base
-                              .replace("/assets/designs-webp/", "/assets/designs/")
-                              .replace(/\.webp$/, ".png");
-                            return query ? `${fallbackBase}?${query}` : fallbackBase;
-                          }
-                          return item.fallback ?? galleryImage;
-                        })();
-
-                        return (
-                        <motion.article
+                      {category.items.map((item) => (
+                        <DesignCard
                           key={item.id}
+                          item={item}
+                          categoryLabel={category.name}
+                          formatLabel={FORMAT_LABELS[item.format]}
+                          paletteLabel={PALETTE_LABELS[item.palette]}
+                          onZoom={() => openLightbox(item)}
+                          zoomLabel="Zoom"
+                          actionHref={item.rbLink}
+                          role="listitem"
+                          aria-labelledby={`design-${item.id}-title`}
+                          aria-describedby={`design-${item.id}-tags`}
+                          titleId={`design-${item.id}-title`}
+                          tagsId={`design-${item.id}-tags`}
+                          descriptionId={`design-${item.id}-summary`}
                           variants={prefersReducedMotion ? undefined : itemVariants}
                           whileHover={
                             prefersReducedMotion
                               ? undefined
                               : { scale: 1.02, y: -4, transition: { duration: 0.3, ease: "easeOut" } }
                           }
-                          className="group flex h-full flex-col rounded-[2rem] border border-border/60 bg-background/80 shadow-lg"
-                          role="listitem"
-                          aria-labelledby={`design-${item.id}-title`}
-                          aria-describedby={`design-${item.id}-tags`}
-                        >
-                          <div className="relative overflow-hidden rounded-t-[2rem] bg-secondary/30">
-                            <button
-                              type="button"
-                              onClick={() => openLightbox(item)}
-                              className="group/btn absolute right-4 top-4 z-10 inline-flex items-center gap-2 rounded-full bg-background/80 px-3 py-2 text-xs uppercase tracking-[0.3em] text-foreground opacity-0 shadow-lg backdrop-blur transition hover:bg-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 group-hover:opacity-100"
-                              aria-label={`Agrandir ${item.title}`}
-                            >
-                              <ZoomIn className="h-3.5 w-3.5" /> Zoom
-                            </button>
-                            <picture>
-                              <source srcSet={galleryImage} type="image/webp" />
-                              {galleryFallback ? (
-                                <source srcSet={galleryFallback} type="image/png" />
-                              ) : null}
-                              <img
-                                src={galleryFallback ?? galleryImage}
-                                alt={`Illustration print on demand : ${item.title} – ${item.tags.join(", ")}`}
-                                loading="lazy"
-                                decoding="async"
-                                className="aspect-square w-full object-contain p-4 transition duration-500 ease-out group-hover:scale-[1.02]"
-                                onClick={() => openLightbox(item)}
-                              />
-                            </picture>
-                          </div>
-                          <div className="flex flex-1 flex-col gap-5 p-6">
-                            <div className="space-y-3">
-                              <div className="flex items-start justify-between gap-3">
-                                <h3 id={`design-${item.id}-title`} className="text-lg font-semibold text-foreground">
-                                  {item.title}
-                                </h3>
-                              </div>
-                              <div className="flex flex-wrap gap-2 text-[10px] uppercase tracking-[0.35em] text-muted-foreground">
-                                <span className="rounded-full bg-secondary/30 px-3 py-1 text-muted-foreground">
-                                  {FORMAT_LABELS[item.format]}
-                                </span>
-                                <span className="rounded-full bg-secondary/30 px-3 py-1 text-muted-foreground">
-                                  {PALETTE_LABELS[item.palette]}
-                                </span>
-                              </div>
-                            </div>
-                            {typeof item.createdAt === "string" && !Number.isNaN(new Date(item.createdAt).getTime()) ? (
-                              <p className="text-xs uppercase tracking-[0.3em] text-muted-foreground">
-                                {new Date(item.createdAt).toLocaleDateString("fr-FR", {
-                                  year: "numeric",
-                                  month: "short",
-                                  day: "numeric",
-                                })}
-                              </p>
-                            ) : null}
-                            <p className="text-xs text-muted-foreground">{item.usage}</p>
-                            <div className="flex flex-wrap gap-2" id={`design-${item.id}-tags`}>
-                              {item.tags.slice(0, 5).map((tag, index) => (
-                                <Badge
-                                  key={tag}
-                                  variant="outline"
-                                  className={`tech-badge tech-badge-${(index % 4) + 1}`}
-                                >
-                                  #{tag}
-                                </Badge>
-                              ))}
-                            </div>
-                            <p className="sr-only">{`Description : ${item.title}. Tags : ${item.tags.join(", ")}.`}</p>
-                            <div className="mt-auto">
-                              <Button asChild variant="outline" className="w-full gap-2" size="sm">
-                                <a href={item.rbLink} target="_blank" rel="noreferrer" aria-label={`Voir ${item.title} sur Print on demand`}>
-                                  <ExternalLink className="h-4 w-4" /> Voir sur RedBubble
-                                </a>
-                              </Button>
-                            </div>
-                          </div>
-                        </motion.article>
-                        );
-                      })}
+                        />
+                      ))}
                     </motion.div>
                   </div>
                 ))}
