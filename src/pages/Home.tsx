@@ -8,6 +8,7 @@ import {DesignSkeleton} from "@/components/DesignSkeleton";
 import {ModalPreview} from "@/components/ModalPreview";
 import {ProjectPreviewCard} from "@/components/ProjectPreviewCard";
 import {Section} from "@/components/Section";
+import {SectionIntro} from "@/components/SectionIntro";
 import {SkillPill} from "@/components/SkillPill";
 import {StatCard} from "@/components/StatCard";
 import {ActionButton, ActionButtonGroup} from "@/components/ActionButtons";
@@ -357,14 +358,11 @@ export function HomePage() {
             </section>
 
             <Section className="space-y-6">
-                <div className="space-y-3">
-                    <p className="text-xs uppercase tracking-[0.4em] text-muted-foreground">À la une</p>
-                    <h2 className="text-3xl font-semibold md:text-4xl">Projets notables</h2>
-                    <p className="max-w-2xl text-muted-foreground">
-                        Un aperçu des développements récents : temps réel, interfaces immersives et outils internes. Sélection
-                        extraite des projets les plus représentatifs.
-                    </p>
-                </div>
+                <SectionIntro
+                    eyebrow="À la une"
+                    title="Projets notables"
+                    description="Un aperçu des développements récents : temps réel, interfaces immersives et outils internes. Sélection extraite des projets les plus représentatifs."
+                />
                 <motion.div
                     className="grid gap-6 md:grid-cols-2"
                     initial={prefersReducedMotion ? undefined : {opacity: 0, y: 32}}
@@ -411,20 +409,19 @@ export function HomePage() {
             </Section>
 
       <Section className="space-y-6">
-        <div className="space-y-3">
-          <p className="text-xs uppercase tracking-[0.4em] text-muted-foreground">Designs favoris</p>
-          <h2 className="text-3xl font-semibold md:text-4xl">Sélection Print on demand mise en avant</h2>
-          <p className="max-w-2xl text-muted-foreground">
-            Entre deux sprints de développement, j’explore l’illustration pour Print on demand. Chaque aperçu ci-dessous met en
-            avant une catégorie de la boutique pour donner un panorama rapide des univers proposés.
-          </p>
-        </div>
+        <SectionIntro
+          eyebrow="Designs favoris"
+          title="Sélection Print on demand mise en avant"
+          description="Entre deux sprints de développement, j’explore l’illustration pour Print on demand. Chaque aperçu ci-dessous met en avant une catégorie de la boutique pour donner un panorama rapide des univers proposés."
+        />
         {designsStatus === "error" ? (
           <div className="rounded-[2rem] border border-border/60 bg-background/80 p-8 text-center shadow-lg">
-            <h3 className="text-lg font-semibold text-foreground">Designs indisponibles pour le moment</h3>
-            <p className="mt-3 text-sm text-muted-foreground">
-              Le chargement des visuels Print on demand a échoué. Rechargez la page ou rendez-vous directement sur la boutique.
-            </p>
+            <SectionIntro
+              eyebrow="Designs favoris"
+              title="Designs indisponibles pour le moment"
+              description="Le chargement des visuels Print on demand a échoué. Rechargez la page ou rendez-vous directement sur la boutique."
+              align="center"
+            />
             <div className="mt-6 flex flex-wrap justify-center gap-3">
               <ActionButton
                 variant="outline"

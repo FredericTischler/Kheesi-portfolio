@@ -5,6 +5,7 @@ import { Link as LinkIcon, Search } from "lucide-react";
 import { ModalPreview } from "@/components/ModalPreview";
 import { ProjectPreviewCard } from "@/components/ProjectPreviewCard";
 import { ActionButton, ActionButtonGroup } from "@/components/ActionButtons";
+import { SectionIntro } from "@/components/SectionIntro";
 import { Button } from "@/components/ui/button";
 import { Dialog } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
@@ -155,11 +156,11 @@ export default function ProjectsPage() {
   return (
     <div className="space-y-16 pb-20 pt-36">
       <section className="container space-y-6">
-        <p className="text-xs uppercase tracking-[0.45em] text-muted-foreground">Projets</p>
-        <h1 className="text-4xl font-semibold md:text-5xl">Réalisations & expérimentations</h1>
-        <p className="max-w-3xl text-muted-foreground">
-            Java, TypeScript, Angular, SQL : je conçois des applications temps réel et des solutions full-stack performantes.
-        </p>
+        <SectionIntro
+          eyebrow="Projets"
+          title="Réalisations & expérimentations"
+          description="Java, TypeScript, Angular, SQL : je conçois des applications temps réel et des solutions full-stack performantes."
+        />
       </section>
 
       <section className="container space-y-12">

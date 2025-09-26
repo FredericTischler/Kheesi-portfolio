@@ -3,6 +3,7 @@ import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
 import { ExternalLink, ChevronLeft, ChevronRight } from "lucide-react";
 
 import { DesignCard } from "@/components/DesignCard";
+import { SectionIntro } from "@/components/SectionIntro";
 import { ActionButton, ActionButtonGroup } from "@/components/ActionButtons";
 import { Badge } from "@/components/ui/badge";
 import { PRINT_ON_DEMAND_CATEGORIES, PRINT_ON_DEMAND_ITEMS, type RBItem, type RBFormat, type RBPalette } from "@/data/print-on-demand";
@@ -191,14 +192,11 @@ export default function PrintOnDemandPage() {
   return (
     <div className="space-y-14 pb-20 pt-36">
       <section className="container space-y-8">
-        <header className="space-y-4">
-          <p className="text-xs uppercase tracking-[0.45em] text-muted-foreground">Print on demand</p>
-          <h1 className="text-4xl font-semibold md:text-5xl">Atelier Print on demand</h1>
-          <p className="max-w-3xl text-muted-foreground">
-            Une galerie pensée pour présenter les visuels destinés aux produits print on demand : stickers, textiles ou affiches.
-            Explore les catégories et découvre rapidement les visuels adaptés à ta boutique.
-          </p>
-        </header>
+        <SectionIntro
+          eyebrow="Print on demand"
+          title="Atelier Print on demand"
+          description="Une galerie pensée pour présenter les visuels destinés aux produits print on demand : stickers, textiles ou affiches. Explore les catégories et découvre rapidement les visuels adaptés à ta boutique."
+        />
       </section>
 
       <section className="relative">
