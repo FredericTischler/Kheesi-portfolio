@@ -2,6 +2,7 @@ import { useDeferredValue, useMemo, useState } from "react";
 import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
 import { ExternalLink, Github, Link as LinkIcon, Search } from "lucide-react";
 
+import { ProjectPreviewCard, PROJECT_PLACEHOLDER_CLASSES } from "@/components/ProjectPreviewCard";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog";
@@ -18,9 +19,6 @@ type FilterState = {
   tech: Set<string>;
   sort: SortOption;
 };
-
-const PLACEHOLDER_CLASSES =
-  "flex h-48 w-full items-center justify-center rounded-[1.75rem] bg-gradient-to-br from-secondary/40 via-secondary/20 to-secondary/40 text-xs uppercase tracking-[0.35em] text-muted-foreground";
 
 const SORT_LABELS: Record<SortOption, string> = {
   recent: "Plus récents",
@@ -106,22 +104,6 @@ function useProjectFilters(): {
   };
 }
 
-function ProjectThumbnail({ project }: { project: Project }) {
-  if (!project.thumbnail) {
-    return <div className={PLACEHOLDER_CLASSES}>Aperçu indisponible</div>;
-  }
-
-  return (
-    <img
-      src={project.thumbnail}
-      alt=""
-      loading="lazy"
-      decoding="async"
-      className="h-48 w-full rounded-[1.75rem] object-cover"
-    />
-  );
-}
-
 export default function ProjectsPage() {
   usePageMetadata({
     title: "Projets — Frédéric Tischler",
@@ -161,61 +143,6 @@ export default function ProjectsPage() {
 
   const shareUrl = (project: Project) =>
     typeof window !== "undefined" ? `${window.location.origin}/projects#${project.slug}` : project.url;
-
-  const renderProjectCard = (project: Project) => (
-    <motion.article
-      key={project.slug}
-      layout={!prefersReducedMotion}
-      layoutId={`project-card-${project.slug}`}
-      variants={prefersReducedMotion ? undefined : cardVariants}
-      whileHover={
-        prefersReducedMotion ? undefined : { scale: 1.02, y: -6, transition: { duration: 0.3, ease: "easeOut" } }
-      }
-      role="listitem"
-      tabIndex={0}
-      aria-label={`Aperçu du projet ${project.name}`}
-      aria-describedby={`project-${project.slug}-summary`}
-      onClick={() => setQuickView(project)}
-      onKeyDown={(event) => {
-        if (event.key === "Enter" || event.key === " ") {
-          event.preventDefault();
-          setQuickView(project);
-        }
-      }}
-      className="group flex h-full flex-col gap-6 rounded-[2rem] border border-border/60 bg-background/80 p-6 text-left shadow-lg transition focus:outline-none focus-visible:ring-2 focus-visible:ring-primary/60 focus-visible:ring-offset-2"
-    >
-      <ProjectThumbnail project={project} />
-      <div className="flex flex-1 flex-col gap-4">
-        <div className="flex items-start justify-between gap-4">
-          <h3 className="text-lg font-semibold text-foreground">{project.name}</h3>
-        </div>
-        <p className="text-sm text-muted-foreground line-clamp-3">{project.description}</p>
-       <div className="flex flex-wrap gap-2">
-         {project.tech.slice(0, 5).map((tech) => (
-            <Badge key={`${project.slug}-${tech}`} variant="secondary" className="px-3 py-1 text-xs uppercase tracking-[0.3em]">
-              {tech}
-            </Badge>
-          ))}
-       </div>
-        <p id={`project-${project.slug}-summary`} className="sr-only">
-          {`Technologies principales : ${project.tech.join(", ")}.`}
-        </p>
-      </div>
-      <div className="flex items-center gap-3">
-        <Button
-          asChild
-          variant="outline"
-          size="sm"
-          className="gap-2 btn-cta-outline"
-          onClick={(event) => event.stopPropagation()}
-        >
-          <a href={project.url} target="_blank" rel="noreferrer" aria-label={`Ouvrir ${project.name} sur GitHub`}>
-            <Github className="h-4 w-4" aria-hidden="true" /> Voir
-          </a>
-        </Button>
-      </div>
-    </motion.article>
-  );
 
   return (
     <div className="space-y-16 pb-20 pt-36">
@@ -306,7 +233,34 @@ export default function ProjectsPage() {
                 initial={prefersReducedMotion ? undefined : "hidden"}
                 animate={prefersReducedMotion ? undefined : "visible"}
               >
-                {filteredProjects.map((project) => renderProjectCard(project))}
+                {filteredProjects.map((project) => (
+                  <ProjectPreviewCard
+                    key={project.slug}
+                    project={project}
+                    layout={!prefersReducedMotion}
+                    layoutId={`project-card-${project.slug}`}
+                    variants={prefersReducedMotion ? undefined : cardVariants}
+                    whileHover={
+                      prefersReducedMotion
+                        ? undefined
+                        : { scale: 1.02, y: -6, transition: { duration: 0.3, ease: "easeOut" } }
+                    }
+                    onSelect={() => setQuickView(project)}
+                    actions={
+                      <Button
+                        asChild
+                        variant="outline"
+                        size="sm"
+                        className="gap-2 btn-cta-outline"
+                        onClick={(event) => event.stopPropagation()}
+                      >
+                        <a href={project.url} target="_blank" rel="noreferrer" aria-label={`Ouvrir ${project.name} sur GitHub`}>
+                          <Github className="h-4 w-4" aria-hidden="true" /> Voir
+                        </a>
+                      </Button>
+                    }
+                  />
+                ))}
               </motion.div>
             </AnimatePresence>
           )}
@@ -327,7 +281,17 @@ export default function ProjectsPage() {
             <DialogDescription className="text-sm text-muted-foreground">{quickView.description}</DialogDescription>
           </DialogHeader>
           <div className="space-y-6 px-6 py-6">
-            <ProjectThumbnail project={quickView} />
+            {quickView.thumbnail ? (
+              <img
+                src={quickView.thumbnail}
+                alt=""
+                loading="lazy"
+                decoding="async"
+                className="h-48 w-full rounded-[1.75rem] object-cover"
+              />
+            ) : (
+              <div className={PROJECT_PLACEHOLDER_CLASSES}>Aperçu indisponible</div>
+            )}
             <div className="space-y-4">
               <h3 className="text-sm font-semibold uppercase tracking-[0.35em] text-muted-foreground">Technologies</h3>
               <div className="flex flex-wrap gap-2">

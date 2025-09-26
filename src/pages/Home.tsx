@@ -1,10 +1,12 @@
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import {Link} from "react-router-dom";
 import {motion, useReducedMotion} from "framer-motion";
 import {ArrowRight, Download, ExternalLink, Github, Link as LinkIcon} from "lucide-react";
 
 import {Section} from "@/components/Section";
+import {SkillPill} from "@/components/SkillPill";
 import {StatCard} from "@/components/StatCard";
+import {ProjectPreviewCard} from "@/components/ProjectPreviewCard";
 import {Button} from "@/components/ui/button";
 import {Badge} from "@/components/ui/badge";
 import {Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle} from "@/components/ui/dialog";
@@ -136,8 +138,6 @@ const PALETTE_LABELS: Record<RBPalette, string> = {
     monochrome: "Monochrome",
 };
 
-const PROJECT_PLACEHOLDER_CLASSES =
-    "flex h-48 w-full items-center justify-center rounded-[1.75rem] bg-gradient-to-br from-secondary/40 via-secondary/20 to-secondary/40 text-xs uppercase tracking-[0.35em] text-muted-foreground";
 type FeaturedDesign = {
     category: Pick<RBCategory, "id" | "name" | "description">;
     item: RBItem;
@@ -247,15 +247,6 @@ export function HomePage() {
         [],
     );
 
-    const hexToRgba = useCallback((hex: string, alpha: number) => {
-        const value = hex.replace("#", "");
-        const bigint = parseInt(value, 16);
-        const r = (bigint >> 16) & 255;
-        const g = (bigint >> 8) & 255;
-        const b = bigint & 255;
-        return `rgba(${r}, ${g}, ${b}, ${alpha})`;
-    }, []);
-
     return (
         <div className="space-y-14 pb-14">
             <section className="pt-36">
@@ -343,51 +334,7 @@ export function HomePage() {
                                     aria-label="Compétences principales"
                                 >
                                     {SKILL_ITEMS.map((item) => (
-                                        <div
-                                            key={item.name}
-                                            className="flex items-center gap-3 rounded-lg border px-4 py-3"
-                                            role="listitem"
-                                            style={{
-                                                backgroundColor: hexToRgba(item.color, 0.12),
-                                                borderColor: hexToRgba(item.color, 0.35),
-                                                color: item.color,
-                                            }}
-                                        >
-                                            <span
-                                                className="relative grid h-10 w-10 place-items-center overflow-hidden rounded-full border"
-                                                style={{
-                                                    borderColor: hexToRgba(item.color, 0.45),
-                                                    backgroundColor: hexToRgba(item.color, 0.1),
-                                                }}
-                                            >
-                                                <img
-                                                    src={item.icon}
-                                                    alt={`Logo ${item.name}`}
-                                                    loading="lazy"
-                                                    className="h-6 w-6 object-contain"
-                                                    onError={(event) => {
-                                                        const image = event.currentTarget;
-                                                        image.style.display = "none";
-                                                        const fallback = image.nextElementSibling as HTMLElement | null;
-                                                        if (fallback) {
-                                                            fallback.style.display = "block";
-                                                        }
-                                                    }}
-                                                />
-                                                <span
-                                                    aria-hidden="true"
-                                                    className="hidden text-xs font-semibold uppercase"
-                                                    style={{ color: item.color }}
-                                                >
-                                                    {item.initials}
-                                                </span>
-                                            </span>
-                                            <div className="flex flex-col">
-                                                <span className="text-sm font-semibold uppercase tracking-[0.2em]">{item.name}</span>
-                                                <span
-                                                    className="text-[11px] uppercase tracking-[0.3em] text-muted-foreground/80">{item.category}</span>
-                                            </div>
-                                        </div>
+                                        <SkillPill key={item.name} {...item} role="listitem" />
                                     ))}
                                 </div>
                             ) : (
@@ -400,51 +347,7 @@ export function HomePage() {
                                     transition={{repeat: Infinity, duration: Math.max(SKILL_ITEMS.length * 3, 18), ease: "linear"}}
                                 >
                                     {[...SKILL_ITEMS, ...SKILL_ITEMS].map((item, index) => (
-                                        <div
-                                            key={`${item.name}-${index}`}
-                                            className="flex items-center gap-3 rounded-lg border px-4 py-3"
-                                            role="listitem"
-                                            style={{
-                                                backgroundColor: hexToRgba(item.color, 0.12),
-                                                borderColor: hexToRgba(item.color, 0.35),
-                                                color: item.color,
-                                            }}
-                                        >
-                                            <span
-                                                className="relative grid h-10 w-10 place-items-center overflow-hidden rounded-full border"
-                                                style={{
-                                                    borderColor: hexToRgba(item.color, 0.45),
-                                                    backgroundColor: hexToRgba(item.color, 0.1),
-                                                }}
-                                            >
-                                                <img
-                                                    src={item.icon}
-                                                    alt={`Logo ${item.name}`}
-                                                    loading="lazy"
-                                                    className="h-6 w-6 object-contain"
-                                                    onError={(event) => {
-                                                        const image = event.currentTarget;
-                                                        image.style.display = "none";
-                                                        const fallback = image.nextElementSibling as HTMLElement | null;
-                                                        if (fallback) {
-                                                            fallback.style.display = "block";
-                                                        }
-                                                    }}
-                                                />
-                                                <span
-                                                    aria-hidden="true"
-                                                    className="hidden text-xs font-semibold uppercase"
-                                                    style={{ color: item.color }}
-                                                >
-                                                    {item.initials}
-                                                </span>
-                                            </span>
-                                            <div className="flex flex-col">
-                                                <span className="text-sm font-semibold uppercase tracking-[0.2em]">{item.name}</span>
-                                                <span
-                                                    className="text-[11px] uppercase tracking-[0.3em] text-muted-foreground/80">{item.category}</span>
-                                            </div>
-                                        </div>
+                                        <SkillPill key={`${item.name}-${index}`} {...item} role="listitem" />
                                     ))}
                                 </motion.div>
                             )}
@@ -469,63 +372,21 @@ export function HomePage() {
                     transition={{duration: prefersReducedMotion ? 0 : 0.4, ease: "easeOut"}}
                 >
                     {highlightedProjects.slice(0, 2).map((project) => (
-                        <motion.article
+                        <ProjectPreviewCard
                             key={project.slug}
-                            className="group flex h-full flex-col gap-6 rounded-[2rem] border border-border/60 bg-background/80 p-6 text-left shadow-lg"
+                            project={project}
                             whileHover={
                                 prefersReducedMotion
                                     ? undefined
                                     : {scale: 1.02, y: -6, transition: {duration: 0.3, ease: "easeOut"}}
                             }
-                            role="listitem"
-                            tabIndex={0}
-                            aria-label={`Aperçu du projet ${project.name}`}
-                            aria-describedby={`project-${project.slug}-summary`}
-                            onClick={() => {
+                            onSelect={() => {
                                 setSelectedProject(project);
                                 setModalOpen(true);
                             }}
-                            onKeyDown={(event) => {
-                                if (event.key === "Enter" || event.key === " ") {
-                                    event.preventDefault();
-                                    setSelectedProject(project);
-                                    setModalOpen(true);
-                                }
-                            }}
-                        >
-                            {project.thumbnail ? (
-                                <img
-                                    src={project.thumbnail}
-                                    alt=""
-                                    loading="lazy"
-                                    decoding="async"
-                                    className="h-48 w-full rounded-[1.75rem] object-cover"
-                                />
-                            ) : (
-                                <div className={PROJECT_PLACEHOLDER_CLASSES}>Aperçu indisponible</div>
-                            )}
-                            <div className="flex flex-1 flex-col gap-4">
-                                <div className="space-y-3">
-                                    <div className="flex items-start justify-between gap-4">
-                                        <h3 className="text-lg font-semibold text-foreground">{project.name}</h3>
-                                    </div>
-                                    <p className="text-sm text-muted-foreground line-clamp-3">{project.description}</p>
-                                    <div className="flex flex-wrap gap-2">
-                                        {project.tech.slice(0, 5).map((tech) => (
-                                            <Badge
-                                                key={`${project.slug}-${tech}`}
-                                                variant="secondary"
-                                                className="px-3 py-1 text-xs uppercase tracking-[0.3em]"
-                                            >
-                                                {tech}
-                                            </Badge>
-                                        ))}
-                                    </div>
-                                </div>
-                                <p id={`project-${project.slug}-summary`} className="sr-only">
-                                    {`Technologies principales : ${project.tech.join(", ")}.`}
-                                </p>
-                                <div className="mt-auto flex flex-wrap gap-3">
+                            actionsClassName="mt-auto flex flex-wrap gap-3"
+                            actions={
+                                <>
                                     <Button
                                         size="sm"
                                         onClick={(event) => {
@@ -547,9 +408,9 @@ export function HomePage() {
                                             <Github className="h-4 w-4" aria-hidden="true" /> Voir sur GitHub
                                         </a>
                                     </Button>
-                                </div>
-                            </div>
-                        </motion.article>
+                                </>
+                            }
+                        />
                     ))}
                 </motion.div>
             </Section>
