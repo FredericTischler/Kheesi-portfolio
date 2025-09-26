@@ -3,8 +3,8 @@ import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
 import { ExternalLink, ChevronLeft, ChevronRight } from "lucide-react";
 
 import { DesignCard } from "@/components/DesignCard";
+import { ActionButton, ActionButtonGroup } from "@/components/ActionButtons";
 import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
 import { PRINT_ON_DEMAND_CATEGORIES, PRINT_ON_DEMAND_ITEMS, type RBItem, type RBFormat, type RBPalette } from "@/data/print-on-demand";
 import { usePageMetadata } from "@/lib/metadata";
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog";
@@ -506,13 +506,17 @@ function LightboxGallery({
           ))}
         </div>
         <DialogFooter className="flex flex-col gap-3 border-none bg-transparent px-0 py-0">
-          <div className="flex flex-wrap gap-3">
-            <Button asChild className="gap-2 btn-cta">
-              <a href={item.rbLink} target="_blank" rel="noreferrer">
-                <ExternalLink className="h-4 w-4" aria-hidden="true" /> Voir sur RedBubble
-              </a>
-            </Button>
-          </div>
+          <ActionButtonGroup>
+            <ActionButton
+              className="gap-2 btn-cta"
+              href={item.rbLink}
+              target="_blank"
+              rel="noreferrer"
+              icon={<ExternalLink className="h-4 w-4" aria-hidden="true" />}
+            >
+              Voir sur RedBubble
+            </ActionButton>
+          </ActionButtonGroup>
         </DialogFooter>
       </div>
     </>

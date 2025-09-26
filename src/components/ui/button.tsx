@@ -3,7 +3,7 @@ import { Slot } from "@radix-ui/react-slot";
 
 import { cn } from "@/lib/utils";
 
-type ButtonVariant =
+export type ButtonVariant =
   | "primary"
   | "secondary"
   | "outline"
@@ -11,7 +11,7 @@ type ButtonVariant =
   | "destructive"
   | "link";
 
-type ButtonSize = "sm" | "md" | "lg" | "icon";
+export type ButtonSize = "sm" | "md" | "lg" | "icon";
 
 export interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
   asChild?: boolean;
@@ -57,4 +57,3 @@ export const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
   },
 );
 Button.displayName = "Button";
-

@@ -10,6 +10,7 @@ import {ProjectPreviewCard} from "@/components/ProjectPreviewCard";
 import {Section} from "@/components/Section";
 import {SkillPill} from "@/components/SkillPill";
 import {StatCard} from "@/components/StatCard";
+import {ActionButton, ActionButtonGroup} from "@/components/ActionButtons";
 import {Button} from "@/components/ui/button";
 import {Dialog} from "@/components/ui/dialog";
 import {GitHubIcon} from "@/components/icons";
@@ -384,10 +385,10 @@ export function HomePage() {
                                     : {scale: 1.02, y: -6, transition: {duration: 0.3, ease: "easeOut"}}
                             }
                             onSelect={() => openProjectModal(project)}
-                            actionsClassName="mt-auto flex flex-wrap gap-3"
+                            actionsClassName="mt-auto"
                             actions={
-                                <>
-                                    <Button
+                                <ActionButtonGroup>
+                                    <ActionButton
                                         size="sm"
                                         onClick={(event) => {
                                             event.stopPropagation();
@@ -395,19 +396,18 @@ export function HomePage() {
                                         }}
                                     >
                                         Aperçu
-                                    </Button>
-                                    <Button
-                                        asChild
-                                        variant="outline"
+                                    </ActionButton>
+                                    <ActionButton
                                         size="sm"
+                                        variant="outline"
                                         className="gap-2"
+                                        href={project.url}
                                         onClick={(event) => event.stopPropagation()}
+                                        icon={<GitHubIcon className="h-4 w-4" aria-hidden="true" />}
                                     >
-                                        <a href={project.url} target="_blank" rel="noreferrer">
-                                            <GitHubIcon className="h-4 w-4" aria-hidden="true" /> Voir sur GitHub
-                                        </a>
-                                    </Button>
-                                </>
+                                        Voir sur GitHub
+                                    </ActionButton>
+                                </ActionButtonGroup>
                             }
                         />
                     ))}
@@ -480,20 +480,25 @@ export function HomePage() {
                   badgesTitle="Technologies"
                   badges={selectedProject.tech}
                   footerSlot={
-                    <>
-                      <Button
-                          variant="outline"
-                          className="gap-2"
-                          onClick={() => copy(`${window.location.origin}/projects#${selectedProject.slug}`)}
+                    <ActionButtonGroup>
+                      <ActionButton
+                        variant="outline"
+                        className="gap-2"
+                        onClick={() => copy(`${window.location.origin}/projects#${selectedProject.slug}`)}
+                        icon={<LinkIcon className="h-4 w-4" aria-hidden="true" />}
                       >
-                          <LinkIcon className="h-4 w-4" aria-hidden="true" /> {copied ? "Lien copié" : "Copier le lien"}
-                      </Button>
-                      <Button asChild className="gap-2">
-                          <a href={selectedProject.url} target="_blank" rel="noreferrer">
-                              <GitHubIcon className="h-4 w-4" aria-hidden="true" /> Voir sur GitHub
-                          </a>
-                      </Button>
-                    </>
+                        {copied ? "Lien copié" : "Copier le lien"}
+                      </ActionButton>
+                      <ActionButton
+                        className="gap-2"
+                        href={selectedProject.url}
+                        icon={<GitHubIcon className="h-4 w-4" aria-hidden="true" />}
+                        target="_blank"
+                        rel="noreferrer"
+                      >
+                        Voir sur GitHub
+                      </ActionButton>
+                    </ActionButtonGroup>
                   }
               />
           ) : null}

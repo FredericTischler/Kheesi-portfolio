@@ -4,6 +4,7 @@ import { Link as LinkIcon, Search } from "lucide-react";
 
 import { ModalPreview } from "@/components/ModalPreview";
 import { ProjectPreviewCard } from "@/components/ProjectPreviewCard";
+import { ActionButton, ActionButtonGroup } from "@/components/ActionButtons";
 import { Button } from "@/components/ui/button";
 import { Dialog } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
@@ -254,17 +255,21 @@ export default function ProjectsPage() {
                     }
                     onSelect={() => openQuickView(project)}
                     actions={
-                      <Button
-                        asChild
-                        variant="outline"
-                        size="sm"
-                        className="gap-2 btn-cta-outline"
-                        onClick={(event) => event.stopPropagation()}
-                      >
-                        <a href={project.url} target="_blank" rel="noreferrer" aria-label={`Ouvrir ${project.name} sur GitHub`}>
-                          <GitHubIcon className="h-4 w-4" aria-hidden="true" /> Voir
-                        </a>
-                      </Button>
+                      <ActionButtonGroup className="gap-2">
+                        <ActionButton
+                          size="sm"
+                          variant="outline"
+                          className="gap-2 btn-cta-outline"
+                          href={project.url}
+                          target="_blank"
+                          rel="noreferrer"
+                          onClick={(event) => event.stopPropagation()}
+                          icon={<GitHubIcon className="h-4 w-4" aria-hidden="true" />}
+                          aria-label={`Ouvrir ${project.name} sur GitHub`}
+                        >
+                          Voir
+                        </ActionButton>
+                      </ActionButtonGroup>
                     }
                   />
                 ))}
@@ -291,20 +296,25 @@ export default function ProjectsPage() {
                 className: "flex flex-col",
               }}
               footerSlot={(
-                <>
-                  <Button
+                <ActionButtonGroup>
+                  <ActionButton
                     variant="outline"
                     className="gap-2"
                     onClick={() => copy(shareUrl(quickView))}
+                    icon={<LinkIcon className="h-4 w-4" aria-hidden="true" />}
                   >
-                    <LinkIcon className="h-4 w-4" aria-hidden="true" /> {copied ? "Lien copié" : "Copier le lien"}
-                  </Button>
-                  <Button asChild className="gap-2 btn-cta">
-                    <a href={quickView.url} target="_blank" rel="noreferrer">
-                      <GitHubIcon className="h-4 w-4" aria-hidden="true" /> Voir sur GitHub
-                    </a>
-                  </Button>
-                </>
+                    {copied ? "Lien copié" : "Copier le lien"}
+                  </ActionButton>
+                  <ActionButton
+                    className="gap-2 btn-cta"
+                    href={quickView.url}
+                    target="_blank"
+                    rel="noreferrer"
+                    icon={<GitHubIcon className="h-4 w-4" aria-hidden="true" />}
+                  >
+                    Voir sur GitHub
+                  </ActionButton>
+                </ActionButtonGroup>
               )}
             />
           ) : null}
