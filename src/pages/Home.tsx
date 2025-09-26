@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useState } from "react";
 import {Link} from "react-router-dom";
 import {motion, useReducedMotion} from "framer-motion";
-import {ArrowRight, Download, ExternalLink, Github, Link as LinkIcon} from "lucide-react";
+import {ArrowRight, Download, ExternalLink, Link as LinkIcon} from "lucide-react";
 
 import {DesignCard} from "@/components/DesignCard";
 import {DesignSkeleton} from "@/components/DesignSkeleton";
@@ -12,6 +12,7 @@ import {SkillPill} from "@/components/SkillPill";
 import {StatCard} from "@/components/StatCard";
 import {Button} from "@/components/ui/button";
 import {Dialog} from "@/components/ui/dialog";
+import {GitHubIcon} from "@/components/icons";
 import {PROFILE} from "@/data/profile";
 import {PROJECTS, type Project} from "@/data/projects";
 import type {RBCategory, RBItem, RBFormat, RBPalette} from "@/data/print-on-demand";
@@ -406,7 +407,7 @@ export function HomePage() {
                                         onClick={(event) => event.stopPropagation()}
                                     >
                                         <a href={project.url} target="_blank" rel="noreferrer">
-                                            <Github className="h-4 w-4" aria-hidden="true" /> Voir sur GitHub
+                                            <GitHubIcon className="h-4 w-4" aria-hidden="true" /> Voir sur GitHub
                                         </a>
                                     </Button>
                                 </>
@@ -497,7 +498,7 @@ export function HomePage() {
                       </Button>
                       <Button asChild className="gap-2">
                           <a href={selectedProject.url} target="_blank" rel="noreferrer">
-                              <ExternalLink className="h-4 w-4" aria-hidden="true" /> Voir sur GitHub
+                              <GitHubIcon className="h-4 w-4" aria-hidden="true" /> Voir sur GitHub
                           </a>
                       </Button>
                     </>

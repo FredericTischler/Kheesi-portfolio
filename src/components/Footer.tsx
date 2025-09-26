@@ -1,9 +1,10 @@
-import { Github, Instagram, Linkedin, Mail } from "lucide-react";
+import { Instagram, Linkedin, Mail } from "lucide-react";
 
 import { PROFILE } from "@/data/profile";
+import { GitHubIcon } from "@/components/icons";
 
 const socials = [
-  { label: "GitHub", href: PROFILE.socials.github, icon: Github },
+  { label: "GitHub", href: PROFILE.socials.github, icon: GitHubIcon },
   { label: "LinkedIn", href: PROFILE.socials.linkedin, icon: Linkedin },
   { label: "Instagram", href: PROFILE.socials.instagram, icon: Instagram },
   { label: "Email", href: PROFILE.socials.email, icon: Mail },

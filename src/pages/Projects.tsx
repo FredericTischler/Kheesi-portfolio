@@ -1,6 +1,6 @@
 import { useDeferredValue, useMemo, useState } from "react";
 import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
-import { ExternalLink, Github, Link as LinkIcon, Search } from "lucide-react";
+import { Link as LinkIcon, Search } from "lucide-react";
 
 import { ModalPreview } from "@/components/ModalPreview";
 import { ProjectPreviewCard } from "@/components/ProjectPreviewCard";
@@ -11,6 +11,7 @@ import { PROJECTS, type Project } from "@/data/projects";
 import { useClipboard } from "@/lib/clipboard";
 import { usePageMetadata } from "@/lib/metadata";
 import { cn } from "@/lib/utils";
+import { GitHubIcon } from "@/components/icons";
 
 type SortOption = "recent" | "alphabetical";
 
@@ -255,7 +256,7 @@ export default function ProjectsPage() {
                         onClick={(event) => event.stopPropagation()}
                       >
                         <a href={project.url} target="_blank" rel="noreferrer" aria-label={`Ouvrir ${project.name} sur GitHub`}>
-                          <Github className="h-4 w-4" aria-hidden="true" /> Voir
+                          <GitHubIcon className="h-4 w-4" aria-hidden="true" /> Voir
                         </a>
                       </Button>
                     }
@@ -294,7 +295,7 @@ export default function ProjectsPage() {
                   </Button>
                   <Button asChild className="gap-2 btn-cta">
                     <a href={quickView.url} target="_blank" rel="noreferrer">
-                      <ExternalLink className="h-4 w-4" aria-hidden="true" /> Voir sur GitHub
+                      <GitHubIcon className="h-4 w-4" aria-hidden="true" /> Voir sur GitHub
                     </a>
                   </Button>
                 </>

@@ -109,5 +109,3 @@ export function ProjectPreviewCard({
     </motion.article>
   );
 }
-
-export default ProjectPreviewCard;
