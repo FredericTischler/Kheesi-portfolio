@@ -2,10 +2,10 @@ import { useDeferredValue, useMemo, useState } from "react";
 import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
 import { ExternalLink, Github, Link as LinkIcon, Search } from "lucide-react";
 
-import { ProjectPreviewCard, PROJECT_PLACEHOLDER_CLASSES } from "@/components/ProjectPreviewCard";
-import { Badge } from "@/components/ui/badge";
+import { ModalPreview } from "@/components/ModalPreview";
+import { ProjectPreviewCard } from "@/components/ProjectPreviewCard";
 import { Button } from "@/components/ui/button";
-import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import { Dialog } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { PROJECTS, type Project } from "@/data/projects";
 import { useClipboard } from "@/lib/clipboard";
@@ -270,55 +270,36 @@ export default function ProjectsPage() {
       <Dialog open={Boolean(quickView)} onOpenChange={(open) => (open ? undefined : setQuickView(null))}>
         <AnimatePresence>
           {quickView ? (
-      <DialogContent className="border-border/70 bg-background/95 p-0 shadow-elevated">
-        <motion.div
-          layoutId={`project-card-${quickView.slug}`}
-          transition={{ duration: prefersReducedMotion ? 0 : 0.25, ease: "easeInOut" }}
-          className="flex flex-col"
-        >
-          <DialogHeader className="space-y-2 border-b border-border/60 px-6 py-5">
-            <DialogTitle className="text-2xl font-semibold">{quickView.name}</DialogTitle>
-            <DialogDescription className="text-sm text-muted-foreground">{quickView.description}</DialogDescription>
-          </DialogHeader>
-          <div className="space-y-6 px-6 py-6">
-            {quickView.thumbnail ? (
-              <img
-                src={quickView.thumbnail}
-                alt=""
-                loading="lazy"
-                decoding="async"
-                className="h-48 w-full rounded-[1.75rem] object-cover"
-              />
-            ) : (
-              <div className={PROJECT_PLACEHOLDER_CLASSES}>Aperçu indisponible</div>
-            )}
-            <div className="space-y-4">
-              <h3 className="text-sm font-semibold uppercase tracking-[0.35em] text-muted-foreground">Technologies</h3>
-              <div className="flex flex-wrap gap-2">
-                {quickView.tech.map((tech) => (
-                  <Badge key={`${quickView.slug}-${tech}`} variant="secondary" className="px-3 py-1 text-xs uppercase tracking-[0.3em]">
-                    {tech}
-                  </Badge>
-                ))}
-              </div>
-            </div>
-          </div>
-          <DialogFooter className="flex flex-col gap-3 border-t border-border/60 bg-background/90 px-6 py-5 sm:flex-row sm:justify-end">
-            <Button
-              variant="outline"
-              className="gap-2"
-              onClick={() => copy(shareUrl(quickView))}
-            >
-              <LinkIcon className="h-4 w-4" aria-hidden="true" /> {copied ? "Lien copié" : "Copier le lien"}
-            </Button>
-            <Button asChild className="gap-2 btn-cta">
-              <a href={quickView.url} target="_blank" rel="noreferrer">
-                <ExternalLink className="h-4 w-4" aria-hidden="true" /> Voir sur GitHub
-              </a>
-            </Button>
-          </DialogFooter>
-        </motion.div>
-      </DialogContent>
+            <ModalPreview
+              title={quickView.name}
+              description={quickView.description}
+              image={quickView.thumbnail}
+              placeholderLabel="Aperçu indisponible"
+              badgesTitle="Technologies"
+              badges={quickView.tech}
+              badgeVariant="secondary"
+              motionProps={{
+                layoutId: `project-card-${quickView.slug}`,
+                transition: { duration: prefersReducedMotion ? 0 : 0.25, ease: "easeInOut" },
+                className: "flex flex-col",
+              }}
+              footerSlot={(
+                <>
+                  <Button
+                    variant="outline"
+                    className="gap-2"
+                    onClick={() => copy(shareUrl(quickView))}
+                  >
+                    <LinkIcon className="h-4 w-4" aria-hidden="true" /> {copied ? "Lien copié" : "Copier le lien"}
+                  </Button>
+                  <Button asChild className="gap-2 btn-cta">
+                    <a href={quickView.url} target="_blank" rel="noreferrer">
+                      <ExternalLink className="h-4 w-4" aria-hidden="true" /> Voir sur GitHub
+                    </a>
+                  </Button>
+                </>
+              )}
+            />
           ) : null}
         </AnimatePresence>
       </Dialog>

@@ -19,7 +19,7 @@ type ProjectPreviewCardProps = Omit<MotionArticleProps, "children"> & {
   descriptionClassName?: string;
 };
 
-export const PROJECT_PLACEHOLDER_CLASSES =
+const PROJECT_PLACEHOLDER_CLASSES =
   "flex h-48 w-full items-center justify-center rounded-[1.75rem] bg-gradient-to-br from-secondary/40 via-secondary/20 to-secondary/40 text-xs uppercase tracking-[0.35em] text-muted-foreground";
 
 export function ProjectPreviewCard({

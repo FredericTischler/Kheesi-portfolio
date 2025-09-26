@@ -5,13 +5,13 @@ import {ArrowRight, Download, ExternalLink, Github, Link as LinkIcon} from "luci
 
 import {DesignCard} from "@/components/DesignCard";
 import {DesignSkeleton} from "@/components/DesignSkeleton";
+import {ModalPreview} from "@/components/ModalPreview";
 import {ProjectPreviewCard} from "@/components/ProjectPreviewCard";
 import {Section} from "@/components/Section";
 import {SkillPill} from "@/components/SkillPill";
 import {StatCard} from "@/components/StatCard";
 import {Button} from "@/components/ui/button";
-import {Badge} from "@/components/ui/badge";
-import {Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle} from "@/components/ui/dialog";
+import {Dialog} from "@/components/ui/dialog";
 import {PROFILE} from "@/data/profile";
 import {PROJECTS, type Project} from "@/data/projects";
 import type {RBCategory, RBItem, RBFormat, RBPalette} from "@/data/print-on-demand";
@@ -480,37 +480,14 @@ export function HomePage() {
           }
       }}>
           {selectedProject ? (
-              <DialogContent className="w-[min(92vw,720px)] border-border/70 bg-background/95 p-0 shadow-elevated">
-                  <DialogHeader className="space-y-2 border-b border-border/60 px-6 py-5">
-                      <DialogTitle className="text-2xl font-semibold">{selectedProject.name}</DialogTitle>
-                      <DialogDescription className="text-sm text-muted-foreground">{selectedProject.description}</DialogDescription>
-                  </DialogHeader>
-                  <div className="space-y-6 px-6 py-6">
-                      {selectedProject.thumbnail ? (
-                          <img
-                              src={selectedProject.thumbnail}
-                              alt=""
-                              className="h-56 w-full rounded-[1.75rem] object-cover"
-                              loading="lazy"
-                              decoding="async"
-                          />
-                      ) : (
-                          <div className="flex h-56 w-full items-center justify-center rounded-[1.75rem] bg-secondary/40 text-xs uppercase tracking-[0.35em] text-muted-foreground">
-                              Aperçu indisponible
-                          </div>
-                      )}
-                      <div className="space-y-4">
-                          <h3 className="text-sm font-semibold uppercase tracking-[0.35em] text-muted-foreground">Technologies</h3>
-                          <div className="flex flex-wrap gap-2">
-                              {selectedProject.tech.map((tech) => (
-                                  <Badge key={`${selectedProject.slug}-${tech}`} variant="secondary" className="px-3 py-1 text-xs uppercase tracking-[0.3em]">
-                                      {tech}
-                                  </Badge>
-                              ))}
-                          </div>
-                      </div>
-                  </div>
-                  <DialogFooter className="flex flex-col gap-3 border-t border-border/60 bg-background/90 px-6 py-5 sm:flex-row sm:justify-end">
+              <ModalPreview
+                  title={selectedProject.name}
+                  description={selectedProject.description}
+                  image={selectedProject.thumbnail}
+                  badgesTitle="Technologies"
+                  badges={selectedProject.tech}
+                  footerSlot={
+                    <>
                       <Button
                           variant="outline"
                           className="gap-2"
@@ -523,8 +500,9 @@ export function HomePage() {
                               <ExternalLink className="h-4 w-4" aria-hidden="true" /> Voir sur GitHub
                           </a>
                       </Button>
-                  </DialogFooter>
-              </DialogContent>
+                    </>
+                  }
+              />
           ) : null}
       </Dialog>
     </div>
