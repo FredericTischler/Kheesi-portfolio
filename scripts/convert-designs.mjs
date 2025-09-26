@@ -1,14 +1,12 @@
-import { execFile } from "child_process";
-import { promisify } from "util";
 import { readdir, mkdir, stat } from "fs/promises";
 import path from "path";
-import cwebp from "cwebp-bin";
+import sharp from "sharp";
 
-const execFileAsync = promisify(execFile);
 const SOURCE_DIR = path.resolve("public/assets/designs");
 const TARGET_DIR = path.resolve("public/assets/designs-webp");
 const QUALITY = process.env.WEBP_QUALITY ? Number(process.env.WEBP_QUALITY) : 80;
 const MAX_WIDTH = process.env.WEBP_MAX_WIDTH ? Number(process.env.WEBP_MAX_WIDTH) : 1600;
+const MAX_HEIGHT = process.env.WEBP_MAX_HEIGHT ? Number(process.env.WEBP_MAX_HEIGHT) : 1600;
 
 async function ensureDir(dir) {
   try {
@@ -28,17 +26,18 @@ async function ensureDir(dir) {
 async function convertFile(file) {
   const baseName = path.basename(file, ".png");
   const target = path.join(TARGET_DIR, `${baseName}.webp`);
-  const args = [
-    "-q",
-    String(QUALITY),
-    "-resize",
-    String(MAX_WIDTH),
-    "0",
-    file,
-    "-o",
-    target,
-  ];
-  await execFileAsync(cwebp, args);
+  await sharp(file)
+    .resize({
+      width: MAX_WIDTH,
+      height: MAX_HEIGHT,
+      fit: "inside",
+      withoutEnlargement: true,
+    })
+    .webp({
+      quality: QUALITY,
+      effort: 6,
+    })
+    .toFile(target);
   return target;
 }
 
