@@ -17,6 +17,7 @@ import {usePageMetadata} from "@/lib/metadata";
 
 type SkillItem = {
     name: string;
+    icon: string;
     initials: string;
     color: string;
     category: string;
@@ -25,84 +26,98 @@ type SkillItem = {
 const SKILL_ITEMS: SkillItem[] = [
     {
         name: "Java",
+        icon: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/java/java-original.svg",
         initials: "JA",
         color: "#f89820",
         category: "Langages",
     },
     {
         name: "TypeScript",
+        icon: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/typescript/typescript-original.svg",
         initials: "TS",
         color: "#3178c6",
         category: "Langages",
     },
     {
         name: "JavaScript",
+        icon: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/javascript/javascript-original.svg",
         initials: "JS",
         color: "#f7df1e",
         category: "Langages",
     },
     {
         name: "Go",
+        icon: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/go/go-original.svg",
         initials: "GO",
         color: "#00add8",
         category: "Langages",
     },
     {
         name: "React",
+        icon: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/react/react-original.svg",
         initials: "RE",
         color: "#61dafb",
         category: "Frontend",
     },
     {
         name: "HTML/CSS",
+        icon: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/html5/html5-original.svg",
         initials: "HT",
         color: "#e44d26",
         category: "Frontend",
     },
     {
         name: "Angular",
+        icon: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/angularjs/angularjs-original.svg",
         initials: "NG",
         color: "#dd0031",
         category: "Frontend",
     },
     {
         name: "Node.js",
+        icon: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/nodejs/nodejs-original.svg",
         initials: "ND",
         color: "#539e43",
         category: "Backend & DevOps",
     },
     {
         name: "Docker",
+        icon: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/docker/docker-original.svg",
         initials: "DK",
         color: "#0db7ed",
         category: "Backend & DevOps",
     },
     {
         name: "PostgreSQL",
+        icon: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/postgresql/postgresql-original.svg",
         initials: "PG",
         color: "#336791",
         category: "Bases de données",
     },
     {
         name: "MySQL",
+        icon: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/mysql/mysql-original.svg",
         initials: "MY",
         color: "#00618a",
         category: "Bases de données",
     },
     {
         name: "SQLite",
+        icon: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/sqlite/sqlite-original.svg",
         initials: "SQ",
         color: "#003b57",
         category: "Bases de données",
     },
     {
         name: "Python",
+        icon: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/python/python-original.svg",
         initials: "PY",
         color: "#3776ab",
         category: "Langages",
     },
     {
         name: "Langage C",
+        icon: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/c/c-original.svg",
         initials: "C",
         color: "#283593",
         category: "Langages",
@@ -340,14 +355,33 @@ export function HomePage() {
                                             }}
                                         >
                                             <span
-                                                aria-hidden="true"
-                                                className="grid h-8 w-8 place-items-center rounded-full text-xs font-semibold uppercase"
+                                                className="relative grid h-10 w-10 place-items-center overflow-hidden rounded-full border"
                                                 style={{
-                                                    backgroundColor: hexToRgba(item.color, 0.18),
-                                                    color: item.color,
+                                                    borderColor: hexToRgba(item.color, 0.45),
+                                                    backgroundColor: hexToRgba(item.color, 0.1),
                                                 }}
                                             >
-                                                {item.initials}
+                                                <img
+                                                    src={item.icon}
+                                                    alt={`Logo ${item.name}`}
+                                                    loading="lazy"
+                                                    className="h-6 w-6 object-contain"
+                                                    onError={(event) => {
+                                                        const image = event.currentTarget;
+                                                        image.style.display = "none";
+                                                        const fallback = image.nextElementSibling as HTMLElement | null;
+                                                        if (fallback) {
+                                                            fallback.style.display = "block";
+                                                        }
+                                                    }}
+                                                />
+                                                <span
+                                                    aria-hidden="true"
+                                                    className="hidden text-xs font-semibold uppercase"
+                                                    style={{ color: item.color }}
+                                                >
+                                                    {item.initials}
+                                                </span>
                                             </span>
                                             <div className="flex flex-col">
                                                 <span className="text-sm font-semibold uppercase tracking-[0.2em]">{item.name}</span>
@@ -378,14 +412,33 @@ export function HomePage() {
                                             }}
                                         >
                                             <span
-                                                aria-hidden="true"
-                                                className="grid h-8 w-8 place-items-center rounded-full text-xs font-semibold uppercase"
+                                                className="relative grid h-10 w-10 place-items-center overflow-hidden rounded-full border"
                                                 style={{
-                                                    backgroundColor: hexToRgba(item.color, 0.18),
-                                                    color: item.color,
+                                                    borderColor: hexToRgba(item.color, 0.45),
+                                                    backgroundColor: hexToRgba(item.color, 0.1),
                                                 }}
                                             >
-                                                {item.initials}
+                                                <img
+                                                    src={item.icon}
+                                                    alt={`Logo ${item.name}`}
+                                                    loading="lazy"
+                                                    className="h-6 w-6 object-contain"
+                                                    onError={(event) => {
+                                                        const image = event.currentTarget;
+                                                        image.style.display = "none";
+                                                        const fallback = image.nextElementSibling as HTMLElement | null;
+                                                        if (fallback) {
+                                                            fallback.style.display = "block";
+                                                        }
+                                                    }}
+                                                />
+                                                <span
+                                                    aria-hidden="true"
+                                                    className="hidden text-xs font-semibold uppercase"
+                                                    style={{ color: item.color }}
+                                                >
+                                                    {item.initials}
+                                                </span>
                                             </span>
                                             <div className="flex flex-col">
                                                 <span className="text-sm font-semibold uppercase tracking-[0.2em]">{item.name}</span>
