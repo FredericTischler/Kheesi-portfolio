@@ -39,14 +39,6 @@ class RouteErrorBoundary extends Component<RouteErrorBoundaryProps, RouteErrorBo
     console.error("Route rendering failed", error, info);
   }
 
-  componentDidUpdate(prevProps: RouteErrorBoundaryProps) {
-    if (prevProps.children !== this.props.children && this.state.hasError) {
-      // Reset when route changes
-      // eslint-disable-next-line react/no-did-update-set-state
-      this.setState({ hasError: false, error: undefined });
-    }
-  }
-
   handleRetry() {
     this.setState({ hasError: false, error: undefined });
   }

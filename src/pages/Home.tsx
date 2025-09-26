@@ -256,7 +256,6 @@ export function HomePage() {
         return `rgba(${r}, ${g}, ${b}, ${alpha})`;
     }, []);
 
-    // @ts-ignore
     return (
         <div className="space-y-14 pb-14">
             <section className="pt-36">
@@ -762,5 +761,4 @@ export function HomePage() {
   );
 }
 
-// @ts-ignore
 export default HomePage;
