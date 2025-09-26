@@ -1,7 +1,7 @@
 import { useMemo, useState } from "react";
 import { CheckCircle2, Mail } from "lucide-react";
 
-import { Button } from "@/components/ui/button";
+import { ActionButton } from "@/components/ActionButtons";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
@@ -85,9 +85,9 @@ export function ContactForm({ mailto }: { mailto: string }) {
         {errors.message ? <p className="text-xs text-destructive">{errors.message}</p> : null}
       </div>
       <div className="flex flex-col gap-4">
-        <Button type="submit" size="md" className="gap-2 btn-cta">
+        <ActionButton type="submit" size="md" variant="primary" className="gap-2 btn-cta">
           Envoyer
-        </Button>
+        </ActionButton>
         <a
           href={mailtoHref}
           className="inline-flex items-center gap-2 text-sm text-muted-foreground underline-offset-4 hover:underline"

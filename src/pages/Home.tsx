@@ -11,7 +11,6 @@ import {Section} from "@/components/Section";
 import {SkillPill} from "@/components/SkillPill";
 import {StatCard} from "@/components/StatCard";
 import {ActionButton, ActionButtonGroup} from "@/components/ActionButtons";
-import {Button} from "@/components/ui/button";
 import {Dialog} from "@/components/ui/dialog";
 import {GitHubIcon} from "@/components/icons";
 import {PROFILE} from "@/data/profile";
@@ -276,21 +275,18 @@ export function HomePage() {
                             informatique qui m’a donné un socle algorithmique solide et une maîtrise approfondie de Java.
                         </p>
                         <div className="flex flex-wrap gap-4">
-                            <Button asChild size="lg" className="gap-2 btn-cta">
-                                <Link to="/projects">
-                                    Voir mes projets <ArrowRight className="h-4 w-4"/>
+                            <ActionButton asChild size="lg" className="gap-2 btn-cta">
+                                <Link to="/projects" className="inline-flex items-center gap-2">
+                                    <ArrowRight className="h-4 w-4" />
+                                    <span>Voir mes projets</span>
                                 </Link>
-                            </Button>
-                            <Button
-                                asChild
-                                variant="outline"
-                                size="lg"
-                                className="gap-2 btn-cta-outline"
-                            >
-                                <a href="/assets/cv-frederic-tischler.pdf" download>
-                                    <Download className="h-4 w-4"/> Télécharger mon CV
+                            </ActionButton>
+                            <ActionButton asChild size="lg" variant="outline" className="gap-2 btn-cta-outline">
+                                <a href="/assets/cv-frederic-tischler.pdf" download className="inline-flex items-center gap-2">
+                                    <Download className="h-4 w-4" />
+                                    <span>Télécharger mon CV</span>
                                 </a>
-                            </Button>
+                            </ActionButton>
                         </div>
                     </motion.div>
                     <motion.div
@@ -430,16 +426,16 @@ export function HomePage() {
               Le chargement des visuels Print on demand a échoué. Rechargez la page ou rendez-vous directement sur la boutique.
             </p>
             <div className="mt-6 flex flex-wrap justify-center gap-3">
-              <Button
+              <ActionButton
                 variant="outline"
-                asChild
                 size="sm"
                 className="gap-2"
+                href="https://www.print-on-demand.com/people/frederictischler"
+                target="_blank"
+                rel="noreferrer"
               >
-                <a href="https://www.print-on-demand.com/people/frederictischler" target="_blank" rel="noreferrer">
-                  Ouvrir la boutique
-                </a>
-              </Button>
+                Ouvrir la boutique
+              </ActionButton>
             </div>
           </div>
         ) : designsStatus !== "ready" ? (
