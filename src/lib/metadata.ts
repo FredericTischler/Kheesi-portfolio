@@ -80,7 +80,3 @@ export function usePageMetadata(metadata: Metadata) {
     setLink("canonical", canonicalUrl);
   }, [title, description, image, canonical, noIndex]);
 }
-
-export function getDefaultMetadata(): Metadata {
-  return { title: DEFAULT_TITLE, description: DEFAULT_DESCRIPTION };
-}

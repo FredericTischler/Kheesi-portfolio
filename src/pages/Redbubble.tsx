@@ -8,6 +8,7 @@ import { Button } from "@/components/ui/button";
 import { PRINT_ON_DEMAND_CATEGORIES, PRINT_ON_DEMAND_ITEMS, type RBItem, type RBFormat, type RBPalette } from "@/data/print-on-demand";
 import { usePageMetadata } from "@/lib/metadata";
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import * as React from "react";
 
 const GRID_CLASSES = "grid gap-6 sm:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-4";
 const NAV_WIDTH = 220;
@@ -372,8 +373,8 @@ function LightboxGallery({
 }: {
   item: RBItem;
   setLightboxIndex: (value: number | null | ((prev: number | null) => number | null)) => void;
-  touchStartX: React.MutableRefObject<number | null>;
-  touchEndX: React.MutableRefObject<number | null>;
+  touchStartX: React.RefObject<number | null>;
+  touchEndX: React.RefObject<number | null>;
   items: RBItem[];
 }) {
   const [activeImage, setActiveImage] = useState(0);

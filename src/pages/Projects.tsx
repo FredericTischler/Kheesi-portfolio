@@ -9,6 +9,7 @@ import { Dialog } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { PROJECTS, type Project } from "@/data/projects";
 import { useClipboard } from "@/lib/clipboard";
+import { useModalSelection } from "@/hooks/useModalSelection";
 import { usePageMetadata } from "@/lib/metadata";
 import { cn } from "@/lib/utils";
 import { GitHubIcon } from "@/components/icons";
@@ -114,7 +115,12 @@ export default function ProjectsPage() {
 
   const prefersReducedMotion = useReducedMotion();
   const { state, query, deferredQuery, setQuery, toggleTech, clearFilters, setSort } = useProjectFilters();
-  const [quickView, setQuickView] = useState<Project | null>(null);
+  const {
+    selected: quickView,
+    openModal: openQuickView,
+    closeModal: closeQuickView,
+    isOpen: quickViewOpen,
+  } = useModalSelection<Project>();
   const { copied, copy } = useClipboard();
 
   const availableTech = useMemo(
@@ -246,7 +252,7 @@ export default function ProjectsPage() {
                         ? undefined
                         : { scale: 1.02, y: -6, transition: { duration: 0.3, ease: "easeOut" } }
                     }
-                    onSelect={() => setQuickView(project)}
+                    onSelect={() => openQuickView(project)}
                     actions={
                       <Button
                         asChild
@@ -268,7 +274,7 @@ export default function ProjectsPage() {
         </div>
       </section>
 
-      <Dialog open={Boolean(quickView)} onOpenChange={(open) => (open ? undefined : setQuickView(null))}>
+      <Dialog open={quickViewOpen} onOpenChange={(open) => (open ? undefined : closeQuickView())}>
         <AnimatePresence>
           {quickView ? (
             <ModalPreview

@@ -17,6 +17,7 @@ import {PROFILE} from "@/data/profile";
 import {PROJECTS, type Project} from "@/data/projects";
 import type {RBCategory, RBItem, RBFormat, RBPalette} from "@/data/print-on-demand";
 import {useClipboard} from "@/lib/clipboard";
+import {useModalSelection} from "@/hooks/useModalSelection";
 import {usePageMetadata} from "@/lib/metadata";
 
 type SkillItem = {
@@ -179,8 +180,8 @@ export function HomePage() {
     );
     const [featuredDesigns, setFeaturedDesigns] = useState<FeaturedDesign[]>([]);
     const [designsStatus, setDesignsStatus] = useState<"idle" | "loading" | "ready" | "error">("idle");
-    const [selectedProject, setSelectedProject] = useState<Project | null>(null);
-    const [modalOpen, setModalOpen] = useState(false);
+    const {selected: selectedProject, openModal: openProjectModal, closeModal: closeProjectModal, isOpen: projectModalOpen} =
+        useModalSelection<Project>();
     const {copied, copy} = useClipboard();
 
     useEffect(() => {
@@ -382,10 +383,7 @@ export function HomePage() {
                                     ? undefined
                                     : {scale: 1.02, y: -6, transition: {duration: 0.3, ease: "easeOut"}}
                             }
-                            onSelect={() => {
-                                setSelectedProject(project);
-                                setModalOpen(true);
-                            }}
+                            onSelect={() => openProjectModal(project)}
                             actionsClassName="mt-auto flex flex-wrap gap-3"
                             actions={
                                 <>
@@ -393,8 +391,7 @@ export function HomePage() {
                                         size="sm"
                                         onClick={(event) => {
                                             event.stopPropagation();
-                                            setSelectedProject(project);
-                                            setModalOpen(true);
+                                            openProjectModal(project);
                                         }}
                                     >
                                         Aperçu
@@ -474,12 +471,7 @@ export function HomePage() {
         )}
       </Section>
 
-      <Dialog open={modalOpen && selectedProject !== null} onOpenChange={(open) => {
-          setModalOpen(open);
-          if (!open) {
-              setSelectedProject(null);
-          }
-      }}>
+      <Dialog open={projectModalOpen} onOpenChange={(open) => (open ? undefined : closeProjectModal())}>
           {selectedProject ? (
               <ModalPreview
                   title={selectedProject.name}
