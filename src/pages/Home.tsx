@@ -451,7 +451,7 @@ export function HomePage() {
                 categoryLabel={category.name}
                 formatLabel={FORMAT_LABELS[item.format]}
                 paletteLabel={PALETTE_LABELS[item.palette]}
-                actionLabel="Voir sur RedBubble"
+                actionLabel="RedBubble"
                 actionIcon={<ExternalLink className="h-4 w-4" />}
                 whileHover={
                   prefersReducedMotion

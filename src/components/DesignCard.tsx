@@ -47,7 +47,7 @@ export function DesignCard({
   onZoom,
   zoomLabel = "Zoom",
   zoomIcon,
-  actionLabel = "Voir sur RedBubble",
+  actionLabel = "RedBubble",
   actionIcon,
   actionHref,
   badgesVariant = "outline",

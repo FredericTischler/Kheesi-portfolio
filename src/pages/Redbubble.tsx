@@ -310,7 +310,7 @@ export default function PrintOnDemandPage() {
                           onZoom={() => openLightbox(item)}
                           zoomLabel="Zoom"
                           actionHref={item.rbLink}
-                          actionLabel="Voir sur RedBubble"
+                          actionLabel="RedBubble"
                           actionIcon={<ExternalLink className="h-4 w-4" />}
                           titleId={`design-${item.id}-title`}
                           tagsId={`design-${item.id}-tags`}
@@ -512,7 +512,7 @@ function LightboxGallery({
               rel="noreferrer"
               icon={<ExternalLink className="h-4 w-4" aria-hidden="true" />}
             >
-              Voir sur RedBubble
+              RedBubble
             </ActionButton>
           </ActionButtonGroup>
         </DialogFooter>

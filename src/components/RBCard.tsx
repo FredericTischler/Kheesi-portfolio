@@ -46,7 +46,7 @@ export function RBCard({ item, onQuickView }: RBCardProps) {
           </Button>
           <Button asChild variant="outline" size="md" className="gap-2">
             <a href={item.rbLink} target="_blank" rel="noreferrer">
-              <ExternalLink className="h-4 w-4" /> Voir sur RedBubble
+              <ExternalLink className="h-4 w-4" /> RedBubble
             </a>
           </Button>
         </div>

@@ -21,11 +21,11 @@ export interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElemen
 
 const variantStyles: Record<ButtonVariant, string> = {
   primary:
-    "bg-primary text-primary-foreground shadow hover:bg-primary/90 focus-visible:ring-primary/40",
+    "btn-cta",
   secondary:
     "bg-secondary text-secondary-foreground hover:bg-secondary/80 focus-visible:ring-secondary/40",
   outline:
-    "border border-border/60 bg-transparent hover:bg-secondary/40 focus-visible:ring-secondary/30",
+    "btn-cta-outline",
   ghost: "hover:bg-secondary/40 hover:text-foreground focus-visible:ring-secondary/30",
   destructive:
     "bg-destructive text-destructive-foreground hover:bg-destructive/90 focus-visible:ring-destructive/40",
