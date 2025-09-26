@@ -300,7 +300,20 @@ export default function PrintOnDemandPage() {
                       animate={prefersReducedMotion ? undefined : "visible"}
                       variants={prefersReducedMotion ? undefined : containerVariants}
                     >
-                      {category.items.map((item) => (
+                      {category.items.map((item) => {
+                        const galleryImage = item.gallery && item.gallery.length > 0 ? item.gallery[0] : item.src;
+                        const galleryFallback = (() => {
+                          if (galleryImage.includes("/assets/designs-webp/")) {
+                            const [base, query] = galleryImage.split("?");
+                            const fallbackBase = base
+                              .replace("/assets/designs-webp/", "/assets/designs/")
+                              .replace(/\.webp$/, ".png");
+                            return query ? `${fallbackBase}?${query}` : fallbackBase;
+                          }
+                          return item.fallback ?? galleryImage;
+                        })();
+
+                        return (
                         <motion.article
                           key={item.id}
                           variants={prefersReducedMotion ? undefined : itemVariants}
@@ -323,13 +336,20 @@ export default function PrintOnDemandPage() {
                             >
                               <ZoomIn className="h-3.5 w-3.5" /> Zoom
                             </button>
-                            <img
-                              src={item.gallery && item.gallery.length > 0 ? item.gallery[0] : item.src}
-                              alt={`Illustration print on demand : ${item.title} – ${item.tags.join(", ")}`}
-                              loading="lazy"
-                              className="aspect-square w-full object-contain p-4 transition duration-500 ease-out group-hover:scale-[1.02]"
-                              onClick={() => openLightbox(item)}
-                            />
+                            <picture>
+                              <source srcSet={galleryImage} type="image/webp" />
+                              {galleryFallback ? (
+                                <source srcSet={galleryFallback} type="image/png" />
+                              ) : null}
+                              <img
+                                src={galleryFallback ?? galleryImage}
+                                alt={`Illustration print on demand : ${item.title} – ${item.tags.join(", ")}`}
+                                loading="lazy"
+                                decoding="async"
+                                className="aspect-square w-full object-contain p-4 transition duration-500 ease-out group-hover:scale-[1.02]"
+                                onClick={() => openLightbox(item)}
+                              />
+                            </picture>
                           </div>
                           <div className="flex flex-1 flex-col gap-5 p-6">
                             <div className="space-y-3">
@@ -378,7 +398,8 @@ export default function PrintOnDemandPage() {
                             </div>
                           </div>
                         </motion.article>
-                      ))}
+                        );
+                      })}
                     </motion.div>
                   </div>
                 ))}
@@ -429,7 +450,24 @@ function LightboxGallery({
   items: RBItem[];
 }) {
   const [activeImage, setActiveImage] = useState(0);
-  const gallery = useMemo(() => (item.gallery && item.gallery.length > 0 ? item.gallery : [item.src]), [item]);
+  const gallery = useMemo(
+    () => (item.gallery && item.gallery.length > 0 ? item.gallery : [item.src]),
+    [item],
+  );
+  const galleryFallbacks = useMemo(
+    () =>
+      gallery.map((entry) => {
+        if (entry.includes("/assets/designs-webp/")) {
+          const [base, query] = entry.split("?");
+          const fallbackBase = base
+            .replace("/assets/designs-webp/", "/assets/designs/")
+            .replace(/\.webp$/, ".png");
+          return query ? `${fallbackBase}?${query}` : fallbackBase;
+        }
+        return item.fallback ?? entry;
+      }),
+    [gallery, item.fallback],
+  );
 
   useEffect(() => {
     setActiveImage(0);
@@ -489,12 +527,16 @@ function LightboxGallery({
         onTouchEnd={handleSwipeNavigation}
       >
         <picture>
-          {item.src2x ? <source srcSet={`${gallery[activeImage]} 2x`} /> : null}
+          <source srcSet={gallery[activeImage]} type="image/webp" />
+          {galleryFallbacks[activeImage] ? (
+            <source srcSet={galleryFallbacks[activeImage]} type="image/png" />
+          ) : null}
           <img
-            src={gallery[activeImage]}
+            src={galleryFallbacks[activeImage] ?? gallery[activeImage]}
             alt={`Illustration print on demand : ${item.title} – ${item.tags.join(", ")}`}
             className="mx-auto max-h-[70vh] w-full rounded-[1.25rem] object-contain"
             loading="lazy"
+            decoding="async"
           />
         </picture>
         {items.length > 1 ? (

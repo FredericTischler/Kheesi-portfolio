@@ -25,11 +25,18 @@ export function RBCard({ item, onQuickView }: RBCardProps) {
     >
       <div className="relative aspect-square overflow-hidden">
         <picture>
-          {item.src2x ? <source srcSet={`${item.src2x} 2x`} /> : null}
+          <source
+            srcSet={item.src2x ? `${item.src} 1x, ${item.src2x} 2x` : item.src}
+            type="image/webp"
+          />
+          {item.fallback ? (
+            <source srcSet={item.fallback} type="image/png" />
+          ) : null}
           <img
-            src={item.src}
+            src={item.fallback ?? item.src}
             alt={`Illustration print on demand : ${item.title} – ${item.tags.join(", ")}`}
             loading="lazy"
+            decoding="async"
             className="h-full w-full object-cover transition duration-700 ease-out group-hover:scale-105"
           />
         </picture>

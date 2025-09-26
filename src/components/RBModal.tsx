@@ -31,12 +31,17 @@ export function RBModal({ item, open, onOpenChange }: RBModalProps) {
         <div className="grid gap-8 lg:grid-cols-[1.2fr_1fr]">
           <div className="relative overflow-hidden rounded-[2rem]">
             <picture>
-              {item.src2x ? <source srcSet={`${item.src2x} 2x`} /> : null}
+              <source
+                srcSet={item.src2x ? `${item.src} 1x, ${item.src2x} 2x` : item.src}
+                type="image/webp"
+              />
+              {item.fallback ? <source srcSet={item.fallback} type="image/png" /> : null}
               <img
-                src={item.src}
+                src={item.fallback ?? item.src}
                 alt={`Illustration print on demand : ${item.title} – ${item.tags.join(", ")}`}
                 className="h-full w-full object-cover"
                 loading="lazy"
+                decoding="async"
               />
             </picture>
             <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-background/40 via-transparent to-transparent" />
