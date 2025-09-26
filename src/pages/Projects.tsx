@@ -81,11 +81,16 @@ function useProjectFilters(): {
 } {
   const [query, setQuery] = useState("");
   const deferredQuery = useDeferredValue(query);
-  const [tech, setTech] = useState<Set<string>>(new Set());
+  const [tech, setTech] = useState<Set<string>>(() => new Set());
   const [sort, setSort] = useState<SortOption>("recent");
 
+  const state = useMemo(
+    () => ({ query: deferredQuery, tech, sort }),
+    [deferredQuery, tech, sort],
+  );
+
   return {
-    state: { query: deferredQuery, tech, sort },
+    state,
     query,
     deferredQuery,
     setQuery,
