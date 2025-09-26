@@ -5,7 +5,7 @@ import { ExternalLink, ChevronLeft, ChevronRight } from "lucide-react";
 import { DesignCard } from "@/components/DesignCard";
 import { SectionIntro } from "@/components/SectionIntro";
 import { ActionButton, ActionButtonGroup } from "@/components/ActionButtons";
-import { Badge } from "@/components/ui/badge";
+import { TagBadge, TagList } from "@/components/TagBadge";
 import { PRINT_ON_DEMAND_CATEGORIES, PRINT_ON_DEMAND_ITEMS, type RBItem, type RBFormat, type RBPalette } from "@/data/print-on-demand";
 import { usePageMetadata } from "@/lib/metadata";
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog";
@@ -287,9 +287,13 @@ export default function PrintOnDemandPage() {
                           <p className="text-sm text-muted-foreground">{category.description}</p>
                         ) : null}
                       </div>
-                      <Badge variant="outline" className="self-start px-4 py-1 text-xs uppercase tracking-[0.25em]">
+                      <TagBadge
+                        tone="default"
+                        variant="outline"
+                        className="self-start px-4 py-1 text-xs uppercase tracking-[0.25em]"
+                      >
                         {category.items.length} designs
-                      </Badge>
+                      </TagBadge>
                     </div>
 
                     <motion.div
@@ -496,13 +500,7 @@ function LightboxGallery({
         <p className="rounded-[1.5rem] border border-border/60 bg-secondary/30 px-4 py-3 text-sm text-muted-foreground">
           {item.usage}
         </p>
-        <div className="flex flex-wrap gap-2">
-          {item.tags.map((tag) => (
-            <Badge key={`${item.id}-${tag}`} variant="outline" className="tech-badge tech-badge-2">
-              #{tag}
-            </Badge>
-          ))}
-        </div>
+        <TagList items={item.tags.map((tag) => `#${tag}`)} tone="emphasis" badgeClassName="tech-badge-2" />
         <DialogFooter className="flex flex-col gap-3 border-none bg-transparent px-0 py-0">
           <ActionButtonGroup>
             <ActionButton

@@ -1,9 +1,9 @@
 import { motion, type MotionProps } from "framer-motion";
 import type { ReactNode } from "react";
 
-import { Badge } from "@/components/ui/badge";
 import { DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { cn } from "@/lib/utils";
+import { TagList } from "@/components/TagBadge";
 
 const DEFAULT_PLACEHOLDER_CLASSES =
   "flex h-56 w-full items-center justify-center rounded-[1.75rem] bg-secondary/40 text-xs uppercase tracking-[0.35em] text-muted-foreground";
@@ -64,13 +64,7 @@ export function ModalPreview({
             {badgesTitle ? (
               <h3 className="text-sm font-semibold uppercase tracking-[0.35em] text-muted-foreground">{badgesTitle}</h3>
             ) : null}
-            <div className="flex flex-wrap gap-2">
-              {badges.map((badge) => (
-                <Badge key={badge} variant={badgeVariant} className="px-3 py-1 text-xs uppercase tracking-[0.3em]">
-                  {badge}
-                </Badge>
-              ))}
-            </div>
+            <TagList items={badges.map((badge) => badge)} variant={badgeVariant} tone="default" />
           </div>
         ) : null}
         {children}

@@ -11,8 +11,8 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
-import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
+import { TagList } from "@/components/TagBadge";
 
 type RBModalProps = {
   item: RBItem | null;
@@ -53,13 +53,7 @@ export function RBModal({ item, open, onOpenChange }: RBModalProps) {
                 Visuel Print on demand composé de {item.tags.slice(0, 3).join(", ")}.
               </DialogDescription>
             </DialogHeader>
-            <div className="flex flex-wrap gap-2">
-              {item.tags.map((tag) => (
-                <Badge key={tag} variant="secondary">
-                  #{tag}
-                </Badge>
-              ))}
-            </div>
+            <TagList items={item.tags.map((tag) => `#${tag}`)} tone="emphasis" variant="secondary" />
             <div className="rounded-[1.5rem] border border-border/60 bg-secondary/30 px-4 py-3 text-xs uppercase tracking-[0.35em] text-muted-foreground">
               {item.createdAt
                 ? new Date(item.createdAt).toLocaleDateString("fr-FR", {

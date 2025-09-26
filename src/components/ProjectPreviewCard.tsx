@@ -1,9 +1,9 @@
 import { motion } from "framer-motion";
 import { type ComponentProps, type KeyboardEvent, type MouseEvent, type ReactNode } from "react";
 
-import { Badge } from "@/components/ui/badge";
 import type { Project } from "@/data/projects";
 import { cn } from "@/lib/utils";
+import { TagList } from "@/components/TagBadge";
 
 type MotionArticleProps = ComponentProps<typeof motion.article>;
 
@@ -90,17 +90,11 @@ export function ProjectPreviewCard({
           <h3 className="text-lg font-semibold text-foreground">{project.name}</h3>
         </div>
         <p className={descriptionClassName}>{project.description}</p>
-        <div className="flex flex-wrap gap-2">
-          {project.tech.slice(0, maxBadges).map((tech) => (
-            <Badge
-              key={`${project.slug}-${tech}`}
-              variant="secondary"
-              className="px-3 py-1 text-xs uppercase tracking-[0.3em]"
-            >
-              {tech}
-            </Badge>
-          ))}
-        </div>
+        <TagList
+          items={project.tech.slice(0, maxBadges).map((tech) => tech)}
+          tone="emphasis"
+          variant="secondary"
+        />
         <p id={summaryId} className="sr-only">
           {`Technologies principales : ${project.tech.join(", ")}.`}
         </p>

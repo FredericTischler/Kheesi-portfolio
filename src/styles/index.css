@@ -21,11 +21,11 @@
   --input: 210 26% 78%;
   --ring: 176 94% 38%;
   --radius: 1.25rem;
-  --badge-neutral-1: 36 92% 86%;
-  --badge-neutral-2: 192 92% 86%;
-  --badge-neutral-3: 268 88% 86%;
-  --badge-neutral-4: 120 62% 84%;
-  --badge-neutral-foreground: 222 36% 20%;
+  --badge-neutral-1: 20 100% 92%;
+  --badge-neutral-2: 198 100% 91%;
+  --badge-neutral-3: 258 100% 92%;
+  --badge-neutral-4: 150 82% 92%;
+  --badge-neutral-foreground: 222 44% 20%;
   --stat-card-bg: 210 32% 94%;
   --stat-card-border: 210 28% 82%;
   --stat-card-foreground: 222 32% 18%;
@@ -48,11 +48,11 @@
   --border-muted: 220 18% 12%;
   --input: 220 22% 18%;
   --ring: 262 84% 64%;
-  --badge-neutral-1: 36 92% 30%;
-  --badge-neutral-2: 192 90% 34%;
-  --badge-neutral-3: 268 72% 36%;
-  --badge-neutral-4: 142 66% 32%;
-  --badge-neutral-foreground: 210 42% 96%;
+  --badge-neutral-1: 20 94% 36%;
+  --badge-neutral-2: 198 92% 38%;
+  --badge-neutral-3: 258 88% 44%;
+  --badge-neutral-4: 150 80% 36%;
+  --badge-neutral-foreground: 210 46% 96%;
   --stat-card-bg: 220 22% 14%;
   --stat-card-border: 220 32% 32%;
   --stat-card-foreground: 210 40% 96%;
@@ -75,11 +75,11 @@
   --border-muted: 210 28% 78%;
   --input: 210 28% 76%;
   --ring: 48 100% 48%;
-  --badge-neutral-1: 36 92% 88%;
-  --badge-neutral-2: 192 92% 88%;
-  --badge-neutral-3: 268 88% 88%;
-  --badge-neutral-4: 120 62% 86%;
-  --badge-neutral-foreground: 222 72% 12%;
+  --badge-neutral-1: 20 100% 90%;
+  --badge-neutral-2: 198 100% 90%;
+  --badge-neutral-3: 258 100% 91%;
+  --badge-neutral-4: 150 88% 90%;
+  --badge-neutral-foreground: 222 72% 14%;
   --stat-card-bg: 210 24% 96%;
   --stat-card-border: 210 30% 70%;
   --stat-card-foreground: 222 70% 12%;
@@ -102,11 +102,11 @@
   --border-muted: 220 26% 24%;
   --input: 220 32% 22%;
   --ring: 48 100% 55%;
-  --badge-neutral-1: 36 92% 32%;
-  --badge-neutral-2: 192 90% 36%;
-  --badge-neutral-3: 268 74% 38%;
-  --badge-neutral-4: 142 66% 34%;
-  --badge-neutral-foreground: 210 46% 98%;
+  --badge-neutral-1: 20 96% 44%;
+  --badge-neutral-2: 198 94% 46%;
+  --badge-neutral-3: 258 88% 50%;
+  --badge-neutral-4: 150 86% 40%;
+  --badge-neutral-foreground: 210 48% 98%;
   --stat-card-bg: 220 22% 12%;
   --stat-card-border: 220 34% 40%;
   --stat-card-foreground: 210 60% 98%;
@@ -205,18 +205,21 @@
     color: hsla(var(--stat-card-foreground), 0.85);
   }
   .tech-badge {
-    background-color: hsl(var(--badge-neutral-1));
-    border-color: hsla(var(--badge-neutral-foreground), 0.35);
+    background: linear-gradient(135deg, hsl(var(--badge-neutral-1) / 0.65), hsl(var(--badge-neutral-1)));
+    border-color: hsla(var(--badge-neutral-foreground), 0.18);
     color: hsl(var(--badge-neutral-foreground));
+    box-shadow: inset 0 1px 0 hsla(var(--badge-neutral-foreground), 0.12),
+      0 6px 18px -12px hsla(var(--badge-neutral-foreground), 0.45);
+    backdrop-filter: blur(6px);
   }
   .tech-badge-2 {
-    background-color: hsl(var(--badge-neutral-2));
+    background: linear-gradient(135deg, hsl(var(--badge-neutral-2) / 0.65), hsl(var(--badge-neutral-2)));
   }
   .tech-badge-3 {
-    background-color: hsl(var(--badge-neutral-3));
+    background: linear-gradient(135deg, hsl(var(--badge-neutral-3) / 0.65), hsl(var(--badge-neutral-3)));
   }
   .tech-badge-4 {
-    background-color: hsl(var(--badge-neutral-4));
+    background: linear-gradient(135deg, hsl(var(--badge-neutral-4) / 0.65), hsl(var(--badge-neutral-4)));
   }
 }
 

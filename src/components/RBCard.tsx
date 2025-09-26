@@ -5,7 +5,7 @@ import type { RBItem } from "@/data/print-on-demand";
 import { cn } from "@/lib/utils";
 
 import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
+import { TagList } from "@/components/TagBadge";
 
 type RBCardProps = {
   item: RBItem;
@@ -62,13 +62,12 @@ export function RBCard({ item, onQuickView }: RBCardProps) {
             </span>
           ) : null}
         </div>
-        <div className="flex flex-wrap gap-2">
-          {item.tags.map((tag) => (
-            <Badge key={tag} variant="secondary" className="tracking-[0.2em]">
-              #{tag}
-            </Badge>
-          ))}
-        </div>
+        <TagList
+          items={item.tags.map((tag) => `#${tag}`)}
+          tone="emphasis"
+          variant="secondary"
+          badgeClassName="tracking-[0.2em]"
+        />
         <p className="sr-only" id={`pod-card-${item.id}-summary`}>
           {`Description : ${item.title}. Tags : ${item.tags.join(", ")}. ${item.createdAt ? `Publié le ${new Date(item.createdAt).toLocaleDateString("fr-FR")}.` : ""}`}
         </p>

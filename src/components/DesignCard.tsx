@@ -2,8 +2,8 @@ import { motion } from "framer-motion";
 import { ExternalLink, ZoomIn } from "lucide-react";
 import { type ComponentProps, type ReactNode, useMemo } from "react";
 
-import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
+import { TagBadge, TagList } from "@/components/TagBadge";
 import type { RBItem } from "@/data/print-on-demand";
 
 function resolveFallback(preview: string, explicitFallback?: string) {
@@ -116,15 +116,18 @@ export function DesignCard({
               {item.title}
             </h3>
             {categoryLabel ? (
-              <Badge variant="outline" className="self-start px-4 py-1 text-xs uppercase tracking-[0.25em]">
+              <TagBadge variant="outline" className="self-start px-4 py-1 text-xs uppercase tracking-[0.25em]">
                 {categoryLabel}
-              </Badge>
+              </TagBadge>
             ) : null}
           </div>
-          <div className="flex flex-wrap gap-2 text-[10px] uppercase tracking-[0.35em] text-muted-foreground">
-            <span className="rounded-full bg-secondary/30 px-3 py-1 text-muted-foreground">{formatLabel}</span>
-            <span className="rounded-full bg-secondary/30 px-3 py-1 text-muted-foreground">{paletteLabel}</span>
-          </div>
+          <TagList
+            items={[formatLabel, paletteLabel]}
+            tone="default"
+            variant="outline"
+            className="flex flex-wrap gap-2 text-muted-foreground"
+            badgeClassName="text-[10px] tracking-[0.35em]"
+          />
         </div>
         {createdAtLabel ? (
           <p className="text-xs uppercase tracking-[0.3em] text-muted-foreground">{createdAtLabel}</p>
@@ -132,13 +135,14 @@ export function DesignCard({
         <p className="text-xs text-muted-foreground">{item.usage}</p>
         <div className="flex flex-wrap gap-2" id={tagsId ?? `design-${item.id}-tags`}>
           {item.tags.slice(0, 5).map((tag, index) => (
-            <Badge
+            <TagBadge
               key={`${item.id}-${tag}`}
+              tone="emphasis"
               variant={badgesVariant}
-              className={`tech-badge tech-badge-${(index % 4) + 1}`}
+              className={`tech-badge-${(index % 4) + 1}`}
             >
               #{tag}
-            </Badge>
+            </TagBadge>
           ))}
         </div>
         <p className="sr-only" id={descriptionId ?? `design-${item.id}-summary`}>
@@ -155,5 +159,3 @@ export function DesignCard({
     </motion.article>
   );
 }
-
-
