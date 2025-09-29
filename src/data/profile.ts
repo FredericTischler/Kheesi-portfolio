@@ -149,7 +149,7 @@ export const PROFILE = {
   location: "France",
   socials: {
     github: "https://github.com/FredericTischler",
-    linkedin: "",
+    linkedin: "https://www.linkedin.com/in/fr%C3%A9d%C3%A9ric-tischler-64b588305/",
     instagram: socialInstagram,
     email: "mailto:contact@example.com",
   },

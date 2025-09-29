@@ -179,14 +179,13 @@ export function HomePage() {
                         transition={{duration: 0.6, ease: "easeOut"}}
                         className="space-y-8"
                     >
-            <span className="text-xs uppercase tracking-[0.6em] text-muted-foreground">
-              Développeur full-stack
-            </span>
                         <h1 className="text-balance text-5xl font-semibold leading-tight md:text-6xl">
-                            Full-Stack Developer — Angular, Go, TypeScript, Java
+                            Développeur full-stack
                         </h1>
                         <p className="max-w-xl text-balance text-muted-foreground">
-                            Je conçois des applications web modernes, robustes et réutilisables pour accélérer la valeur produit.
+                            Alternant chez WeNégoce et formé à Zone01, je transforme des applications métier en plateformes
+                            Angular/Java prêtes pour la mise en production continue : composants
+                            réutilisables, performances maîtrisées, documentation utile.
                         </p>
                         <div className="flex flex-wrap gap-4">
                             <ActionButton asChild size="lg" className="gap-2 btn-cta">
