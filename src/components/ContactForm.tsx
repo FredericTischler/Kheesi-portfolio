@@ -86,7 +86,7 @@ export function ContactForm({ mailto }: { mailto: string }) {
       </div>
       <div className="flex flex-col gap-4">
         <ActionButton type="submit" size="md" variant="primary" className="gap-2 btn-cta">
-          Envoyer
+          M’écrire
         </ActionButton>
         <a
           href={mailtoHref}
@@ -96,7 +96,7 @@ export function ContactForm({ mailto }: { mailto: string }) {
         </a>
         {submitted ? (
           <div className="flex items-center gap-2 rounded-[1.5rem] border border-primary/40 bg-primary/10 px-4 py-3 text-sm text-primary">
-            <CheckCircle2 className="h-5 w-5" /> Merci ! Je reviens vers vous très vite.
+            <CheckCircle2 className="h-5 w-5" /> Merci pour votre message — je reviens vers vous rapidement.
           </div>
         ) : null}
       </div>

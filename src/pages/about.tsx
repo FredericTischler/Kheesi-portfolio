@@ -5,19 +5,28 @@ import { usePageMetadata } from "@/lib/metadata";
 
 const VALUES = [
   {
-    title: "Qualité",
-    description:
-      "Code maintenable, revues rigoureuses et automatisation des tests pour sécuriser les évolutions.",
+    title: "Privilégier des architectures explicites",
+    description: "Modules, services et composants clairement définis pour garder le cap.",
   },
   {
-    title: "Lisibilité",
-    description:
-      "Architecture claire, documentation concise et composants réutilisables pour accélérer les équipes.",
+    title: "Réutiliser intelligemment",
+    description: "Librairie de composants, formulaires et grilles pour déployer vite et proprement.",
   },
   {
-    title: "Performance",
-    description:
-      "Optimisation des temps de chargement, budgets Lighthouse suivis et instrumentation pour monitorer.",
+    title: "Optimiser l’UX",
+    description: "Chargements progressifs, feedbacks clairs et accessibilité intégrée dès le départ.",
+  },
+  {
+    title: "Soutenir la maintenance",
+    description: "Standards de code, revue régulière et dette maîtrisée pour tenir dans la durée.",
+  },
+  {
+    title: "Partager la connaissance",
+    description: "Documentation utile et ateliers pour faire monter l’équipe en compétence.",
+  },
+  {
+    title: "Communiquer clairement",
+    description: "Alignement régulier avec produit, métier et design pour garder le cap commun.",
   },
 ];
 
@@ -25,20 +34,20 @@ const FORMATION = [
   {
     title: "Licence Informatique",
     description:
-      "Bases solides en algorithmique, conception objet et Java — mon langage principal depuis mes études.",
+      "Structures de données, algorithmique et POO Java pour un socle robuste.",
   },
   {
     title: "Zone01",
     description:
-      "Formation par projets intensifs : pair-programming, sprints et mise en production rapide d’applications web.",
+      "Projets intensifs : temps réel (WebSockets), algorithmes, outillage et méthodos agiles.",
   },
 ];
 
 export function AboutPage() {
   usePageMetadata({
-    title: "À propos",
+    title: "À propos — Frédéric Tischler",
     description:
-      "Parcours de Frédéric Tischler : licence informatique, Zone01, modernisation d’applications Java/Angular.",
+      "Full-stack: Angular, Go, TypeScript, Java. Architecture modulaire, composants génériques, performance et accessibilité.",
     image: "/assets/social/about.svg",
   });
 
@@ -58,22 +67,20 @@ export function AboutPage() {
         <div className="grid gap-10 lg:grid-cols-[1.1fr_0.9fr] lg:items-start">
           <div className="space-y-6">
             <p className="text-xs uppercase tracking-[0.45em] text-muted-foreground">À propos</p>
-            <h1 className="text-4xl font-semibold md:text-5xl">
-              Curieux, orienté produit et passionné par la création d’outils utiles.
-            </h1>
+            <h1 className="text-4xl font-semibold md:text-5xl">Je suis Frédéric, développeur full-stack chez WeNégoce.</h1>
             <p className="text-muted-foreground">
-              Après une licence d’informatique axée sur la théorie et l'algorithmique, j’ai intégré Zone01 pour renforcer mes
-              réflexes projet : pair-programming, feedback continu et livraison incrémentale. Cette double culture me
-              permet de plonger dans les détails métier tout en gardant une vision produit.
+              Ma licence informatique m’a donné un socle profond en algorithmique, POO Java et bases de données.
+              J’y ai enchaîné avec un stage puis un CDD chez Développement Informatique International où j’ai refondu des
+              écrans Angular/Java, factorisé des composants partagés et documenté les usages.
             </p>
             <p className="text-muted-foreground">
-              Aujourd’hui, je modernise des applications métier en Java + Angular chez WeNégoce et j’ai amorcé la même
-              transition chez Développement Informatique International. Je compose des bibliothèques de composants,
-              structure des API et garantis la cohérence UX entre les modules.
+              À Zone01, je poursuis une formation intensive par projets : WebSockets temps réel, graphes, outillage
+              devops, documentation. Cette cadence forge mes réflexes full-stack.
             </p>
             <p className="text-muted-foreground">
-              J’aime croiser design system, data visualisation et performance. Mes inspirations viennent autant des
-              dashboards financiers que des expériences d’IA et des produits craftés autour des besoins utilisateurs.
+              Aujourd’hui en alternance chez WeNégoce, je modernise une application métier avec un socle Angular/Java,
+              des composants réutilisables et un pipeline CI/CD solide tout en accompagnant l’équipe sur les conventions
+              de code et la documentation.
             </p>
           </div>
           <div className="space-y-6">

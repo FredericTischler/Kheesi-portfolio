@@ -1,7 +1,7 @@
 import { useMemo } from "react";
 import {Link} from "react-router-dom";
 import {motion, useReducedMotion} from "framer-motion";
-import {ArrowRight, Download, Link as LinkIcon} from "lucide-react";
+import {ArrowRight, Link as LinkIcon} from "lucide-react";
 
 import {ModalPreview} from "@/components/ModalPreview";
 import {ProjectPreviewCard} from "@/components/ProjectPreviewCard";
@@ -12,7 +12,6 @@ import {StatCard} from "@/components/StatCard";
 import {ActionButton, ActionButtonGroup} from "@/components/ActionButtons";
 import {Dialog} from "@/components/ui/dialog";
 import {GitHubIcon} from "@/components/icons";
-import {PROFILE} from "@/data/profile";
 import {PROJECTS, type Project} from "@/data/projects";
 import {useClipboard} from "@/lib/clipboard";
 import {useModalSelection} from "@/hooks/useModalSelection";
@@ -26,19 +25,41 @@ type SkillItem = {
     category: string;
 };
 
-const SKILL_ITEMS: SkillItem[] = [
+const PILLARS = [
     {
-        name: "Java",
-        icon: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/java/java-original.svg",
-        initials: "JA",
-        color: "#f89820",
-        category: "Langages",
+        title: "Architecture solide",
+        description: "Modules clairs, composants génériques, dette technique maîtrisée.",
     },
+    {
+        title: "Expérience fluide",
+        description: "UX pragmatique, performances et accessibilité by design.",
+    },
+    {
+        title: "Livrables propres",
+        description: "Typage strict, documentation utile et tests ciblés.",
+    },
+] as const;
+
+const SKILL_ITEMS: SkillItem[] = [
     {
         name: "TypeScript",
         icon: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/typescript/typescript-original.svg",
         initials: "TS",
         color: "#3178c6",
+        category: "Langages",
+    },
+    {
+        name: "Angular",
+        icon: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/angularjs/angularjs-original.svg",
+        initials: "NG",
+        color: "#dd0031",
+        category: "Frontend",
+    },
+    {
+        name: "Java",
+        icon: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/java/java-original.svg",
+        initials: "JA",
+        color: "#f89820",
         category: "Langages",
     },
     {
@@ -56,13 +77,6 @@ const SKILL_ITEMS: SkillItem[] = [
         category: "Langages",
     },
     {
-        name: "React",
-        icon: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/react/react-original.svg",
-        initials: "RE",
-        color: "#61dafb",
-        category: "Frontend",
-    },
-    {
         name: "HTML/CSS",
         icon: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/html5/html5-original.svg",
         initials: "HT",
@@ -70,10 +84,10 @@ const SKILL_ITEMS: SkillItem[] = [
         category: "Frontend",
     },
     {
-        name: "Angular",
-        icon: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/angularjs/angularjs-original.svg",
-        initials: "NG",
-        color: "#dd0031",
+        name: "React",
+        icon: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/react/react-original.svg",
+        initials: "RE",
+        color: "#61dafb",
         category: "Frontend",
     },
     {
@@ -129,26 +143,28 @@ const SKILL_ITEMS: SkillItem[] = [
 
 export function HomePage() {
     usePageMetadata({
-        title: "Accueil",
-        description:
-            "Frédéric Tischler, développeur full-stack : créations d’applications web modernes, projets en Go, TypeScript et React.",
+        title: "Frédéric Tischler — Développeur Full-Stack (Angular, Go, TypeScript, Java)",
+        description: "Applications web modernes et maintenables. Alternant chez WeNégoce, formé à Zone01.",
         image: "/assets/social/home.svg",
     });
 
     const prefersReducedMotion = useReducedMotion();
-    const highlightedProjects = useMemo(
-        () => PROJECTS.filter((project) => project.slug === "mellow" || project.slug === "turing-machine"),
-        [],
-    );
+    const highlightedProjects = useMemo(() => {
+        const orderedSlugs = ["mellow", "turing-machine", "real-time-forum", "lem-in", "forum"] as const;
+        const bySlug = new Map(PROJECTS.map((project) => [project.slug, project] as const));
+        return orderedSlugs
+            .map((slug) => bySlug.get(slug))
+            .filter((project): project is typeof PROJECTS[number] => Boolean(project));
+    }, []);
     const {selected: selectedProject, openModal: openProjectModal, closeModal: closeProjectModal, isOpen: projectModalOpen} =
         useModalSelection<Project>();
     const {copied, copy} = useClipboard();
 
     const stats = useMemo(
         () => [
-            {label: "Projets", value: `${PROJECTS.length}`},
-            {label: "Compétences", value: `${PROFILE.skills.length}`},
-            {label: "Parcours", value: "Licence + Zone01", description: "Fondations théoriques & pratique intensive"},
+            {label: "Projets Zone01", value: "20+", description: "Temps réel, algorithmes, outillage"},
+            {label: "Licence informatique", value: "3 ans", description: "Algorithmique, POO Java, bases de données"},
+            {label: "Alternance", value: "WeNégoce", description: "Modernisation Angular/Java en continu"},
         ],
         [],
     );
@@ -167,15 +183,10 @@ export function HomePage() {
               Développeur full-stack
             </span>
                         <h1 className="text-balance text-5xl font-semibold leading-tight md:text-6xl">
-                            J’aide à concevoir des applications web modernes et performantes.
+                            Full-Stack Developer — Angular, Go, TypeScript, Java
                         </h1>
                         <p className="max-w-xl text-balance text-muted-foreground">
-                            Passionné par les stacks Java, TypeScript et Angular, je conçois des architectures fiables,
-                            des interfaces soignées et des expériences réactives. De la composante UI au backend temps réel.
-                        </p>
-                        <p className="max-w-xl text-balance text-muted-foreground">
-                            Avant d’intégrer Zone01 pour une formation en continu par projets, j’ai validé une licence en
-                            informatique qui m’a donné un socle algorithmique solide et une maîtrise approfondie de Java.
+                            Je conçois des applications web modernes, robustes et réutilisables pour accélérer la valeur produit.
                         </p>
                         <div className="flex flex-wrap gap-4">
                             <ActionButton asChild size="lg" className="gap-2 btn-cta">
@@ -185,10 +196,10 @@ export function HomePage() {
                                 </Link>
                             </ActionButton>
                             <ActionButton asChild size="lg" variant="outline" className="gap-2 btn-cta-outline">
-                                <a href="/assets/cv-frederic-tischler.pdf" download className="inline-flex items-center gap-2">
-                                    <Download className="h-4 w-4" />
-                                    <span>Télécharger mon CV</span>
-                                </a>
+                                <Link to="/contact" className="inline-flex items-center gap-2">
+                                    <LinkIcon className="h-4 w-4" />
+                                    <span>Me contacter</span>
+                                </Link>
                             </ActionButton>
                         </div>
                     </motion.div>
@@ -220,6 +231,19 @@ export function HomePage() {
                                 et
                                 industrialisation de la livraison.
                             </p>
+                        </div>
+                        <div className="grid gap-4 md:grid-cols-3">
+                            {PILLARS.map((pillar) => (
+                                <div
+                                    key={pillar.title}
+                                    className="rounded-[1.75rem] border border-border/60 bg-background/80 p-5 shadow-lg"
+                                >
+                                    <h3 className="text-sm font-semibold uppercase tracking-[0.3em] text-muted-foreground">
+                                        {pillar.title}
+                                    </h3>
+                                    <p className="mt-3 text-sm text-muted-foreground">{pillar.description}</p>
+                                </div>
+                            ))}
                         </div>
                         <div className="relative overflow-hidden">
                             <div
@@ -262,8 +286,8 @@ export function HomePage() {
             <Section className="space-y-6">
                 <SectionIntro
                     eyebrow="À la une"
-                    title="Projets notables"
-                    description="Un aperçu des développements récents : temps réel, interfaces immersives et outils internes. Sélection extraite des projets les plus représentatifs."
+                    title="Sélection de projets"
+                    description="Du temps réel aux algorithmes, en passant par la modernisation d’applications métier."
                 />
                 <motion.div
                     className="grid gap-6 md:grid-cols-2"
@@ -271,7 +295,7 @@ export function HomePage() {
                     animate={prefersReducedMotion ? undefined : {opacity: 1, y: 0}}
                     transition={{duration: prefersReducedMotion ? 0 : 0.4, ease: "easeOut"}}
                 >
-                    {highlightedProjects.slice(0, 2).map((project) => (
+                    {highlightedProjects.map((project) => (
                         <ProjectPreviewCard
                             key={project.slug}
                             project={project}

@@ -5,8 +5,8 @@ import { usePageMetadata } from "@/lib/metadata";
 
 export function ContactPage() {
   usePageMetadata({
-    title: "Contact",
-    description: "Contactez Frédéric Tischler pour vos projets web : formulaire et email direct.",
+    title: "Contact — Frédéric Tischler",
+    description: "Parlons de votre projet: Angular, Go, TypeScript, Java, temps réel, modernisation d’apps métier.",
     image: "/assets/social/contact.svg",
   });
 
@@ -15,10 +15,10 @@ export function ContactPage() {
       <Section className="grid gap-12 lg:grid-cols-[1.1fr_0.9fr]">
         <div className="space-y-6">
           <p className="text-xs uppercase tracking-[0.45em] text-muted-foreground">Contact</p>
-          <h1 className="text-4xl font-semibold md:text-5xl">Parlons de votre prochain produit.</h1>
+          <h1 className="text-4xl font-semibold md:text-5xl">Travaillons ensemble</h1>
           <p className="text-muted-foreground">
-            Besoin d’une refonte, d’un outil interne ou d’un accompagnement long terme ? Laissez un message
-            et je reviens vers vous sous 24h. Mentionnez le contexte, les objectifs et le délai envisagé.
+            Un besoin de moderniser une application métier, de structurer une base de composants Angular ou d’intégrer du
+            temps réel ?
           </p>
         </div>
         <div className="rounded-[2rem] border border-border/60 bg-background/80 p-8 shadow-lg">

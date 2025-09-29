@@ -13,9 +13,9 @@ export type Project = {
 export const PROJECTS: Project[] = [
   {
     slug: "mellow",
-    name: "Mellow — réseau social full-stack",
+    name: "Mellow",
     description:
-      "Réseau social complet : profils, posts, commentaires, groupes, messages privés & de groupe, notifications temps réel. Backend Go + SQLite (sessions, services/repos), frontend Next.js/React + Tailwind, orchestration Docker. Endpoints Auth/Users/Posts/Groups/Messages/Notifications, rooms WS.",
+      "Réseau social full-stack : profils, posts, commentaires, groupes, messages privés et de groupe, notifications temps réel (WebSockets). Backend Go + SQLite (sessions, services/repos), frontend Next.js/React + Tailwind, orchestration Docker.",
     tech: ["Go", "SQLite", "WebSockets", "Next.js", "React", "Tailwind", "Docker"],
     url: "https://github.com/FredericTischler/Mellow",
     featured: true,
@@ -23,18 +23,18 @@ export const PROJECTS: Project[] = [
   },
   {
     slug: "turing-machine",
-    name: "Turing-Machine — simulateur GUI",
+    name: "Turing-Machine",
     description:
-      "Simulateur de machine de Turing (Java/Maven) avec interface graphique : configuration symboles/états, table de transitions, ruban, exécution. README illustré.",
-    tech: ["Java", "Maven", "GUI", "Swing"],
+      "Simulateur GUI (Java/Maven) : configuration symboles/états, table de transitions, ruban, exécution; README illustré.",
+    tech: ["Java", "Maven", "GUI"],
     url: "https://github.com/FredericTischler/Turing-Machine",
     thumbnail: "/assets/projects/turing-machine.svg",
   },
   {
     slug: "real-time-forum",
-    name: "RealTimeForum — forum temps réel",
+    name: "RealTimeForum",
     description:
-      "Application de forum temps réel : inscription/connexion, posts, commentaires, messagerie privée, notifications WebSockets. Backend Go (handlers/services/repos), SQLite, frontend SPA JS/Bootstrap.",
+      "Forum temps réel : inscription/connexion, posts, commentaires, messagerie privée, notifications WebSockets. Backend Go (handlers/services/repos), SQLite; front SPA JS/Bootstrap.",
     tech: ["Go", "SQLite", "WebSockets", "SPA", "JavaScript"],
     url: "https://github.com/FredericTischler/RealTimeForum",
     featured: true,
@@ -42,18 +42,18 @@ export const PROJECTS: Project[] = [
   },
   {
     slug: "words-shared",
-    name: "Words-Shared — mots partagés",
+    name: "Words-Shared",
     description:
-      "Programme C listant les mots partagés entre fichiers, avec occurrences, tri décroissant puis lexicographique. Makefile inclus.",
-    tech: ["C"],
+      "Programme C listant les mots partagés entre fichiers, avec occurrences, tri décroissant puis lexicographique. Makefile.",
+    tech: ["C", "CLI"],
     url: "https://github.com/FredericTischler/Words-Shared",
     thumbnail: "/assets/projects/words-shared.svg",
   },
   {
     slug: "lem-in",
-    name: "Lem-in — graphes & flux",
+    name: "Lem-in",
     description:
-      "Résolution de chemins disjoints : DFS + backtracking pour graphes simples, Edmonds-Karp pour cas complexes (flux). Simulation d’envoi de 'fourmis' Start→End.",
+      "Graphes & flux: chemins disjoints. DFS + backtracking pour graphes simples, Edmonds-Karp pour cas complexes (flux). Simulation d’envoi de 'fourmis' Start→End.",
     tech: ["Go", "Graphs", "Algorithms"],
     url: "https://github.com/FredericTischler/Lem-in",
     featured: true,
@@ -61,18 +61,18 @@ export const PROJECTS: Project[] = [
   },
   {
     slug: "graphql",
-    name: "GraphQl — scaffold API TS",
+    name: "GraphQl",
     description:
       "Squelette TypeScript/GraphQL prêt pour schémas, resolvers et tooling TS. Base idéale pour POC ou micro-service.",
-    tech: ["TypeScript", "GraphQL", "React"],
+    tech: ["TypeScript", "GraphQL"],
     url: "https://github.com/FredericTischler/GraphQl",
     thumbnail: "/assets/projects/graphql.svg",
   },
   {
     slug: "forum",
-    name: "Forum — forum avancé",
+    name: "Forum",
     description:
-      "Forum avancé : OAuth Google/GitHub, rôles (user/modo/admin), notifications en temps réel, suivi d’activité, HTTPS, rate limiting, upload images. Backend Go + SQLite + templates.",
+      "Forum avancé : OAuth Google/GitHub, rôles (user/modo/admin), notifications, suivi d’activité, HTTPS, rate-limiting, upload images. Go + SQLite + templates.",
     tech: ["Go", "SQLite", "OAuth", "Security", "Notifications"],
     url: "https://github.com/FredericTischler/Forum",
     featured: true,
@@ -80,7 +80,7 @@ export const PROJECTS: Project[] = [
   },
   {
     slug: "mini-framework",
-    name: "mini-framework — micro-framework JS",
+    name: "mini-framework",
     description:
       "Proto front JS/HTML/CSS avec DOCUMENTATION.md et pages de test. Base pédagogique pour routing léger, composants et styles.",
     tech: ["JavaScript", "HTML", "CSS"],
@@ -89,9 +89,9 @@ export const PROJECTS: Project[] = [
   },
   {
     slug: "groupie-tracker",
-    name: "Groupie-tracker — artistes & concerts",
+    name: "Groupie-tracker",
     description:
-      "Appli artistes & concerts : recherche (nom, dates, lieux, membres), filtres avancés, géolocalisation des concerts (vue carte). Templates Go, HTML/CSS/Bootstrap.",
+      "Artistes & concerts : recherche (nom, dates, lieux, membres), filtres avancés, géolocalisation des concerts (vue carte). Templates Go + HTML/CSS/Bootstrap.",
     tech: ["Go", "HTML", "Bootstrap", "Maps"],
     url: "https://github.com/FredericTischler/Groupie-tracker",
     featured: true,
@@ -99,9 +99,9 @@ export const PROJECTS: Project[] = [
   },
   {
     slug: "projet-ocaml",
-    name: "Projet-Ocaml — arbres d’intervalles",
+    name: "Projet-Ocaml",
     description:
-      "Implémentation OCaml d’un arbre binaire de recherche dont chaque nœud est un intervalle ; insertion/recherche adaptées aux intervalles. Base pédagogique pour structures de données fonctionnelles et comparateurs d’intervalles.",
+      "Arbres d’intervalles en OCaml : insertion/recherche sur nœuds d’intervalles. Base pédagogique sur structures de données fonctionnelles et comparateurs.",
     tech: ["OCaml", "Data Structures", "Algorithms"],
     url: "https://github.com/FredericTischler/Projet-Ocaml",
     thumbnail: "/assets/projects/projet-ocaml.svg",

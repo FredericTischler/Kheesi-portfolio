@@ -116,7 +116,8 @@ function useProjectFilters(): {
 export default function ProjectsPage() {
   usePageMetadata({
     title: "Projets — Frédéric Tischler",
-    description: "Découvrez les projets de Frédéric Tischler : Mellow, RealTimeForum, Forum, Groupie-tracker, Lem-in, et plus.",
+    description:
+      "Mellow, RealTimeForum, Forum, Groupie-tracker, Lem-in et autres projets: temps réel, graphes, outils.",
     image: "/assets/social/projects.svg",
   });
 
@@ -164,7 +165,7 @@ export default function ProjectsPage() {
         <SectionIntro
           eyebrow="Projets"
           title="Réalisations & expérimentations"
-          description="Java, TypeScript, Angular, SQL : je conçois des applications temps réel et des solutions full-stack performantes."
+          description="Explorez mes réalisations en Go, TypeScript, Angular, Java et SQL : du temps réel aux applications full-stack, en passant par l’optimisation des performances."
         />
       </section>
 
