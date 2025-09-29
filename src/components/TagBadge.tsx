@@ -7,18 +7,19 @@ type TagBadgeProps = {
   children: ReactNode;
   tone?: "default" | "emphasis";
   className?: string;
-} & Omit<BadgeProps, "variant">;
+  variant?: BadgeProps["variant"];
+} & Omit<BadgeProps, "variant" | "children" | "className">;
 
 const toneClasses: Record<NonNullable<TagBadgeProps["tone"]>, string> = {
   default: "",
   emphasis: "tech-badge",
 };
 
-export function TagBadge({ children, tone = "default", className, ...props }: TagBadgeProps) {
+export function TagBadge({ children, tone = "default", className, variant, ...props }: TagBadgeProps) {
   return (
     <Badge
       {...props}
-      variant={props.variant ?? "outline"}
+      variant={variant ?? "outline"}
       className={cn("px-3 py-1 text-xs uppercase tracking-[0.3em]", toneClasses[tone], className)}
     >
       {children}
@@ -31,8 +32,8 @@ type TagListProps = {
   tone?: TagBadgeProps["tone"];
   className?: string;
   badgeClassName?: string;
-  variant?: BadgeProps["variant"];
-} & Omit<TagBadgeProps, "children" | "tone" | "className">;
+  variant?: TagBadgeProps["variant"];
+} & Omit<TagBadgeProps, "children" | "tone" | "className" | "variant">;
 
 export function TagList({ items, tone = "default", className, badgeClassName, variant, ...props }: TagListProps) {
   return (

@@ -8,8 +8,7 @@
     "build": "tsc -b && vite build",
     "lint": "eslint .",
     "format": "prettier --write \"**/*.{ts,tsx,js,json,css,md}\"",
-    "preview": "vite preview",
-    "optimize:designs": "node scripts/convert-designs.mjs"
+    "preview": "vite preview"
   },
   "dependencies": {
     "@radix-ui/react-dialog": "^1.1.15",
@@ -36,7 +35,6 @@
     "globals": "^16.4.0",
     "postcss": "^8.5.6",
     "prettier": "^3.6.2",
-    "sharp": "^0.34.4",
     "tailwindcss": "^3.4.13",
     "typescript": "~5.8.3",
     "typescript-eslint": "^8.44.0",

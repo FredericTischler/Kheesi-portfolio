@@ -1,10 +1,8 @@
-import { useEffect, useMemo, useState } from "react";
+import { useMemo } from "react";
 import {Link} from "react-router-dom";
 import {motion, useReducedMotion} from "framer-motion";
-import {ArrowRight, Download, ExternalLink, Link as LinkIcon} from "lucide-react";
+import {ArrowRight, Download, Link as LinkIcon} from "lucide-react";
 
-import {DesignCard} from "@/components/DesignCard";
-import {DesignSkeleton} from "@/components/DesignSkeleton";
 import {ModalPreview} from "@/components/ModalPreview";
 import {ProjectPreviewCard} from "@/components/ProjectPreviewCard";
 import {Section} from "@/components/Section";
@@ -16,7 +14,6 @@ import {Dialog} from "@/components/ui/dialog";
 import {GitHubIcon} from "@/components/icons";
 import {PROFILE} from "@/data/profile";
 import {PROJECTS, type Project} from "@/data/projects";
-import type {RBCategory, RBItem, RBFormat, RBPalette} from "@/data/print-on-demand";
 import {useClipboard} from "@/lib/clipboard";
 import {useModalSelection} from "@/hooks/useModalSelection";
 import {usePageMetadata} from "@/lib/metadata";
@@ -130,42 +127,6 @@ const SKILL_ITEMS: SkillItem[] = [
     },
 ];
 
-const FORMAT_LABELS: Record<RBFormat, string> = {
-    poster: "Poster",
-    sticker: "Stickers",
-    textile: "Textile",
-};
-
-const PALETTE_LABELS: Record<RBPalette, string> = {
-    pastel: "Pastel",
-    vibrant: "Vibrant",
-    monochrome: "Monochrome",
-};
-
-type FeaturedDesign = {
-    category: Pick<RBCategory, "id" | "name" | "description">;
-    item: RBItem;
-};
-
-function ensureFeaturedDesigns(categories: RBCategory[]): FeaturedDesign[] {
-    return categories
-        .map((category) => {
-            const item = category.items.find((design) => design.featured) ?? category.items[0];
-            if (!item) {
-                return null;
-            }
-            return {
-                category: {
-                    id: category.id,
-                    name: category.name,
-                    description: category.description,
-                },
-                item,
-            } satisfies FeaturedDesign;
-        })
-        .filter(Boolean) as FeaturedDesign[];
-}
-
 export function HomePage() {
     usePageMetadata({
         title: "Accueil",
@@ -179,68 +140,9 @@ export function HomePage() {
         () => PROJECTS.filter((project) => project.slug === "mellow" || project.slug === "turing-machine"),
         [],
     );
-    const [featuredDesigns, setFeaturedDesigns] = useState<FeaturedDesign[]>([]);
-    const [designsStatus, setDesignsStatus] = useState<"idle" | "loading" | "ready" | "error">("idle");
     const {selected: selectedProject, openModal: openProjectModal, closeModal: closeProjectModal, isOpen: projectModalOpen} =
         useModalSelection<Project>();
     const {copied, copy} = useClipboard();
-
-    useEffect(() => {
-        if (typeof window === "undefined") {
-            return;
-        }
-
-        const enhancedWindow = window as typeof window & {
-            requestIdleCallback?: (callback: IdleRequestCallback, options?: IdleRequestOptions) => number;
-            cancelIdleCallback?: (handle: number) => void;
-        };
-
-        let cancelled = false;
-        let idleHandle: number | undefined;
-        let timeoutHandle: number | undefined;
-
-        const loadFeaturedDesigns = async () => {
-            try {
-                setDesignsStatus((status) => (status === "ready" ? status : "loading"));
-                const {PRINT_ON_DEMAND_CATEGORIES} = await import("@/data/print-on-demand");
-                if (cancelled) {
-                    return;
-                }
-
-                setFeaturedDesigns(ensureFeaturedDesigns(PRINT_ON_DEMAND_CATEGORIES));
-                setDesignsStatus("ready");
-            } catch (error) {
-                if (cancelled) {
-                    return;
-                }
-                console.error("Impossible de charger les designs Print on demand", error);
-                setDesignsStatus("error");
-            }
-        };
-
-        const schedule = () => {
-            if (cancelled) {
-                return;
-            }
-            void loadFeaturedDesigns();
-        };
-
-        if (typeof enhancedWindow.requestIdleCallback === "function") {
-            idleHandle = enhancedWindow.requestIdleCallback(schedule, {timeout: 1000});
-        } else {
-            timeoutHandle = enhancedWindow.setTimeout(schedule, 500);
-        }
-
-        return () => {
-            cancelled = true;
-            if (idleHandle !== undefined && typeof enhancedWindow.cancelIdleCallback === "function") {
-                enhancedWindow.cancelIdleCallback(idleHandle);
-            }
-            if (timeoutHandle !== undefined) {
-                enhancedWindow.clearTimeout(timeoutHandle);
-            }
-        };
-    }, []);
 
     const stats = useMemo(
         () => [
@@ -407,62 +309,6 @@ export function HomePage() {
                     ))}
                 </motion.div>
             </Section>
-
-      <Section className="space-y-6">
-        <SectionIntro
-          eyebrow="Designs favoris"
-          title="Sélection Print on demand mise en avant"
-          description="Entre deux sprints de développement, j’explore l’illustration pour Print on demand. Chaque aperçu ci-dessous met en avant une catégorie de la boutique pour donner un panorama rapide des univers proposés."
-        />
-        {designsStatus === "error" ? (
-          <div className="rounded-[2rem] border border-border/60 bg-background/80 p-8 text-center shadow-lg">
-            <SectionIntro
-              eyebrow="Designs favoris"
-              title="Designs indisponibles pour le moment"
-              description="Le chargement des visuels Print on demand a échoué. Rechargez la page ou rendez-vous directement sur la boutique."
-              align="center"
-            />
-            <div className="mt-6 flex flex-wrap justify-center gap-3">
-              <ActionButton
-                variant="outline"
-                size="sm"
-                className="gap-2"
-                href="https://www.print-on-demand.com/people/frederictischler"
-                target="_blank"
-                rel="noreferrer"
-              >
-                Ouvrir la boutique
-              </ActionButton>
-            </div>
-          </div>
-        ) : designsStatus !== "ready" ? (
-          <DesignSkeleton />
-        ) : (
-          <motion.div
-            className="grid gap-6 md:grid-cols-2 xl:grid-cols-4"
-            initial={prefersReducedMotion ? undefined : { opacity: 0, y: 32 }}
-            animate={prefersReducedMotion ? undefined : { opacity: 1, y: 0 }}
-            transition={{ duration: prefersReducedMotion ? 0 : 0.4, ease: "easeOut" }}
-          >
-            {featuredDesigns.map(({ category, item }) => (
-              <DesignCard
-                key={`${category.id}-${item.id}`}
-                item={item}
-                categoryLabel={category.name}
-                formatLabel={FORMAT_LABELS[item.format]}
-                paletteLabel={PALETTE_LABELS[item.palette]}
-                actionLabel="RedBubble"
-                actionIcon={<ExternalLink className="h-4 w-4" />}
-                whileHover={
-                  prefersReducedMotion
-                    ? undefined
-                    : { scale: 1.02, y: -6, transition: { duration: 0.3, ease: "easeOut" } }
-                }
-              />
-            ))}
-          </motion.div>
-        )}
-      </Section>
 
       <Dialog open={projectModalOpen} onOpenChange={(open) => (open ? undefined : closeProjectModal())}>
           {selectedProject ? (
