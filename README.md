@@ -1,84 +1,95 @@
-# Portfolio – Frédéric Tischler
+# Kheesi Portfolio
 
-Portfolio React/TypeScript ultra-moderne construit avec Vite, Tailwind CSS, Framer Motion et shadcn/ui. Il sert de vitrine générale : bio, expérience, projets GitHub dynamiques et galerie Print on demand.
+Portfolio personnel construit avec React 19, TypeScript et Tailwind CSS. L’interface couvre les sections essentielles d’une vitrine (accueil, projets, expériences, ateliers/workshops) avec une attention particulière à l’accessibilité, aux animations maîtrisées et à la personnalisation des contenus.
 
-## 🚀 Stack
+## Fonctionnalités clés
 
-- **Build** : Vite + React 19 + TypeScript strict
-- **UI** : Tailwind CSS, shadcn/ui, design tokens personnalisés (dark/light)
-- **Tokens pastel** : `--badge-neutral-{1..4}` et `--stat-card-*` pilotent badges & cartes (versions clair / sombre / contraste).
-- **Animations** : Framer Motion (stagger, parallax léger, respect `prefers-reduced-motion`)
-- **Intégrations** : lucide-react, API GitHub, Command Palette ⌘K
+- Contenu bilingue français/anglais avec bascule instantanée et gestion automatique du référencement (`hreflang`, `lang`).
+- Navigation rapide : barre globale, Command Palette (`⌘K` / `Ctrl+K`), liens profonds par locale.
+- Thèmes clair, sombre et contraste élevé persistés côté client, tokens pastel personnalisables (`src/styles/index.css`).
+- Pages projets et workshops avec modales riches (aperçu, ressources téléchargeables, liens GitHub, copier/coller).
+- Formulaire de contact progressif : envoi API facultatif ou fallback `mailto:` avec message pré-rempli.
+- Animations Framer Motion respectant `prefers-reduced-motion`, lazy-loading d’images, focus visibles et navigation clavier.
 
-## 📁 Structure principale
+## Stack technique
 
-```
+| Domaine           | Outils principaux |
+| ----------------- | ----------------- |
+| Build & DX        | Vite 5, React 19, TypeScript strict |
+| UI & design       | Tailwind CSS, shadcn/ui, Radix Primitives, Tailwind Merge |
+| Animations & UX   | Framer Motion, lucide-react, Command Palette maison |
+| Qualité           | ESLint v9, Prettier, TypeScript `tsc -b` |
+
+## Structure du projet
+
+```text
 src/
-  App.tsx              // Router + layout global
-  main.tsx             // Entrée React
-  styles/index.css     // Styles Tailwind & variables
-  components/          // Navbar, CommandPalette, cards, filtres, modals...
-  pages/               // Home, About, Experience, Projects, Redbubble, Contact
-  data/                // profile.ts, print-on-demand.ts
-  lib/                 // github.ts, format.ts, queryParams.ts, clipboard.ts, metadata.ts
+  App.tsx              // Routes, layout global, gestion des locales
+  main.tsx             // Point d’entrée React
+  components/          // Sections, cartes projets, modales, nav, palette de commandes…
+  pages/               // Home, About, Experience, Projects, Workshops, Contact
+  data/                // profile.ts, projects.ts, navigation.ts, workshops.ts
+  hooks/               // useModalSelection, useClipboard…
+  i18n/                // LocaleProvider, configuration des locales
+  lib/                 // SEO dynamique, formatage, clipboard, utils
+  styles/              // Variables CSS & directives Tailwind
 public/
-  assets/projects/     // Thumbnails optionnels pour les projets
-  assets/designs/      // Visuels Print on demand (remplacez par vos images)
-  robots.txt, sitemap.xml
+  assets/projects/     // Visuels projets (PNG/SVG/WEBP)
+  assets/workshops/    // Couvertures + ressources PDF/ZIP liées aux ateliers
+  assets/social/       // Images Open Graph / partage
 ```
 
-## 🔄 Données projets
+## Prise en main
 
-- `src/data/projects.ts` contient la totalité des fiches (type `Project`).
-- Chaque entrée définit : `slug`, `name`, `description`, `tech`, `url`, options `updated`, `stars`, `featured`, `thumbnail`.
-- Les projets marqués `featured: true` sont mis en avant en tête de la page `/projects`.
-- Les miniatures sont optionnelles : placez vos images dans `public/assets/projects/<slug>.svg`.
-- Aucun appel API n’est nécessaire : le contenu est statique, idéal pour un portfolio rapide.
+1. **Prérequis** : Node.js ≥ 20 et npm ≥ 10.
+2. Installer les dépendances :
+   ```bash
+   npm install
+   ```
+3. Lancer le serveur de développement :
+   ```bash
+   npm run dev
+   ```
+   L’UI est accessible sur `http://localhost:5173`.
 
-## 🎨 Galerie Print on demand
+## Scripts npm
 
-- Données exemples dans `src/data/print-on-demand.ts` (type `RBItem`).
-- Remplacez `src`/`src2x` par vos visuels déposés dans `public/assets/designs/`.
-- Les liens `rbLink` pointent actuellement vers des placeholders.
-- Filtres : tags, recherche plein texte, tri `recent/featured/A→Z`.
-- Aperçu rapide via modal (code-splitting) + copy link.
+| Commande        | Description |
+| --------------- | ----------- |
+| `npm run dev`   | Serveur Vite avec rechargement instantané |
+| `npm run build` | Build de production (`tsc -b` + `vite build`) |
+| `npm run preview` | Prévisualisation du dossier `dist/` |
+| `npm run lint`  | Analyse ESLint (plugins React & TypeScript) |
+| `npm run format` | Formatage Prettier des fichiers TS/TSX/JS/JSON/CSS/MD |
 
-## 🧾 Données profil
+## Variables d’environnement
 
-- `src/data/profile.ts` : informations personnelles, compétences, intérêts, société actuelle.
-- `src/data/navigation.ts` : libellé + path utilisés par la navbar et la Command Palette.
+Créer un fichier `.env` à la racine si nécessaire.
 
-## 🛠️ Mise à jour des contenus
+| Variable | Rôle |
+| -------- | ---- |
+| `VITE_SITE_URL` | URL canonique utilisée pour générer les balises OG/Twitter (fallback sur `https://frederictischler.dev`). |
+| `VITE_CONTACT_FORM_ENDPOINT` | Endpoint POST JSON pour le formulaire de contact. Si absent, l’UI bascule automatiquement sur le mode `mailto:`. |
 
-1. **Profil** : modifiez `PROFILE` (nom, rôle, socials, company...).
-2. **Projets** : ajoutez/modifiez une fiche dans `src/data/projects.ts` (respectez le type `Project`).
-3. **Images Print on demand / projets** : placez vos fichiers dans `public/assets/designs/` et `public/assets/projects/` (nom du projet slugifié : `slug.svg`).
-4. **SEO** : titres/meta dynamiques via `usePageMetadata`. L’`index.html` contient les balises OG/Twitter par défaut.
+## Personnaliser le contenu
 
-## 🧪 Scripts
+- **Profil & navigation** : `src/data/profile.ts` et `src/data/navigation.ts` (identité, rôles, liens sociaux, sections visibles).
+- **Projets** : `src/data/projects.ts` (slug, description, stack, URLs, badges). Placez vos visuels dans `public/assets/projects/<slug>.<ext>`.
+- **Workshops** : `src/data/workshops.ts` (objectifs, programme, livrables, ressources). Les assets sont stockés dans `public/assets/workshops/` et `workshops/` pour les documents sources.
+- **SEO & méta** : `src/lib/metadata.ts` gère titres, descriptions et alternates ; les valeurs par défaut sont à adapter.
+- **Identité visuelle** : ajustez les tokens couleurs, rayons et fonds dans `src/styles/index.css` (variants clair/sombre/contraste).
 
-```bash
-npm install      # installer les dépendances
-npm run dev      # serveur de développement (http://localhost:5173)
-npm run lint     # ESLint (TS strict)
-npm run build    # build de production
-```
+## Déploiement
 
-## 📦 Déploiement
+Le build produit un site 100 % statique. Après `npm run build`, servez le contenu du dossier `dist/` (Vercel, Netlify, GitHub Pages, Cloudflare Pages…).
 
-Le projet est un site statique. Déployez le dossier `dist/` généré par `npm run build` sur la plateforme de votre choix (Vercel, Netlify, GitHub Pages...).
+- Commande de build : `npm run build`
+- Répertoire à publier : `dist/`
 
-### Netlify / Vercel (exemple)
+## Pistes d’évolution
 
-- **Commande build** : `npm run build`
-- **Dossier à publier** : `dist`
+1. Ajouter de nouvelles locales via `src/i18n/config.ts` et compléter les textes dans les pages/composants.
+2. Brancher le formulaire de contact sur un provider (Formspree, Netlify Forms, serverless maison) via `VITE_CONTACT_FORM_ENDPOINT`.
+3. Automatiser la mise à jour des projets depuis l’API GitHub en alimentant `src/data/projects.ts` lors du build.
 
-## 🙌 Accessibilité & UX
-
-- Mode sombre/clair et contraste élevé persistants (`localStorage`).
-- Focus visibles, contraste AA, navigation clavier.
-- Animations limitées si `prefers-reduced-motion` est actif.
-- Images lazy-loaded avec dégradés et ratio fixes.
-- Command Palette globale (⌘K / Ctrl+K) pour accéder rapidement aux pages/projets.
-
-Bon hacking !
+Bon hacking et belles prestations !
