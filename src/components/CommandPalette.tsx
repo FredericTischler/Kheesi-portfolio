@@ -3,21 +3,35 @@ import { useNavigate } from "react-router-dom";
 import { Command, Search, SquareArrowOutUpRight } from "lucide-react";
 
 import { NAV_LINKS } from "@/data/navigation";
-import { PROJECTS } from "@/data/projects";
+import { getProjects } from "@/data/projects";
 import { cn } from "@/lib/utils";
 
 import { Dialog, DialogContent } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
+import { useLocale } from "@/i18n/LocaleProvider";
 
 type CommandPaletteProps = {
   open: boolean;
   onOpenChange: (open: boolean) => void;
 };
 
+const COMMAND_COPY = {
+  fr: {
+    placeholder: "Rechercher projets ou pages...",
+    empty: "Aucun résultat. Essayez un autre mot-clé.",
+  },
+  en: {
+    placeholder: "Search projects or pages...",
+    empty: "No results. Try another keyword.",
+  },
+} as const;
+
 export function CommandPalette({ open, onOpenChange }: CommandPaletteProps) {
   const navigate = useNavigate();
   const [query, setQuery] = useState("");
   const [activeIndex, setActiveIndex] = useState(0);
+  const { locale, buildPath } = useLocale();
+  const copy = COMMAND_COPY[locale];
 
   useEffect(() => {
     function handle(event: KeyboardEvent) {
@@ -47,17 +61,17 @@ export function CommandPalette({ open, onOpenChange }: CommandPaletteProps) {
     const normalized = query.trim().toLowerCase();
     const pageResults = NAV_LINKS.map((page) => ({
       type: "page" as const,
-      title: page.label,
-      subtitle: page.path,
+      title: page.labels[locale],
+      subtitle: buildPath(page.path),
       action: () => {
-        navigate(page.path);
+        navigate(buildPath(page.path));
         onOpenChange(false);
       },
     })).filter((item) =>
       normalized ? item.title.toLowerCase().includes(normalized) : true,
     );
 
-    const projectResults = PROJECTS
+    const projectResults = getProjects(locale)
       .map((project) => ({
         type: "project" as const,
         title: project.name,
@@ -77,7 +91,7 @@ export function CommandPalette({ open, onOpenChange }: CommandPaletteProps) {
 
     const merged = [...pageResults, ...projectResults];
     return merged.slice(0, 12);
-  }, [navigate, onOpenChange, query]);
+  }, [buildPath, locale, navigate, onOpenChange, query]);
 
   useEffect(() => {
     if (activeIndex >= results.length) {
@@ -111,7 +125,7 @@ export function CommandPalette({ open, onOpenChange }: CommandPaletteProps) {
           <Search className="h-4 w-4 text-muted-foreground" />
           <Input
             autoFocus
-            placeholder="Rechercher projets ou pages..."
+            placeholder={copy.placeholder}
             value={query}
             onChange={(event) => setQuery(event.target.value)}
             className="h-12 border-none bg-transparent px-0 shadow-none focus-visible:ring-0"
@@ -122,9 +136,7 @@ export function CommandPalette({ open, onOpenChange }: CommandPaletteProps) {
         </div>
         <div className="max-h-[400px] overflow-y-auto px-2 py-3">
           {results.length === 0 ? (
-            <p className="px-4 py-3 text-sm text-muted-foreground">
-              Aucun résultat. Essayez un autre mot-clé.
-            </p>
+            <p className="px-4 py-3 text-sm text-muted-foreground">{copy.empty}</p>
           ) : null}
           <ul className="space-y-1">
             {results.map((item, index) => (

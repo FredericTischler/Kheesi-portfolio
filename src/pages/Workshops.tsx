@@ -1,4 +1,5 @@
 import { useMemo } from "react";
+import { Link } from "react-router-dom";
 import { motion, useReducedMotion } from "framer-motion";
 import { ArrowRight, Check, ClipboardCheck, FileText, Search, Sparkles } from "lucide-react";
 
@@ -7,35 +8,137 @@ import { SectionIntro } from "@/components/SectionIntro";
 import { ActionButton } from "@/components/ActionButtons";
 import { Dialog } from "@/components/ui/dialog";
 import { ModalPreview } from "@/components/ModalPreview";
-import { WORKSHOPS, type Workshop } from "@/data/workshops";
+import { getWorkshops, type Workshop } from "@/data/workshops";
 import { useModalSelection } from "@/hooks/useModalSelection";
 import { usePageMetadata } from "@/lib/metadata";
+import { useLocale } from "@/i18n/LocaleProvider";
+import type { Locale } from "@/i18n/config";
 
 const WORKSHOP_PDF_DEMO = "/assets/workshops/demo.pdf";
 
-const processSteps = [
-  {
-    title: "Diagnostic express",
-    description: "Un échange rapide pour comprendre votre contexte, vos irritants et prioriser le contenu.",
-    icon: Search,
+const PROCESS_STEPS: Record<Locale, Array<{ title: string; description: string; icon: typeof Search }>> = {
+  fr: [
+    {
+      title: "Diagnostic express",
+      description: "Un échange rapide pour comprendre votre contexte, vos irritants et prioriser le contenu.",
+      icon: Search,
+    },
+    {
+      title: "Préparation & personnalisation",
+      description: "Je fournis un plan ajusté : exemples, livrables, supports adaptés à votre stack.",
+      icon: Sparkles,
+    },
+    {
+      title: "Animation & récap",
+      description: "Workshop, Q&A, puis synthèse actionnable et livrables prêts à exploiter.",
+      icon: ClipboardCheck,
+    },
+  ],
+  en: [
+    {
+      title: "Express diagnostic",
+      description: "Quick chat to understand context, pain points and prioritise content.",
+      icon: Search,
+    },
+    {
+      title: "Prep & tailoring",
+      description: "I craft a plan with examples, deliverables and support adapted to your stack.",
+      icon: Sparkles,
+    },
+    {
+      title: "Delivery & recap",
+      description: "Workshop, Q&A, then an actionable summary with ready-to-use deliverables.",
+      icon: ClipboardCheck,
+    },
+  ],
+};
+
+const WORKSHOPS_COPY: Record<Locale, {
+  head: { title: string; description: string };
+  intro: { eyebrow: string; title: string; description: string };
+  focusLabel: string;
+  deliverablesIncluded: string;
+  cardCta: string;
+  processHeading: string;
+  processDescription: string;
+  planCta: string;
+  modal: {
+    durationLabel: string;
+    badgesTitle: string;
+    placeholder: string;
+    program: string;
+    deliverables: string;
+    audience: string;
+    fallbackDownload: string;
+  };
+}> = {
+  fr: {
+    head: {
+      title: "Workshop Factory — Frédéric Tischler",
+      description:
+        "Workshops prêts à l’emploi : Angular Bootcamp, Modernisation Legacy, CI/CD. Objectifs clairs, livrables concrets, valeur immédiate pour vos équipes.",
+    },
+    intro: {
+      eyebrow: "Workshops",
+      title: "Workshop Factory",
+      description:
+        "Je propose des workshops prêts à déployer pour aider vos équipes à moderniser une app legacy, industrialiser Angular, ou aligner design et développement.",
+    },
+    focusLabel: "Focus",
+    deliverablesIncluded: "Livrables inclus",
+    cardCta: "Voir détails",
+    processHeading: "Comment ça marche",
+    processDescription: "Trois étapes simples pour lancer un workshop adapté à votre équipe et à vos priorités.",
+    planCta: "Planifier un workshop",
+    modal: {
+      durationLabel: "Durée",
+      badgesTitle: "Objectifs",
+      placeholder: "Supports en préparation",
+      program: "Programme",
+      deliverables: "Livrables",
+      audience: "Audience",
+      fallbackDownload: "Télécharger exemple PDF",
+    },
   },
-  {
-    title: "Préparation & personnalisation",
-    description: "Je fournis un plan ajusté : exemples, livrables, supports adaptés à votre stack.",
-    icon: Sparkles,
+  en: {
+    head: {
+      title: "Workshop Factory — Frédéric Tischler",
+      description:
+        "Ready-to-run workshops: Angular Bootcamp, Legacy Modernisation, CI/CD. Clear outcomes, concrete deliverables, quick impact for your team.",
+    },
+    intro: {
+      eyebrow: "Workshops",
+      title: "Workshop Factory",
+      description:
+        "I deliver ready-to-use workshops to modernise legacy apps, build Angular component foundations, or align design and engineering.",
+    },
+    focusLabel: "Focus",
+    deliverablesIncluded: "Deliverables included",
+    cardCta: "View details",
+    processHeading: "How it works",
+    processDescription: "Three simple steps to launch a workshop tailored to your team and priorities.",
+    planCta: "Schedule a workshop",
+    modal: {
+      durationLabel: "Duration",
+      badgesTitle: "Objectives",
+      placeholder: "Materials coming soon",
+      program: "Agenda",
+      deliverables: "Deliverables",
+      audience: "Audience",
+      fallbackDownload: "Download sample PDF",
+    },
   },
-  {
-    title: "Animation & récap",
-    description: "Workshop, Q&A, puis synthèse actionnable et livrables prêts à exploiter.",
-    icon: ClipboardCheck,
-  },
-] as const;
+};
 
 export default function WorkshopsPage() {
+  const { locale, buildPath } = useLocale();
+  const copy = WORKSHOPS_COPY[locale];
+  const steps = PROCESS_STEPS[locale];
+  const workshops = useMemo(() => getWorkshops(locale), [locale]);
+
   usePageMetadata({
-    title: "Workshop Factory — Frédéric Tischler",
-    description:
-      "Workshops prêts à l’emploi : Angular Bootcamp, Modernisation Legacy, CI/CD. Objectifs clairs, livrables concrets, valeur immédiate pour vos équipes.",
+    title: copy.head.title,
+    description: copy.head.description,
     image: "/assets/social/projects.svg",
   });
 
@@ -77,7 +180,7 @@ export default function WorkshopsPage() {
     ? selectedResources.buttons
     : [
         {
-          label: "Télécharger exemple PDF",
+          label: copy.modal.fallbackDownload,
           href: WORKSHOP_PDF_DEMO,
         },
       ];
@@ -86,9 +189,9 @@ export default function WorkshopsPage() {
     <div className="space-y-20 pb-20 pt-36">
       <Section className="space-y-12">
         <SectionIntro
-          eyebrow="Workshops"
-          title="Workshop Factory"
-          description="Je propose des workshops prêts à déployer pour aider vos équipes à moderniser une app legacy, industrialiser Angular, ou aligner design et développement."
+          eyebrow={copy.intro.eyebrow}
+          title={copy.intro.title}
+          description={copy.intro.description}
         />
         <motion.div
           className="grid gap-6 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3"
@@ -96,7 +199,7 @@ export default function WorkshopsPage() {
           animate={prefersReducedMotion ? undefined : "visible"}
           variants={prefersReducedMotion ? undefined : containerVariants}
         >
-          {WORKSHOPS.map((workshop) => (
+          {workshops.map((workshop) => (
             <motion.div key={workshop.slug} variants={prefersReducedMotion ? undefined : cardVariants}>
               <article className="flex h-full flex-col justify-between rounded-[2rem] border border-border/60 bg-background/80 p-6 shadow-lg transition duration-200 ease-in-out hover:scale-[1.03] hover:shadow-xl">
                 <div className="space-y-5">
@@ -108,7 +211,7 @@ export default function WorkshopsPage() {
                     <p className="text-sm text-muted-foreground">{workshop.audience}</p>
                   </div>
                   <div className="space-y-2">
-                    <p className="text-xs font-semibold uppercase tracking-[0.35em] text-muted-foreground">Focus</p>
+                    <p className="text-xs font-semibold uppercase tracking-[0.35em] text-muted-foreground">{copy.focusLabel}</p>
                     <ul className="space-y-1 text-sm text-muted-foreground">
                       {workshop.objectives.slice(0, 2).map((objective) => (
                         <li key={objective} className="flex items-start gap-2">
@@ -119,8 +222,8 @@ export default function WorkshopsPage() {
                     </ul>
                   </div>
                 </div>
-                <div className="mt-6 flex justify-between items-center border-t border-border/40 pt-4">
-                  <span className="text-xs uppercase tracking-[0.3em] text-muted-foreground">Livrables inclus</span>
+                <div className="mt-6 flex items-center justify-between border-t border-border/40 pt-4">
+                  <span className="text-xs uppercase tracking-[0.3em] text-muted-foreground">{copy.deliverablesIncluded}</span>
                   <ActionButton
                     size="sm"
                     variant="outline"
@@ -128,7 +231,7 @@ export default function WorkshopsPage() {
                     icon={<ArrowRight className="h-4 w-4" aria-hidden="true" />}
                     onClick={() => openModal(workshop)}
                   >
-                    Voir détails
+                    {copy.cardCta}
                   </ActionButton>
                 </div>
               </article>
@@ -139,13 +242,11 @@ export default function WorkshopsPage() {
 
       <Section className="space-y-10">
         <div className="text-center">
-          <h2 className="text-3xl font-semibold md:text-4xl">Comment ça marche</h2>
-          <p className="mt-3 text-sm text-muted-foreground">
-            Trois étapes simples pour lancer un workshop adapté à votre équipe et à vos priorités.
-          </p>
+          <h2 className="text-3xl font-semibold md:text-4xl">{copy.processHeading}</h2>
+          <p className="mt-3 text-sm text-muted-foreground">{copy.processDescription}</p>
         </div>
         <div className="grid gap-6 md:grid-cols-3">
-          {processSteps.map((step) => (
+          {steps.map((step) => (
             <div
               key={step.title}
               className="rounded-[2rem] border border-border/60 bg-background/80 p-6 text-left shadow-lg"
@@ -158,7 +259,7 @@ export default function WorkshopsPage() {
         </div>
         <div className="flex justify-center">
           <ActionButton asChild size="lg" className="gap-2 btn-cta">
-            <a href="/contact">Planifier un workshop</a>
+            <Link to={buildPath("/contact")}>{copy.planCta}</Link>
           </ActionButton>
         </div>
       </Section>
@@ -167,17 +268,21 @@ export default function WorkshopsPage() {
         {selectedWorkshop ? (
           <ModalPreview
             title={selectedWorkshop.title}
-            description={`Durée : ${selectedWorkshop.duration}`}
+            description={`${copy.modal.durationLabel} : ${selectedWorkshop.duration}`}
             image={selectedResources?.image}
             imageAlt={selectedWorkshop.title}
             placeholderLabel={
               selectedResources?.image
                 ? undefined
-                : "Supports en préparation"
+                : copy.modal.placeholder
             }
-            badgesTitle="Objectifs"
+            badgesTitle={copy.modal.badgesTitle}
             badges={selectedWorkshop.objectives}
-            motionProps={prefersReducedMotion ? undefined : { layout: true, transition: { duration: 0.25, ease: "easeInOut" } }}
+            motionProps={
+              prefersReducedMotion
+                ? undefined
+                : { layout: true, transition: { duration: 0.25, ease: "easeInOut" } }
+            }
             footerSlot={
               <div className="flex flex-wrap gap-3">
                 {resourceButtons.map((button) => (
@@ -198,7 +303,7 @@ export default function WorkshopsPage() {
           >
             <div className="space-y-6">
               <div>
-                <h3 className="text-sm font-semibold uppercase tracking-[0.3em] text-muted-foreground">Programme</h3>
+                <h3 className="text-sm font-semibold uppercase tracking-[0.3em] text-muted-foreground">{copy.modal.program}</h3>
                 <ol className="mt-3 list-decimal space-y-2 pl-5 text-sm text-muted-foreground">
                   {selectedWorkshop.program.map((item) => (
                     <li key={item}>{item}</li>
@@ -206,7 +311,7 @@ export default function WorkshopsPage() {
                 </ol>
               </div>
               <div className="space-y-2">
-                <h3 className="text-sm font-semibold uppercase tracking-[0.3em] text-muted-foreground">Livrables</h3>
+                <h3 className="text-sm font-semibold uppercase tracking-[0.3em] text-muted-foreground">{copy.modal.deliverables}</h3>
                 <ul className="space-y-2 text-sm text-muted-foreground">
                   {selectedWorkshop.deliverables.map((deliverable) => (
                     <li key={deliverable} className="flex items-start gap-2">
@@ -217,7 +322,7 @@ export default function WorkshopsPage() {
                 </ul>
               </div>
               <div className="space-y-2">
-                <h3 className="text-sm font-semibold uppercase tracking-[0.3em] text-muted-foreground">Audience</h3>
+                <h3 className="text-sm font-semibold uppercase tracking-[0.3em] text-muted-foreground">{copy.modal.audience}</h3>
                 <p className="text-sm text-muted-foreground">{selectedWorkshop.audience}</p>
               </div>
             </div>

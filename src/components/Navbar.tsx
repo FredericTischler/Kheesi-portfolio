@@ -9,8 +9,11 @@ import { CommandPalette } from "@/components/CommandPalette";
 import { ThemeToggle } from "@/components/ThemeToggle";
 import { ContrastToggle } from "@/components/ContrastToggle";
 import { Button } from "@/components/ui/button";
+import { LocaleSwitcher } from "@/components/LocaleSwitcher";
+import { useLocale } from "@/i18n/LocaleProvider";
 
 export function Navbar() {
+  const { locale, buildPath } = useLocale();
   const { scrollY } = useScroll();
   const [hidden, setHidden] = useState(false);
   const lastY = useRef(0);
@@ -51,7 +54,12 @@ export function Navbar() {
         className="fixed inset-x-0 top-0 z-50 flex justify-center px-4"
       >
         <nav className="mt-6 flex w-full max-w-6xl items-center justify-between rounded-3xl border border-border/60 bg-background/70 px-5 py-3 shadow-lg backdrop-blur-2xl">
-          <NavLink to="/" end className="flex items-center gap-2 font-heading text-lg tracking-tight" aria-label="Accueil">
+          <NavLink
+            to={buildPath("/")}
+            end
+            className="flex items-center gap-2 font-heading text-lg tracking-tight"
+            aria-label={locale === "fr" ? "Accueil" : "Home"}
+          >
             <span className="h-2 w-2 rounded-full bg-primary" aria-hidden="true" />
             Frédéric Tischler
           </NavLink>
@@ -59,13 +67,13 @@ export function Navbar() {
             {NAV_LINKS.map((item) => (
               <NavLink
                 key={item.path}
-                to={item.path}
+                to={buildPath(item.path)}
                 end={item.path === "/"}
                 className={({ isActive }) =>
                   `${navClass} ${isActive ? "text-primary" : "text-muted-foreground"}`
                 }
               >
-                {item.label}
+                {item.labels[locale]}
               </NavLink>
             ))}
           </div>
@@ -81,6 +89,7 @@ export function Navbar() {
             </Button>
             <ContrastToggle />
             <ThemeToggle />
+            <LocaleSwitcher />
             <Button
               variant="ghost"
               size="icon"
@@ -105,7 +114,7 @@ export function Navbar() {
                 {NAV_LINKS.map((item) => (
                   <li key={item.path}>
                     <NavLink
-                      to={item.path}
+                      to={buildPath(item.path)}
                       end={item.path === "/"}
                       className={({ isActive }) =>
                         `flex w-full items-center justify-between rounded-2xl px-4 py-3 text-sm font-semibold transition hover:bg-secondary/60 ${
@@ -114,7 +123,7 @@ export function Navbar() {
                       }
                       onClick={() => setMenuOpen(false)}
                     >
-                      {item.label}
+                      {item.labels[locale]}
                     </NavLink>
                   </li>
                 ))}
@@ -134,6 +143,7 @@ export function Navbar() {
                   <div className="flex items-center justify-between gap-3 rounded-2xl bg-secondary/40 px-4 py-3">
                     <ContrastToggle />
                     <ThemeToggle />
+                    <LocaleSwitcher variant="ghost" />
                   </div>
                 </li>
               </ul>

@@ -9,12 +9,14 @@ import { SectionIntro } from "@/components/SectionIntro";
 import { Button } from "@/components/ui/button";
 import { Dialog } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
-import { PROJECTS, type Project } from "@/data/projects";
+import { getProjects, PROJECT_SLUG_ORDER, type Project } from "@/data/projects";
 import { useClipboard } from "@/lib/clipboard";
 import { useModalSelection } from "@/hooks/useModalSelection";
 import { usePageMetadata } from "@/lib/metadata";
 import { cn } from "@/lib/utils";
 import { GitHubIcon } from "@/components/icons";
+import { useLocale } from "@/i18n/LocaleProvider";
+import type { Locale } from "@/i18n/config";
 
 type SortOption = "recent" | "alphabetical";
 
@@ -24,19 +26,27 @@ type FilterState = {
   sort: SortOption;
 };
 
-const SORT_LABELS: Record<SortOption, string> = {
-  recent: "Plus récents",
-  alphabetical: "Nom A→Z",
+const SORT_OPTIONS: SortOption[] = ["recent", "alphabetical"];
+
+const SORT_LABELS: Record<Locale, Record<SortOption, string>> = {
+  fr: {
+    recent: "Plus récents",
+    alphabetical: "Nom A→Z",
+  },
+  en: {
+    recent: "Newest",
+    alphabetical: "Name A→Z",
+  },
 };
 
-const PROJECT_ORDER = new Map(PROJECTS.map((project, index) => [project.slug, index]));
+const PROJECT_ORDER = new Map<string, number>(PROJECT_SLUG_ORDER.map((slug, index) => [slug, index]));
 
 function sortProjects(projects: Project[], sort: SortOption): Project[] {
   if (sort === "alphabetical") {
     return [...projects].sort((a, b) => a.name.localeCompare(b.name, "fr-FR", { sensitivity: "base" }));
   }
 
-  const total = PROJECTS.length;
+  const total = PROJECT_SLUG_ORDER.length;
   return [...projects].sort((a, b) => {
     const aScore = total - (PROJECT_ORDER.get(a.slug) ?? 0);
     const bScore = total - (PROJECT_ORDER.get(b.slug) ?? 0);
@@ -46,6 +56,83 @@ function sortProjects(projects: Project[], sort: SortOption): Project[] {
     return a.name.localeCompare(b.name, "fr-FR", { sensitivity: "base" });
   });
 }
+
+const PROJECTS_COPY: Record<Locale, {
+  head: { title: string; description: string };
+  intro: { eyebrow: string; title: string; description: string };
+  searchPlaceholder: string;
+  reset: string;
+  filtersAria: string;
+  allProjects: string;
+  resultsLabel: (count: number) => string;
+  noResultsTitle: string;
+  noResultsDescription: string;
+  listAria: string;
+  cardViewLabel: (name: string) => string;
+  viewButton: string;
+  modalPlaceholder: string;
+  badgesTitle: string;
+  copyLink: string;
+  linkCopied: string;
+  viewOnGitHub: string;
+}> = {
+  fr: {
+    head: {
+      title: "Projets — Frédéric Tischler",
+      description:
+        "Mellow, RealTimeForum, Forum, Groupie-tracker, Lem-in et autres projets: temps réel, graphes, outils.",
+    },
+    intro: {
+      eyebrow: "Projets",
+      title: "Réalisations & expérimentations",
+      description:
+        "Explorez mes réalisations en Go, TypeScript, Angular, Java et SQL : du temps réel aux applications full-stack, en passant par l’optimisation des performances.",
+    },
+    searchPlaceholder: "Rechercher un projet, une techno...",
+    reset: "Réinitialiser",
+    filtersAria: "Filtrer par technologies",
+    allProjects: "Tous les projets",
+    resultsLabel: (count) => `${count} résultat(s)`,
+    noResultsTitle: "Aucun projet ne correspond",
+    noResultsDescription: "Ajustez votre recherche ou vos filtres pour explorer d’autres réalisations.",
+    listAria: "Liste des projets filtrés",
+    cardViewLabel: (name) => `Ouvrir ${name} sur GitHub`,
+    viewButton: "Voir",
+    modalPlaceholder: "Aperçu indisponible",
+    badgesTitle: "Technologies",
+    copyLink: "Copier le lien",
+    linkCopied: "Lien copié",
+    viewOnGitHub: "Voir sur GitHub",
+  },
+  en: {
+    head: {
+      title: "Projects — Frédéric Tischler",
+      description:
+        "Mellow, RealTimeForum, Forum, Groupie-tracker, Lem-in and more projects: real-time systems, graph challenges, tooling.",
+    },
+    intro: {
+      eyebrow: "Projects",
+      title: "Work & experiments",
+      description:
+        "Discover my work in Go, TypeScript, Angular, Java and SQL: from real-time apps to full-stack products and performance improvements.",
+    },
+    searchPlaceholder: "Search a project or technology...",
+    reset: "Reset",
+    filtersAria: "Filter by technologies",
+    allProjects: "All projects",
+    resultsLabel: (count) => `${count} result${count > 1 ? "s" : ""}`,
+    noResultsTitle: "No project matches",
+    noResultsDescription: "Adjust your query or filters to browse other builds.",
+    listAria: "Filtered project list",
+    cardViewLabel: (name) => `Open ${name} on GitHub`,
+    viewButton: "View",
+    modalPlaceholder: "Preview unavailable",
+    badgesTitle: "Technologies",
+    copyLink: "Copy link",
+    linkCopied: "Link copied",
+    viewOnGitHub: "View on GitHub",
+  },
+};
 
 function filterProjects(projects: Project[], state: FilterState): Project[] {
   const normalizedQuery = state.query.trim().toLowerCase();
@@ -114,10 +201,13 @@ function useProjectFilters(): {
 }
 
 export default function ProjectsPage() {
+  const { locale, buildPath } = useLocale();
+  const pageCopy = PROJECTS_COPY[locale];
+  const sortLabels = SORT_LABELS[locale];
+
   usePageMetadata({
-    title: "Projets — Frédéric Tischler",
-    description:
-      "Mellow, RealTimeForum, Forum, Groupie-tracker, Lem-in et autres projets: temps réel, graphes, outils.",
+    title: pageCopy.head.title,
+    description: pageCopy.head.description,
     image: "/assets/social/projects.svg",
   });
 
@@ -131,12 +221,19 @@ export default function ProjectsPage() {
   } = useModalSelection<Project>();
   const { copied, copy } = useClipboard();
 
-  const availableTech = useMemo(
-    () => Array.from(new Set(PROJECTS.flatMap((project) => project.tech))).sort((a, b) => a.localeCompare(b, "fr-FR", { sensitivity: "base" })),
-    [],
-  );
+  const projects = useMemo(() => getProjects(locale), [locale]);
 
-  const filteredProjects = useMemo(() => sortProjects(filterProjects(PROJECTS, state), state.sort), [state]);
+  const availableTech = useMemo(() => {
+    const collator = locale === "fr" ? "fr-FR" : "en-US";
+    return Array.from(new Set(projects.flatMap((project) => project.tech))).sort((a, b) =>
+      a.localeCompare(b, collator, { sensitivity: "base" }),
+    );
+  }, [locale, projects]);
+
+  const filteredProjects = useMemo(
+    () => sortProjects(filterProjects(projects, state), state.sort),
+    [projects, state],
+  );
   const noResults = filteredProjects.length === 0;
   const hasFilters = deferredQuery.trim().length > 0 || state.tech.size > 0;
 
@@ -157,15 +254,17 @@ export default function ProjectsPage() {
   );
 
   const shareUrl = (project: Project) =>
-    typeof window !== "undefined" ? `${window.location.origin}/projects#${project.slug}` : project.url;
+    typeof window !== "undefined"
+      ? `${window.location.origin}${buildPath("/projects")}#${project.slug}`
+      : project.url;
 
   return (
     <div className="space-y-16 pb-20 pt-36">
       <section className="container space-y-6">
         <SectionIntro
-          eyebrow="Projets"
-          title="Réalisations & expérimentations"
-          description="Explorez mes réalisations en Go, TypeScript, Angular, Java et SQL : du temps réel aux applications full-stack, en passant par l’optimisation des performances."
+          eyebrow={pageCopy.intro.eyebrow}
+          title={pageCopy.intro.title}
+          description={pageCopy.intro.description}
         />
       </section>
 
@@ -177,13 +276,13 @@ export default function ProjectsPage() {
               <Input
                 value={query}
                 onChange={(event) => setQuery(event.target.value)}
-                placeholder="Rechercher un projet, une techno..."
+                placeholder={pageCopy.searchPlaceholder}
                 className="h-12 rounded-full border-border/70 pl-11"
-                aria-label="Rechercher un projet"
+                aria-label={pageCopy.searchPlaceholder}
               />
             </div>
             <div className="flex flex-wrap items-center gap-3">
-              {(Object.keys(SORT_LABELS) as SortOption[]).map((option) => (
+              {SORT_OPTIONS.map((option) => (
                 <button
                   key={option}
                   type="button"
@@ -196,17 +295,17 @@ export default function ProjectsPage() {
                       : "border-border/70 bg-background text-muted-foreground hover:bg-secondary/50",
                   )}
                 >
-                  {SORT_LABELS[option]}
+                  {sortLabels[option]}
                 </button>
               ))}
               {hasFilters ? (
                 <Button type="button" variant="ghost" size="sm" className="text-xs uppercase tracking-[0.35em]" onClick={clearFilters}>
-                  Réinitialiser
+                  {pageCopy.reset}
                 </Button>
               ) : null}
             </div>
           </div>
-          <div className="flex flex-wrap gap-2" aria-label="Filtrer par technologies">
+          <div className="flex flex-wrap gap-2" aria-label={pageCopy.filtersAria}>
             {availableTech.map((tech) => {
               const isActive = state.tech.has(tech);
               return (
@@ -229,21 +328,19 @@ export default function ProjectsPage() {
 
         <div className="space-y-6">
           <div className="flex items-center justify-between gap-3">
-            <h2 className="text-2xl font-semibold text-foreground">Tous les projets</h2>
-            <span className="text-sm text-muted-foreground">{filteredProjects.length} résultat(s)</span>
+            <h2 className="text-2xl font-semibold text-foreground">{pageCopy.allProjects}</h2>
+            <span className="text-sm text-muted-foreground">{pageCopy.resultsLabel(filteredProjects.length)}</span>
           </div>
           {noResults ? (
             <div className="rounded-[2rem] border border-border/60 bg-background/80 p-10 text-center shadow-lg">
-              <h3 className="text-lg font-semibold text-foreground">Aucun projet ne correspond</h3>
-              <p className="mt-3 text-sm text-muted-foreground">
-                Ajustez votre recherche ou vos filtres pour explorer d’autres réalisations.
-              </p>
+              <h3 className="text-lg font-semibold text-foreground">{pageCopy.noResultsTitle}</h3>
+              <p className="mt-3 text-sm text-muted-foreground">{pageCopy.noResultsDescription}</p>
             </div>
           ) : (
             <AnimatePresence mode="popLayout">
               <motion.div
                 key={`${state.sort}-${state.tech.size}-${deferredQuery}`}
-                className="grid gap-6 md:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4" role="list" aria-live="polite" aria-label="Liste des projets filtrés"
+                className="grid gap-6 md:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4" role="list" aria-live="polite" aria-label={pageCopy.listAria}
                 variants={prefersReducedMotion ? undefined : gridVariants}
                 initial={prefersReducedMotion ? undefined : "hidden"}
                 animate={prefersReducedMotion ? undefined : "visible"}
@@ -272,9 +369,9 @@ export default function ProjectsPage() {
                           rel="noreferrer"
                           onClick={(event) => event.stopPropagation()}
                           icon={<GitHubIcon className="h-4 w-4" aria-hidden="true" />}
-                          aria-label={`Ouvrir ${project.name} sur GitHub`}
+                          aria-label={pageCopy.cardViewLabel(project.name)}
                         >
-                          Voir
+                          {pageCopy.viewButton}
                         </ActionButton>
                       </ActionButtonGroup>
                     }
@@ -293,8 +390,8 @@ export default function ProjectsPage() {
               title={quickView.name}
               description={quickView.description}
               image={quickView.thumbnail}
-              placeholderLabel="Aperçu indisponible"
-              badgesTitle="Technologies"
+              placeholderLabel={pageCopy.modalPlaceholder}
+              badgesTitle={pageCopy.badgesTitle}
               badges={quickView.tech}
               badgeVariant="secondary"
               motionProps={{
@@ -310,7 +407,7 @@ export default function ProjectsPage() {
                     onClick={() => copy(shareUrl(quickView))}
                     icon={<LinkIcon className="h-4 w-4" aria-hidden="true" />}
                   >
-                    {copied ? "Lien copié" : "Copier le lien"}
+                    {copied ? pageCopy.linkCopied : pageCopy.copyLink}
                   </ActionButton>
                   <ActionButton
                     className="gap-2 btn-cta"
@@ -319,7 +416,7 @@ export default function ProjectsPage() {
                     rel="noreferrer"
                     icon={<GitHubIcon className="h-4 w-4" aria-hidden="true" />}
                   >
-                    Voir sur GitHub
+                    {pageCopy.viewOnGitHub}
                   </ActionButton>
                 </ActionButtonGroup>
               )}

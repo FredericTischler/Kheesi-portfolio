@@ -1,4 +1,4 @@
-import { Component, type ErrorInfo, type ReactNode, useEffect } from "react";
+import { Component, type ContextType, type ErrorInfo, type ReactNode, useEffect } from "react";
 import { Suspense, lazy } from "react";
 import { Navigate, Route, Routes, useLocation } from "react-router-dom";
 import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
@@ -7,13 +7,15 @@ import { Navbar } from "@/components/Navbar";
 import { Footer } from "@/components/Footer";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
+import { LocaleContext, LocaleProvider } from "@/i18n/LocaleProvider";
+import type { Locale } from "@/i18n/config";
 
 const HomePage = lazy(() => import("@/pages/Home"));
-const AboutPage = lazy(() => import("@/pages/About"));
+const AboutPage = lazy(() => import("@/pages/about"));
 const ExperiencePage = lazy(() => import("@/pages/Experience"));
 const ProjectsPage = lazy(() => import("@/pages/Projects"));
 const WorkshopsPage = lazy(() => import("@/pages/Workshops"));
-const ContactPage = lazy(() => import("@/pages/Contact"));
+const ContactPage = lazy(() => import("@/pages/contact"));
 
 type RouteErrorBoundaryProps = {
   children: ReactNode;
@@ -30,6 +32,10 @@ class RouteErrorBoundary extends Component<RouteErrorBoundaryProps, RouteErrorBo
     this.state = { hasError: false, error: undefined };
     this.handleRetry = this.handleRetry.bind(this);
   }
+
+  static contextType = LocaleContext;
+
+  declare context: ContextType<typeof LocaleContext>;
 
   static getDerivedStateFromError(error: Error): RouteErrorBoundaryState {
     return { hasError: true, error };
@@ -56,7 +62,7 @@ class RouteErrorBoundary extends Component<RouteErrorBoundaryProps, RouteErrorBo
               Réessayer
             </Button>
             <Button asChild variant="outline">
-              <a href="/">Retour à l’accueil</a>
+              <a href={this.context?.buildPath("/") ?? "/"}>Retour à l’accueil</a>
             </Button>
           </div>
         </div>
@@ -101,6 +107,23 @@ function withBoundary(children: ReactNode) {
 }
 
 export function App() {
+  return (
+    <Routes>
+      <Route path="/en/*" element={<LocaleShell locale="en" />} />
+      <Route path="/*" element={<LocaleShell locale="fr" />} />
+    </Routes>
+  );
+}
+
+function LocaleShell({ locale }: { locale: Locale }) {
+  return (
+    <LocaleProvider locale={locale}>
+      <LocaleShellContent locale={locale} />
+    </LocaleProvider>
+  );
+}
+
+function LocaleShellContent({ locale }: { locale: Locale }) {
   const location = useLocation();
   const prefersReducedMotion = useReducedMotion();
 
@@ -118,14 +141,14 @@ export function App() {
             transition={{ duration: prefersReducedMotion ? 0 : 0.35, ease: "easeInOut" }}
           >
             <Suspense fallback={<PageFallback />}>
-              <Routes location={location}>
-                <Route path="/" element={withBoundary(<HomePage />)} />
-                <Route path="/about" element={withBoundary(<AboutPage />)} />
-                <Route path="/experience" element={withBoundary(<ExperiencePage />)} />
-                <Route path="/projects" element={withBoundary(<ProjectsPage />)} />
-                <Route path="/workshops" element={withBoundary(<WorkshopsPage />)} />
-                <Route path="/contact" element={withBoundary(<ContactPage />)} />
-                <Route path="*" element={<Navigate to="/" replace />} />
+              <Routes>
+                <Route index element={withBoundary(<HomePage />)} />
+                <Route path="about" element={withBoundary(<AboutPage />)} />
+                <Route path="experience" element={withBoundary(<ExperiencePage />)} />
+                <Route path="projects" element={withBoundary(<ProjectsPage />)} />
+                <Route path="workshops" element={withBoundary(<WorkshopsPage />)} />
+                <Route path="contact" element={withBoundary(<ContactPage />)} />
+                <Route path="*" element={<Navigate to={locale === "fr" ? "/" : "/en"} replace />} />
               </Routes>
             </Suspense>
           </motion.div>
