@@ -1,21 +1,75 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:xhtml="http://www.w3.org/1999/xhtml">
   <url>
     <loc>https://frederictischler.dev/</loc>
+    <xhtml:link rel="alternate" hreflang="fr-FR" href="https://frederictischler.dev/" />
+    <xhtml:link rel="alternate" hreflang="en-GB" href="https://frederictischler.dev/en" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://frederictischler.dev/" />
+  </url>
+  <url>
+    <loc>https://frederictischler.dev/en</loc>
+    <xhtml:link rel="alternate" hreflang="fr-FR" href="https://frederictischler.dev/" />
+    <xhtml:link rel="alternate" hreflang="en-GB" href="https://frederictischler.dev/en" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://frederictischler.dev/" />
   </url>
   <url>
     <loc>https://frederictischler.dev/about</loc>
+    <xhtml:link rel="alternate" hreflang="fr-FR" href="https://frederictischler.dev/about" />
+    <xhtml:link rel="alternate" hreflang="en-GB" href="https://frederictischler.dev/en/about" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://frederictischler.dev/about" />
+  </url>
+  <url>
+    <loc>https://frederictischler.dev/en/about</loc>
+    <xhtml:link rel="alternate" hreflang="fr-FR" href="https://frederictischler.dev/about" />
+    <xhtml:link rel="alternate" hreflang="en-GB" href="https://frederictischler.dev/en/about" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://frederictischler.dev/about" />
   </url>
   <url>
     <loc>https://frederictischler.dev/experience</loc>
+    <xhtml:link rel="alternate" hreflang="fr-FR" href="https://frederictischler.dev/experience" />
+    <xhtml:link rel="alternate" hreflang="en-GB" href="https://frederictischler.dev/en/experience" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://frederictischler.dev/experience" />
+  </url>
+  <url>
+    <loc>https://frederictischler.dev/en/experience</loc>
+    <xhtml:link rel="alternate" hreflang="fr-FR" href="https://frederictischler.dev/experience" />
+    <xhtml:link rel="alternate" hreflang="en-GB" href="https://frederictischler.dev/en/experience" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://frederictischler.dev/experience" />
   </url>
   <url>
     <loc>https://frederictischler.dev/projects</loc>
+    <xhtml:link rel="alternate" hreflang="fr-FR" href="https://frederictischler.dev/projects" />
+    <xhtml:link rel="alternate" hreflang="en-GB" href="https://frederictischler.dev/en/projects" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://frederictischler.dev/projects" />
   </url>
   <url>
-    <loc>https://frederictischler.dev/print-on-demand</loc>
+    <loc>https://frederictischler.dev/en/projects</loc>
+    <xhtml:link rel="alternate" hreflang="fr-FR" href="https://frederictischler.dev/projects" />
+    <xhtml:link rel="alternate" hreflang="en-GB" href="https://frederictischler.dev/en/projects" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://frederictischler.dev/projects" />
+  </url>
+  <url>
+    <loc>https://frederictischler.dev/workshops</loc>
+    <xhtml:link rel="alternate" hreflang="fr-FR" href="https://frederictischler.dev/workshops" />
+    <xhtml:link rel="alternate" hreflang="en-GB" href="https://frederictischler.dev/en/workshops" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://frederictischler.dev/workshops" />
+  </url>
+  <url>
+    <loc>https://frederictischler.dev/en/workshops</loc>
+    <xhtml:link rel="alternate" hreflang="fr-FR" href="https://frederictischler.dev/workshops" />
+    <xhtml:link rel="alternate" hreflang="en-GB" href="https://frederictischler.dev/en/workshops" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://frederictischler.dev/workshops" />
   </url>
   <url>
     <loc>https://frederictischler.dev/contact</loc>
+    <xhtml:link rel="alternate" hreflang="fr-FR" href="https://frederictischler.dev/contact" />
+    <xhtml:link rel="alternate" hreflang="en-GB" href="https://frederictischler.dev/en/contact" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://frederictischler.dev/contact" />
+  </url>
+  <url>
+    <loc>https://frederictischler.dev/en/contact</loc>
+    <xhtml:link rel="alternate" hreflang="fr-FR" href="https://frederictischler.dev/contact" />
+    <xhtml:link rel="alternate" hreflang="en-GB" href="https://frederictischler.dev/en/contact" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://frederictischler.dev/contact" />
   </url>
 </urlset>

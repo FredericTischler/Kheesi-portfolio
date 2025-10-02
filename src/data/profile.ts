@@ -40,7 +40,7 @@ const SOCIALS: SocialLinks = {
   github: "https://github.com/FredericTischler",
   linkedin: "https://www.linkedin.com/in/fr%C3%A9d%C3%A9ric-tischler-64b588305/",
   instagram: socialInstagram,
-  email: "mailto:contact@example.com",
+  email: "mailto:contact@frederictischler.dev",
 };
 
 const PROFILE_BY_LOCALE: Record<Locale, Profile> = {

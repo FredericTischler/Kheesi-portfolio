@@ -1,3 +1,4 @@
+/* eslint-disable react-refresh/only-export-components */
 import { createContext, type ReactNode, useContext, useMemo } from "react";
 
 import { DEFAULT_LOCALE, type Locale, buildLocalizedPath, getBasePath } from "@/i18n/config";
