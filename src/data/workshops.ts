@@ -1,3 +1,11 @@
+type WorkshopResource = {
+  image?: string;
+  buttons?: Array<{
+    label: string;
+    href: string;
+  }>;
+};
+
 export type Workshop = {
   slug: string;
   title: string;
@@ -6,6 +14,7 @@ export type Workshop = {
   program: string[];
   deliverables: string[];
   audience: string;
+  resources?: WorkshopResource;
 };
 
 export const WORKSHOPS: Workshop[] = [
@@ -29,6 +38,15 @@ export const WORKSHOPS: Workshop[] = [
       "Checklist d’intégration CI",
     ],
     audience: "Équipe frontend, tech lead",
+    resources: {
+      image: "/assets/workshops/angular-bootcamp-cover.svg",
+      buttons: [
+        {
+          label: "Télécharger le pack complet",
+          href: "/assets/workshops/angular-bootcamp-pack.zip",
+        },
+      ],
+    },
   },
   {
     slug: "modernisation-legacy",
@@ -48,6 +66,15 @@ export const WORKSHOPS: Workshop[] = [
       "Feuille de route en 3 itérations",
     ],
     audience: "Équipe backend, architecte, chef de projet",
+    resources: {
+      image: "/assets/workshops/modernisation-legacy-cover.svg",
+      buttons: [
+        {
+          label: "Télécharger le pack complet",
+          href: "/assets/workshops/modernisation-legacy-pack.zip",
+        },
+      ],
+    },
   },
   {
     slug: "ci-cd-qualite",
@@ -69,5 +96,14 @@ export const WORKSHOPS: Workshop[] = [
       "Tableau Kanban de suivi",
     ],
     audience: "Équipe full-stack, tech lead, QA",
+    resources: {
+      image: "/assets/workshops/ci-cd-cover.svg",
+      buttons: [
+        {
+          label: "Télécharger le pack complet",
+          href: "/assets/workshops/ci-cd-pack.zip",
+        },
+      ],
+    },
   },
 ];

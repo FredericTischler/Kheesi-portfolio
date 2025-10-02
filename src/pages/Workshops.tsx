@@ -13,48 +13,6 @@ import { usePageMetadata } from "@/lib/metadata";
 
 const WORKSHOP_PDF_DEMO = "/assets/workshops/demo.pdf";
 
-type WorkshopResource = {
-  image?: string;
-  buttons: Array<{
-    label: string;
-    href: string;
-  }>;
-};
-
-const WORKSHOP_RESOURCES: Record<string, WorkshopResource> = {
-  "angular-bootcamp": {
-    image: "/assets/workshops/angular-bootcamp-cover.svg",
-    buttons: [
-      {
-        label: "Télécharger le pack complet",
-        href: "/assets/workshops/angular-bootcamp-pack.zip",
-      },
-    ],
-  },
-  "modernisation-legacy": {
-    image: "/assets/workshops/modernisation-legacy-cover.svg",
-    buttons: [
-      {
-        label: "Télécharger le pack complet",
-        href: "/assets/workshops/modernisation-legacy-pack.zip",
-      },
-    ],
-  },
-  "ci-cd-qualite": {
-    image: "/assets/workshops/ci-cd-cover.svg",
-    buttons: [
-      {
-        label: "Télécharger le pack complet",
-        href: "/assets/workshops/ci-cd-pack.zip",
-      },
-      {
-        label: "Consulter le template pipeline",
-        href: "/assets/workshops/ci-cd-pack.zip",
-      },
-    ],
-  },
-};
-
 const processSteps = [
   {
     title: "Diagnostic express",
@@ -113,6 +71,16 @@ export default function WorkshopsPage() {
     }),
     [],
   );
+
+  const selectedResources = selectedWorkshop?.resources;
+  const resourceButtons = selectedResources?.buttons?.length
+    ? selectedResources.buttons
+    : [
+        {
+          label: "Télécharger exemple PDF",
+          href: WORKSHOP_PDF_DEMO,
+        },
+      ];
 
   return (
     <div className="space-y-20 pb-20 pt-36">
@@ -200,10 +168,10 @@ export default function WorkshopsPage() {
           <ModalPreview
             title={selectedWorkshop.title}
             description={`Durée : ${selectedWorkshop.duration}`}
-            image={WORKSHOP_RESOURCES[selectedWorkshop.slug]?.image}
+            image={selectedResources?.image}
             imageAlt={selectedWorkshop.title}
             placeholderLabel={
-              WORKSHOP_RESOURCES[selectedWorkshop.slug]?.image
+              selectedResources?.image
                 ? undefined
                 : "Supports en préparation"
             }
@@ -212,12 +180,7 @@ export default function WorkshopsPage() {
             motionProps={prefersReducedMotion ? undefined : { layout: true, transition: { duration: 0.25, ease: "easeInOut" } }}
             footerSlot={
               <div className="flex flex-wrap gap-3">
-                {(WORKSHOP_RESOURCES[selectedWorkshop.slug]?.buttons ?? [
-                  {
-                    label: "Télécharger exemple PDF",
-                    href: WORKSHOP_PDF_DEMO,
-                  },
-                ]).map((button) => (
+                {resourceButtons.map((button) => (
                   <ActionButton
                     key={button.label}
                     variant="outline"
