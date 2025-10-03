@@ -2,14 +2,23 @@ import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
 import { MoonStar, Sun } from "lucide-react";
 
 import { useTheme } from "@/components/ThemeProvider";
+import type { Locale } from "@/i18n/config";
+import { useLocale } from "@/i18n/LocaleProvider";
+
+const COPY: Record<Locale, string> = {
+  fr: "Changer de thème",
+  en: "Toggle theme",
+};
 
 export function ThemeToggle() {
   const { theme, toggleTheme } = useTheme();
   const prefersReducedMotion = useReducedMotion();
+  const { locale } = useLocale();
+  const ariaLabel = COPY[locale];
 
   return (
     <motion.button
-      aria-label="Changer de thème"
+      aria-label={ariaLabel}
       type="button"
       className="relative inline-flex h-10 w-10 items-center justify-center overflow-hidden rounded-full border border-border/50 bg-background/80 text-muted-foreground shadow-sm transition-colors hover:text-foreground"
       whileHover={prefersReducedMotion ? undefined : { scale: 1.05 }}

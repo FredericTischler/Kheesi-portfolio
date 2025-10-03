@@ -3,6 +3,13 @@ import { X } from "lucide-react";
 import * as React from "react";
 
 import { cn } from "@/lib/utils";
+import { useLocale } from "@/i18n/LocaleProvider";
+import type { Locale } from "@/i18n/config";
+
+const CLOSE_LABEL: Record<Locale, string> = {
+  fr: "Fermer",
+  en: "Close",
+};
 
 export const Dialog = DialogPrimitive.Root;
 export const DialogTrigger = DialogPrimitive.Trigger;
@@ -38,15 +45,24 @@ export const DialogContent = React.forwardRef<
       )}
       {...props}
     >
-      <DialogClose className="absolute right-4 top-4 z-50 rounded-full border border-border/40 bg-background/70 p-2 text-muted-foreground transition hover:scale-105 hover:text-foreground">
-        <X className="h-4 w-4" />
-        <span className="sr-only">Fermer</span>
-      </DialogClose>
+      <DialogCloseWithLocale />
       {children}
     </DialogPrimitive.Content>
   </DialogPortal>
 ));
 DialogContent.displayName = DialogPrimitive.Content.displayName;
+
+function DialogCloseWithLocale() {
+  const { locale } = useLocale();
+  const closeLabel = CLOSE_LABEL[locale];
+
+  return (
+    <DialogClose className="absolute right-4 top-4 z-50 rounded-full border border-border/40 bg-background/70 p-2 text-muted-foreground transition hover:scale-105 hover:text-foreground">
+      <X className="h-4 w-4" />
+      <span className="sr-only">{closeLabel}</span>
+    </DialogClose>
+  );
+}
 
 export const DialogHeader = ({
   className,

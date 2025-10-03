@@ -11,9 +11,31 @@ import { ContrastToggle } from "@/components/ContrastToggle";
 import { Button } from "@/components/ui/button";
 import { LocaleSwitcher } from "@/components/LocaleSwitcher";
 import { useLocale } from "@/i18n/LocaleProvider";
+import type { Locale } from "@/i18n/config";
+
+const NAV_COPY: Record<Locale, {
+  openCommand: string;
+  openMenu: string;
+  closeMenu: string;
+  mobileCommand: string;
+}> = {
+  fr: {
+    openCommand: "Ouvrir la palette de commandes",
+    openMenu: "Ouvrir le menu",
+    closeMenu: "Fermer le menu",
+    mobileCommand: "Recherche globale",
+  },
+  en: {
+    openCommand: "Open command palette",
+    openMenu: "Open menu",
+    closeMenu: "Close menu",
+    mobileCommand: "Global search",
+  },
+};
 
 export function Navbar() {
   const { locale, buildPath } = useLocale();
+  const copy = NAV_COPY[locale];
   const { scrollY } = useScroll();
   const [hidden, setHidden] = useState(false);
   const lastY = useRef(0);
@@ -82,7 +104,7 @@ export function Navbar() {
               variant="outline"
               size="icon"
               className="hidden border-border/50 lg:flex"
-              aria-label="Ouvrir la palette de commandes"
+              aria-label={copy.openCommand}
               onClick={() => setCommandOpen(true)}
             >
               <Search className="h-4 w-4" />
@@ -94,7 +116,7 @@ export function Navbar() {
               variant="ghost"
               size="icon"
               className="lg:hidden"
-              aria-label={menuOpen ? "Fermer le menu" : "Ouvrir le menu"}
+              aria-label={menuOpen ? copy.closeMenu : copy.openMenu}
               onClick={() => setMenuOpen((prev) => !prev)}
             >
               {menuOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
@@ -136,7 +158,7 @@ export function Navbar() {
                     }}
                     className="flex w-full items-center justify-between rounded-2xl px-4 py-3 text-sm font-semibold text-muted-foreground transition hover:bg-secondary/60"
                   >
-                    Recherche globale <Search className="h-4 w-4" />
+                    {copy.mobileCommand} <Search className="h-4 w-4" />
                   </button>
                 </li>
                 <li>

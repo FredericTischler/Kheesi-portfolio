@@ -9,22 +9,54 @@ import { cn } from "@/lib/utils";
 import { Dialog, DialogContent } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { useLocale } from "@/i18n/LocaleProvider";
+import type { Locale } from "@/i18n/config";
 
 type CommandPaletteProps = {
   open: boolean;
   onOpenChange: (open: boolean) => void;
 };
 
+type CommandResultType = "page" | "project";
+
+type CommandResult = {
+  id: string;
+  domId: string;
+  type: CommandResultType;
+  title: string;
+  subtitle: string;
+  action: () => void;
+};
+
 const COMMAND_COPY = {
   fr: {
     placeholder: "Rechercher projets ou pages...",
     empty: "Aucun résultat. Essayez un autre mot-clé.",
+    resultCount: (count: number) =>
+      count === 0 ? "Aucun résultat" : count === 1 ? "1 résultat" : `${count} résultats`,
+    listLabel: "Résultats de la palette de commandes",
+    optionType: {
+      page: "Page",
+      project: "Projet",
+    },
   },
   en: {
     placeholder: "Search projects or pages...",
     empty: "No results. Try another keyword.",
+    resultCount: (count: number) =>
+      count === 0 ? "No results" : count === 1 ? "1 result" : `${count} results`,
+    listLabel: "Command palette results",
+    optionType: {
+      page: "Page",
+      project: "Project",
+    },
   },
-} as const;
+} satisfies Record<Locale, {
+  placeholder: string;
+  empty: string;
+  resultCount: (count: number) => string;
+  listLabel: string;
+  optionType: Record<CommandResultType, string>;
+}>;
 
 export function CommandPalette({ open, onOpenChange }: CommandPaletteProps) {
   const navigate = useNavigate();
@@ -32,6 +64,7 @@ export function CommandPalette({ open, onOpenChange }: CommandPaletteProps) {
   const [activeIndex, setActiveIndex] = useState(0);
   const { locale, buildPath } = useLocale();
   const copy = COMMAND_COPY[locale];
+  const listboxId = "command-palette-results";
 
   useEffect(() => {
     function handle(event: KeyboardEvent) {
@@ -57,9 +90,11 @@ export function CommandPalette({ open, onOpenChange }: CommandPaletteProps) {
     }
   }, [open]);
 
-  const results = useMemo(() => {
+  const results = useMemo<CommandResult[]>(() => {
     const normalized = query.trim().toLowerCase();
     const pageResults = NAV_LINKS.map((page) => ({
+      id: page.id,
+      domId: `command-option-page-${page.id}`,
       type: "page" as const,
       title: page.labels[locale],
       subtitle: buildPath(page.path),
@@ -73,11 +108,13 @@ export function CommandPalette({ open, onOpenChange }: CommandPaletteProps) {
 
     const projectResults = getProjects(locale)
       .map((project) => ({
+        id: project.slug,
+        domId: `command-option-project-${project.slug}`,
         type: "project" as const,
         title: project.name,
         subtitle: project.tech.slice(0, 6).join(" · ") || project.description,
         action: () => {
-          window.open(project.url, "_blank", "noopener");
+          window.open(project.url, "_blank", "noopener,noreferrer");
           onOpenChange(false);
         },
       }))
@@ -118,6 +155,9 @@ export function CommandPalette({ open, onOpenChange }: CommandPaletteProps) {
     return () => window.removeEventListener("keydown", handleKey);
   }, [activeIndex, open, results]);
 
+  const activeOptionId = results[activeIndex]?.domId;
+  const resultsAnnouncement = copy.resultCount(results.length);
+
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="w-[min(92vw,640px)] border-none bg-background/95 p-0 shadow-elevated">
@@ -129,18 +169,34 @@ export function CommandPalette({ open, onOpenChange }: CommandPaletteProps) {
             value={query}
             onChange={(event) => setQuery(event.target.value)}
             className="h-12 border-none bg-transparent px-0 shadow-none focus-visible:ring-0"
+            role="combobox"
+            aria-expanded={results.length > 0}
+            aria-controls={listboxId}
+            aria-activedescendant={activeOptionId}
+            aria-autocomplete="list"
           />
           <span className="hidden items-center gap-1 rounded-full border border-border/40 px-3 py-1 text-[11px] uppercase tracking-[0.3em] text-muted-foreground lg:flex">
             <Command className="h-3 w-3" />K
           </span>
         </div>
         <div className="max-h-[400px] overflow-y-auto px-2 py-3">
+          <div className="sr-only" role="status" aria-live="polite">
+            {resultsAnnouncement}
+          </div>
           {results.length === 0 ? (
-            <p className="px-4 py-3 text-sm text-muted-foreground">{copy.empty}</p>
+            <p className="px-4 py-3 text-sm text-muted-foreground" role="status">
+              {copy.empty}
+            </p>
           ) : null}
-          <ul className="space-y-1">
+          <ul
+            id={listboxId}
+            role="listbox"
+            aria-activedescendant={activeOptionId}
+            aria-label={copy.listLabel}
+            className="space-y-1"
+          >
             {results.map((item, index) => (
-              <li key={`${item.type}-${item.title}`}>
+              <li key={item.domId}>
                 <button
                   type="button"
                   onClick={item.action}
@@ -148,6 +204,10 @@ export function CommandPalette({ open, onOpenChange }: CommandPaletteProps) {
                     "flex w-full items-center justify-between gap-4 rounded-2xl px-4 py-3 text-left transition",
                     index === activeIndex ? "bg-secondary/60" : "hover:bg-secondary/40",
                   )}
+                  role="option"
+                  id={item.domId}
+                  aria-selected={index === activeIndex}
+                  aria-label={`${copy.optionType[item.type]} · ${item.title}`}
                 >
                   <div>
                     <p className="text-sm font-semibold text-foreground">{item.title}</p>

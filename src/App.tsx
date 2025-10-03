@@ -1,4 +1,4 @@
-import { Component, type ContextType, type ErrorInfo, type ReactNode, useEffect } from "react";
+import { Component, type ContextType, type ErrorInfo, type ReactNode, useCallback, useEffect } from "react";
 import { Suspense, lazy } from "react";
 import { Navigate, Route, Routes, useLocation } from "react-router-dom";
 import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
@@ -126,12 +126,31 @@ function LocaleShell({ locale }: { locale: Locale }) {
 function LocaleShellContent({ locale }: { locale: Locale }) {
   const location = useLocation();
   const prefersReducedMotion = useReducedMotion();
+  const skipLinkLabel = locale === "fr" ? "Aller au contenu principal" : "Skip to main content";
+  const handleSkipToContent = useCallback(
+    (event: React.MouseEvent<HTMLAnchorElement>) => {
+      event.preventDefault();
+      const main = document.getElementById("main-content");
+      if (main) {
+        if (!prefersReducedMotion) {
+          main.scrollIntoView({ behavior: "smooth", block: "start" });
+        } else {
+          main.scrollIntoView();
+        }
+        (main as HTMLElement).focus({ preventScroll: true });
+      }
+    },
+    [prefersReducedMotion],
+  );
 
   return (
     <div className="min-h-screen bg-background text-foreground">
+      <a href="#main-content" className="skip-link" onClick={handleSkipToContent}>
+        {skipLinkLabel}
+      </a>
       <ScrollToTop />
       <Navbar />
-      <main className="pt-32">
+      <main id="main-content" className="pt-32" tabIndex={-1}>
         <AnimatePresence mode="wait">
           <motion.div
             key={location.pathname}

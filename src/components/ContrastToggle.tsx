@@ -2,15 +2,32 @@ import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
 import { Highlighter } from "lucide-react";
 
 import { useTheme } from "@/components/ThemeProvider";
+import type { Locale } from "@/i18n/config";
+import { useLocale } from "@/i18n/LocaleProvider";
+
+const COPY: Record<Locale, { on: string; off: string; toggle: string }> = {
+  fr: {
+    on: "Contraste élevé activé",
+    off: "Contraste élevé désactivé",
+    toggle: "Basculer le contraste élevé",
+  },
+  en: {
+    on: "High contrast enabled",
+    off: "High contrast disabled",
+    toggle: "Toggle high contrast",
+  },
+};
 
 export function ContrastToggle() {
   const { highContrast, toggleHighContrast } = useTheme();
   const prefersReducedMotion = useReducedMotion();
+  const { locale } = useLocale();
+  const copy = COPY[locale];
 
   return (
     <motion.button
       type="button"
-      aria-label={highContrast ? "Désactiver le contraste élevé" : "Activer le contraste élevé"}
+      aria-label={copy.toggle}
       className="relative inline-flex h-10 w-10 items-center justify-center overflow-hidden rounded-full border border-border/50 bg-background/80 text-muted-foreground shadow-sm transition-colors hover:text-foreground"
       whileHover={prefersReducedMotion ? undefined : { scale: 1.05 }}
       whileTap={prefersReducedMotion ? undefined : { scale: 0.92, transition: { type: "spring", stiffness: 320, damping: 20 } }}
@@ -41,7 +58,7 @@ export function ContrastToggle() {
           <Highlighter className="h-4 w-4" aria-hidden="true" />
         </motion.span>
       </AnimatePresence>
-      <span className="sr-only">{highContrast ? "Contraste élevé activé" : "Contraste élevé désactivé"}</span>
+      <span className="sr-only">{highContrast ? copy.on : copy.off}</span>
     </motion.button>
   );
 }
