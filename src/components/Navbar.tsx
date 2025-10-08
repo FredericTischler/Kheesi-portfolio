@@ -11,31 +11,12 @@ import { ContrastToggle } from "@/components/ContrastToggle";
 import { Button } from "@/components/ui/button";
 import { LocaleSwitcher } from "@/components/LocaleSwitcher";
 import { useLocale } from "@/i18n/LocaleProvider";
-import type { Locale } from "@/i18n/config";
-
-const NAV_COPY: Record<Locale, {
-  openCommand: string;
-  openMenu: string;
-  closeMenu: string;
-  mobileCommand: string;
-}> = {
-  fr: {
-    openCommand: "Ouvrir la palette de commandes",
-    openMenu: "Ouvrir le menu",
-    closeMenu: "Fermer le menu",
-    mobileCommand: "Recherche globale",
-  },
-  en: {
-    openCommand: "Open command palette",
-    openMenu: "Open menu",
-    closeMenu: "Close menu",
-    mobileCommand: "Global search",
-  },
-};
+import { useTranslations } from "@/i18n/useTranslations";
 
 export function Navbar() {
   const { locale, buildPath } = useLocale();
-  const copy = NAV_COPY[locale];
+  const copy = useTranslations("navbar");
+  const navigation = useTranslations("navigation");
   const { scrollY } = useScroll();
   const [hidden, setHidden] = useState(false);
   const lastY = useRef(0);
@@ -95,7 +76,7 @@ export function Navbar() {
                   `${navClass} ${isActive ? "text-primary" : "text-muted-foreground"}`
                 }
               >
-                {item.labels[locale]}
+                {navigation[item.id]}
               </NavLink>
             ))}
           </div>
@@ -145,7 +126,7 @@ export function Navbar() {
                       }
                       onClick={() => setMenuOpen(false)}
                     >
-                      {item.labels[locale]}
+                      {navigation[item.id]}
                     </NavLink>
                   </li>
                 ))}

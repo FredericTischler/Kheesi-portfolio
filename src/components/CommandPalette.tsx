@@ -9,7 +9,7 @@ import { cn } from "@/lib/utils";
 import { Dialog, DialogContent } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { useLocale } from "@/i18n/LocaleProvider";
-import type { Locale } from "@/i18n/config";
+import { useTranslations } from "@/i18n/useTranslations";
 
 type CommandPaletteProps = {
   open: boolean;
@@ -27,43 +27,13 @@ type CommandResult = {
   action: () => void;
 };
 
-const COMMAND_COPY = {
-  fr: {
-    placeholder: "Rechercher projets ou pages...",
-    empty: "Aucun résultat. Essayez un autre mot-clé.",
-    resultCount: (count: number) =>
-      count === 0 ? "Aucun résultat" : count === 1 ? "1 résultat" : `${count} résultats`,
-    listLabel: "Résultats de la palette de commandes",
-    optionType: {
-      page: "Page",
-      project: "Projet",
-    },
-  },
-  en: {
-    placeholder: "Search projects or pages...",
-    empty: "No results. Try another keyword.",
-    resultCount: (count: number) =>
-      count === 0 ? "No results" : count === 1 ? "1 result" : `${count} results`,
-    listLabel: "Command palette results",
-    optionType: {
-      page: "Page",
-      project: "Project",
-    },
-  },
-} satisfies Record<Locale, {
-  placeholder: string;
-  empty: string;
-  resultCount: (count: number) => string;
-  listLabel: string;
-  optionType: Record<CommandResultType, string>;
-}>;
-
 export function CommandPalette({ open, onOpenChange }: CommandPaletteProps) {
   const navigate = useNavigate();
   const [query, setQuery] = useState("");
   const [activeIndex, setActiveIndex] = useState(0);
   const { locale, buildPath } = useLocale();
-  const copy = COMMAND_COPY[locale];
+  const copy = useTranslations("commandPalette");
+  const navigationLabels = useTranslations("navigation");
   const listboxId = "command-palette-results";
 
   useEffect(() => {
@@ -96,7 +66,7 @@ export function CommandPalette({ open, onOpenChange }: CommandPaletteProps) {
       id: page.id,
       domId: `command-option-page-${page.id}`,
       type: "page" as const,
-      title: page.labels[locale],
+      title: navigationLabels[page.id],
       subtitle: buildPath(page.path),
       action: () => {
         navigate(buildPath(page.path));
@@ -128,7 +98,7 @@ export function CommandPalette({ open, onOpenChange }: CommandPaletteProps) {
 
     const merged = [...pageResults, ...projectResults];
     return merged.slice(0, 12);
-  }, [buildPath, locale, navigate, onOpenChange, query]);
+  }, [buildPath, locale, navigationLabels, navigate, onOpenChange, query]);
 
   useEffect(() => {
     if (activeIndex >= results.length) {
@@ -156,7 +126,11 @@ export function CommandPalette({ open, onOpenChange }: CommandPaletteProps) {
   }, [activeIndex, open, results]);
 
   const activeOptionId = results[activeIndex]?.domId;
-  const resultsAnnouncement = copy.resultCount(results.length);
+  const resultsAnnouncement = (() => {
+    if (results.length === 0) return copy.resultCount.zero;
+    if (results.length === 1) return copy.resultCount.one;
+    return copy.resultCount.other.replace("{{count}}", String(results.length));
+  })();
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>

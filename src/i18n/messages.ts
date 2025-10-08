@@ -3,10 +3,11 @@ import fr from "./fr.json";
 
 import type { Locale } from "@/i18n/config";
 import type { Messages } from "@/i18n/types";
+import { validateMessages } from "@/i18n/validation";
 
 const dictionaries: Record<Locale, Messages> = {
-  fr: fr as Messages,
-  en: en as Messages,
+  fr: validateMessages("fr", fr),
+  en: validateMessages("en", en),
 };
 
 export function getMessages(locale: Locale): Messages {

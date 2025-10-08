@@ -5,10 +5,12 @@ import { useMemo } from "react";
 import { getProfile } from "@/data/profile";
 import { GitHubIcon } from "@/components/icons";
 import { useLocale } from "@/i18n/LocaleProvider";
+import { useTranslations } from "@/i18n/useTranslations";
 
 export function Footer() {
   const { locale } = useLocale();
   const profile = useMemo(() => getProfile(locale), [locale]);
+  const copy = useTranslations("footer");
   const socials = [
     { label: "GitHub", href: profile.socials.github, icon: GitHubIcon },
     { label: "LinkedIn", href: profile.socials.linkedin, icon: Linkedin },
@@ -23,9 +25,7 @@ export function Footer() {
       <div className="container flex flex-col gap-6 text-sm text-muted-foreground md:flex-row md:items-center md:justify-between">
         <div>
           <p className="font-heading text-lg text-foreground">Frédéric Tischler</p>
-          <p className="text-xs text-muted-foreground">
-            {locale === "fr" ? `© ${year} · Tous droits réservés.` : `© ${year} · All rights reserved.`}
-          </p>
+          <p className="text-xs text-muted-foreground">{copy.rights.replace("{{year}}", String(year))}</p>
         </div>
         <div className="flex items-center gap-3">
           {socials.map(({ href, label, icon: Icon }) => (

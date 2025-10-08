@@ -12,128 +12,15 @@ import { getWorkshops, type Workshop } from "@/data/workshops";
 import { useModalSelection } from "@/hooks/useModalSelection";
 import { usePageMetadata } from "@/lib/metadata";
 import { useLocale } from "@/i18n/LocaleProvider";
-import type { Locale } from "@/i18n/config";
+import { useTranslations } from "@/i18n/useTranslations";
 
 const WORKSHOP_PDF_DEMO = "/assets/workshops/demo.pdf";
-
-const PROCESS_STEPS: Record<Locale, Array<{ title: string; description: string; icon: typeof Search }>> = {
-  fr: [
-    {
-      title: "Diagnostic express",
-      description: "Un échange rapide pour comprendre votre contexte, vos irritants et prioriser le contenu.",
-      icon: Search,
-    },
-    {
-      title: "Préparation & personnalisation",
-      description: "Je fournis un plan ajusté : exemples, livrables, supports adaptés à votre stack.",
-      icon: Sparkles,
-    },
-    {
-      title: "Animation & récap",
-      description: "Workshop, Q&A, puis synthèse actionnable et livrables prêts à exploiter.",
-      icon: ClipboardCheck,
-    },
-  ],
-  en: [
-    {
-      title: "Express diagnostic",
-      description: "Quick chat to understand context, pain points and prioritise content.",
-      icon: Search,
-    },
-    {
-      title: "Prep & tailoring",
-      description: "I craft a plan with examples, deliverables and support adapted to your stack.",
-      icon: Sparkles,
-    },
-    {
-      title: "Delivery & recap",
-      description: "Workshop, Q&A, then an actionable summary with ready-to-use deliverables.",
-      icon: ClipboardCheck,
-    },
-  ],
-};
-
-const WORKSHOPS_COPY: Record<Locale, {
-  head: { title: string; description: string };
-  intro: { eyebrow: string; title: string; description: string };
-  focusLabel: string;
-  deliverablesIncluded: string;
-  cardCta: string;
-  processHeading: string;
-  processDescription: string;
-  planCta: string;
-  modal: {
-    durationLabel: string;
-    badgesTitle: string;
-    placeholder: string;
-    program: string;
-    deliverables: string;
-    audience: string;
-    fallbackDownload: string;
-  };
-}> = {
-  fr: {
-    head: {
-      title: "Workshop Factory — Frédéric Tischler",
-      description:
-        "Workshops prêts à l’emploi : Angular Bootcamp, Modernisation Legacy, CI/CD. Objectifs clairs, livrables concrets, valeur immédiate pour vos équipes.",
-    },
-    intro: {
-      eyebrow: "Workshops",
-      title: "Workshop Factory",
-      description:
-        "Je propose des workshops prêts à déployer pour aider vos équipes à moderniser une app legacy, industrialiser Angular, ou aligner design et développement.",
-    },
-    focusLabel: "Focus",
-    deliverablesIncluded: "Livrables inclus",
-    cardCta: "Voir détails",
-    processHeading: "Comment ça marche",
-    processDescription: "Trois étapes simples pour lancer un workshop adapté à votre équipe et à vos priorités.",
-    planCta: "Planifier un workshop",
-    modal: {
-      durationLabel: "Durée",
-      badgesTitle: "Objectifs",
-      placeholder: "Supports en préparation",
-      program: "Programme",
-      deliverables: "Livrables",
-      audience: "Audience",
-      fallbackDownload: "Télécharger exemple PDF",
-    },
-  },
-  en: {
-    head: {
-      title: "Workshop Factory — Frédéric Tischler",
-      description:
-        "Ready-to-run workshops: Angular Bootcamp, Legacy Modernisation, CI/CD. Clear outcomes, concrete deliverables, quick impact for your team.",
-    },
-    intro: {
-      eyebrow: "Workshops",
-      title: "Workshop Factory",
-      description:
-        "I deliver ready-to-use workshops to modernise legacy apps, build Angular component foundations, or align design and engineering.",
-    },
-    focusLabel: "Focus",
-    deliverablesIncluded: "Deliverables included",
-    cardCta: "View details",
-    processHeading: "How it works",
-    processDescription: "Three simple steps to launch a workshop tailored to your team and priorities.",
-    planCta: "Schedule a workshop",
-    modal: {
-      durationLabel: "Duration",
-      badgesTitle: "Objectives",
-      placeholder: "Materials coming soon",
-      program: "Agenda",
-      deliverables: "Deliverables",
-      audience: "Audience",
-      fallbackDownload: "Download sample PDF",
-    },
-  },
-};
+const PROCESS_ICONS = [Search, Sparkles, ClipboardCheck] as const;
 
 export default function WorkshopsPage() {
   const { locale, buildPath } = useLocale();
-  const copy = WORKSHOPS_COPY[locale];
-  const steps = PROCESS_STEPS[locale];
+  const copy = useTranslations("workshops");
+  const steps = copy.process.steps;
   const workshops = useMemo(() => getWorkshops(locale), [locale]);
 
   usePageMetadata({
@@ -242,20 +129,23 @@ export default function WorkshopsPage() {
 
       <Section className="space-y-10">
         <div className="text-center">
-          <h2 className="text-3xl font-semibold md:text-4xl">{copy.processHeading}</h2>
-          <p className="mt-3 text-sm text-muted-foreground">{copy.processDescription}</p>
+          <h2 className="text-3xl font-semibold md:text-4xl">{copy.process.heading}</h2>
+          <p className="mt-3 text-sm text-muted-foreground">{copy.process.description}</p>
         </div>
         <div className="grid gap-6 md:grid-cols-3">
-          {steps.map((step) => (
-            <div
-              key={step.title}
-              className="rounded-[2rem] border border-border/60 bg-background/80 p-6 text-left shadow-lg"
-            >
-              <step.icon className="h-8 w-8 text-primary" aria-hidden="true" />
-              <h3 className="mt-4 text-lg font-semibold text-foreground">{step.title}</h3>
-              <p className="mt-2 text-sm text-muted-foreground">{step.description}</p>
-            </div>
-          ))}
+          {steps.map((step, index) => {
+            const Icon = PROCESS_ICONS[index] ?? Search;
+            return (
+              <div
+                key={step.title}
+                className="rounded-[2rem] border border-border/60 bg-background/80 p-6 text-left shadow-lg"
+              >
+                <Icon className="h-8 w-8 text-primary" aria-hidden="true" />
+                <h3 className="mt-4 text-lg font-semibold text-foreground">{step.title}</h3>
+                <p className="mt-2 text-sm text-muted-foreground">{step.description}</p>
+              </div>
+            );
+          })}
         </div>
         <div className="flex justify-center">
           <ActionButton asChild size="lg" className="gap-2 btn-cta">

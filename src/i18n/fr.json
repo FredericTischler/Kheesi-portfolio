@@ -66,5 +66,256 @@
       "copyLink": "Copier le lien",
       "linkCopied": "Lien copié"
     }
+  },
+  "about": {
+    "head": {
+      "title": "À propos — Frédéric Tischler",
+      "description": "Full-stack: Angular, Go, TypeScript, Java. Architecture modulaire, composants génériques, performance et accessibilité."
+    },
+    "eyebrow": "À propos",
+    "heroTitle": "Je suis Frédéric, développeur full-stack chez WeNégoce.",
+    "intro": [
+      "Ma licence informatique m’a donné un socle profond en algorithmique, POO Java et bases de données.",
+      "J’ai enchaîné avec un stage puis un CDD chez Développement Informatique International où j’ai refondu des écrans Angular/Java, factorisé des composants partagés et documenté les usages.",
+      "À Zone01, je poursuis une formation intensive par projets : WebSockets temps réel, graphes, outillage devops, documentation. Cette cadence forge mes réflexes full-stack.",
+      "Aujourd’hui en alternance chez WeNégoce, je modernise une application métier avec un socle Angular/Java, des composants réutilisables et un pipeline CI/CD solide tout en accompagnant l’équipe sur les conventions de code et la documentation."
+    ],
+    "formationTitle": "Parcours en deux temps",
+    "formation": [
+      {
+        "title": "Licence Informatique",
+        "description": "Structures de données, algorithmique et POO Java pour un socle robuste."
+      },
+      {
+        "title": "Zone01",
+        "description": "Projets intensifs : temps réel (WebSockets), algorithmes, outillage et méthodos agiles."
+      }
+    ],
+    "valuesTitle": "Valeurs de développement",
+    "values": [
+      {
+        "title": "Privilégier des architectures explicites",
+        "description": "Modules, services et composants clairement définis pour garder le cap."
+      },
+      {
+        "title": "Réutiliser intelligemment",
+        "description": "Librairie de composants, formulaires et grilles pour déployer vite et proprement."
+      },
+      {
+        "title": "Optimiser l’UX",
+        "description": "Chargements progressifs, feedbacks clairs et accessibilité intégrée dès le départ."
+      },
+      {
+        "title": "Soutenir la maintenance",
+        "description": "Standards de code, revue régulière et dette maîtrisée pour tenir dans la durée."
+      },
+      {
+        "title": "Partager la connaissance",
+        "description": "Documentation utile et ateliers pour faire monter l’équipe en compétence."
+      },
+      {
+        "title": "Communiquer clairement",
+        "description": "Alignement régulier avec produit, métier et design pour garder le cap commun."
+      }
+    ],
+    "interestsTitle": "Centres d’intérêt",
+    "skillsTitle": "Compétences clés"
+  },
+  "experience": {
+    "head": {
+      "title": "Expérience — Frédéric Tischler",
+      "description": "Alternance WeNégoce, DII, Zone01 : Angular, Java, Go, CI/CD, documentation, ateliers."
+    },
+    "eyebrow": "Expérience",
+    "heroTitle": "Transformer l’existant en plateforme web durable",
+    "heroDescription": "J’interviens sur des applications critiques pour les équipes terrain : refonte Angular/Java, conventions partagées et amélioration continue des performances et de l’UX.",
+    "highlightsTitle": "Succès marquants",
+    "impactTitle": "Impact",
+    "stackTitle": "Compétences mobilisées",
+    "periodLabels": {
+      "since": "Depuis {{date}}",
+      "separator": " – "
+    }
+  },
+  "projects": {
+    "head": {
+      "title": "Projets — Frédéric Tischler",
+      "description": "Mellow, RealTimeForum, Forum, Groupie-tracker, Lem-in et autres projets: temps réel, graphes, outils."
+    },
+    "intro": {
+      "eyebrow": "Projets",
+      "title": "Réalisations & expérimentations",
+      "description": "Explorez mes réalisations en Go, TypeScript, Angular, Java et SQL : du temps réel aux applications full-stack, en passant par l’optimisation des performances."
+    },
+    "searchPlaceholder": "Rechercher un projet, une techno...",
+    "reset": "Réinitialiser",
+    "filtersAria": "Filtrer par technologies",
+    "allProjects": "Tous les projets",
+    "resultsLabel": {
+      "zero": "0 résultat",
+      "one": "1 résultat",
+      "other": "{{count}} résultats"
+    },
+    "noResultsTitle": "Aucun projet ne correspond",
+    "noResultsDescription": "Ajustez votre recherche ou vos filtres pour explorer d’autres réalisations.",
+    "listAria": "Liste des projets filtrés",
+    "cardViewLabel": "Ouvrir {{name}} sur GitHub",
+    "viewButton": "Voir",
+    "modalPlaceholder": "Aperçu indisponible",
+    "projectActions": {
+      "preview": "Aperçu",
+      "viewOnGitHub": "Voir sur GitHub",
+      "badgesTitle": "Technologies",
+      "copyLink": "Copier le lien",
+      "linkCopied": "Lien copié"
+    },
+    "sortLabels": {
+      "recent": "Plus récents",
+      "alphabetical": "Nom A→Z"
+    }
+  },
+  "workshops": {
+    "head": {
+      "title": "Workshop Factory — Frédéric Tischler",
+      "description": "Workshops prêts à l’emploi : Angular Bootcamp, Modernisation Legacy, CI/CD. Objectifs clairs, livrables concrets, valeur immédiate pour vos équipes."
+    },
+    "intro": {
+      "eyebrow": "Workshops",
+      "title": "Workshop Factory",
+      "description": "Je propose des workshops prêts à déployer pour aider vos équipes à moderniser une app legacy, industrialiser Angular, ou aligner design et développement."
+    },
+    "focusLabel": "Focus",
+    "deliverablesIncluded": "Livrables inclus",
+    "cardCta": "Voir détails",
+    "process": {
+      "heading": "Comment ça marche",
+      "description": "Trois étapes simples pour lancer un workshop adapté à votre équipe et à vos priorités.",
+      "steps": [
+        {
+          "title": "Diagnostic express",
+          "description": "Un échange rapide pour comprendre votre contexte, vos irritants et prioriser le contenu."
+        },
+        {
+          "title": "Préparation & personnalisation",
+          "description": "Je fournis un plan ajusté : exemples, livrables, supports adaptés à votre stack."
+        },
+        {
+          "title": "Animation & récap",
+          "description": "Workshop, Q&A, puis synthèse actionnable et livrables prêts à exploiter."
+        }
+      ]
+    },
+    "planCta": "Planifier un workshop",
+    "modal": {
+      "durationLabel": "Durée",
+      "badgesTitle": "Objectifs",
+      "placeholder": "Supports en préparation",
+      "program": "Programme",
+      "deliverables": "Livrables",
+      "audience": "Audience",
+      "fallbackDownload": "Télécharger exemple PDF"
+    }
+  },
+  "contact": {
+    "head": {
+      "title": "Contact — Frédéric Tischler",
+      "description": "Parlons de votre projet: Angular, Go, TypeScript, Java, temps réel, modernisation d’apps métier."
+    },
+    "eyebrow": "Contact",
+    "title": "Travaillons ensemble",
+    "paragraphs": [
+      "Modernisation d’app legacy, base de composants Angular, pipelines CI/CD pragmatiques ou intégration temps réel : parlons de votre contexte et de la valeur à délivrer rapidement.",
+      "Dites-m’en plus sur votre équipe, les irritants rencontrés et l’impact recherché. Je reviens vers vous avec une première analyse et des pistes d’actions concrètes."
+    ],
+    "focusTitle": "Ce que je débloque rapidement",
+    "focusAreas": [
+      {
+        "title": "Modernisation d’app métier",
+        "description": "Audit de vos écrans existants, architecture cible Angular/Java et roadmap de migration progressive."
+      },
+      {
+        "title": "Base de composants Angular",
+        "description": "Design tokens, composants factorisés, conventions de revue et documentation prête à diffuser."
+      },
+      {
+        "title": "CI/CD pragmatique",
+        "description": "Pipelines lint/test/build, automatisation des releases et checklist qualité activable rapidement."
+      }
+    ],
+    "prepTitle": "Pour préparer notre échange",
+    "prepItems": [
+      "Votre stack actuelle et la taille de l’équipe",
+      "L’objectif ou l’irritant principal à résoudre",
+      "L’échéance ou jalon business à tenir"
+    ],
+    "coordsTitle": "Coordonnées",
+    "responseValue": "Sous 48h ouvrées",
+    "availabilityValue": "Créneaux 9h – 18h CET",
+    "contactLabels": {
+      "email": "Email direct",
+      "linkedin": "LinkedIn",
+      "response": "Réponse",
+      "location": "Basé à",
+      "availability": "Disponibilités"
+    }
+  },
+  "contactForm": {
+    "labels": {
+      "name": "Nom",
+      "email": "Email",
+      "message": "Message"
+    },
+    "button": "M’écrire",
+    "directEmail": "Ou écrire directement par email",
+    "success": "Merci pour votre message — je reviens vers vous rapidement.",
+    "fallbackNotice": "Si l’envoi direct n’est pas disponible, votre client mail s’ouvrira pour finaliser le message.",
+    "sending": "Envoi en cours...",
+    "error": "Impossible d’envoyer le message. Réessayez ou utilisez le lien email.",
+    "mailtoHint": "Une fenêtre email vient de s’ouvrir avec votre message pré-rempli.",
+    "errors": {
+      "name": "Merci d’indiquer votre nom.",
+      "emailRequired": "L’email est requis.",
+      "emailInvalid": "Format d’email invalide.",
+      "message": "Ajoutez un message."
+    },
+    "mailSubject": "Contact portfolio",
+    "mailGreeting": "Bonjour Frédéric,"
+  },
+  "navbar": {
+    "openCommand": "Ouvrir la palette de commandes",
+    "openMenu": "Ouvrir le menu",
+    "closeMenu": "Fermer le menu",
+    "mobileCommand": "Recherche globale"
+  },
+  "navigation": {
+    "home": "Accueil",
+    "about": "À propos",
+    "experience": "Expérience",
+    "projects": "Projets",
+    "workshops": "Workshops",
+    "contact": "Contact"
+  },
+  "commandPalette": {
+    "placeholder": "Rechercher projets ou pages...",
+    "empty": "Aucun résultat. Essayez un autre mot-clé.",
+    "listLabel": "Résultats de la palette de commandes",
+    "resultCount": {
+      "zero": "Aucun résultat",
+      "one": "1 résultat",
+      "other": "{{count}} résultats"
+    },
+    "optionType": {
+      "page": "Page",
+      "project": "Projet"
+    }
+  },
+  "footer": {
+    "rights": "© {{year}} · Tous droits réservés."
+  },
+  "localeSwitcher": {
+    "aria": {
+      "fr": "Basculer en français",
+      "en": "Switch to English"
+    }
   }
 }

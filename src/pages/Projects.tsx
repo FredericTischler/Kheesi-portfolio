@@ -16,7 +16,7 @@ import { usePageMetadata } from "@/lib/metadata";
 import { cn } from "@/lib/utils";
 import { GitHubIcon } from "@/components/icons";
 import { useLocale } from "@/i18n/LocaleProvider";
-import type { Locale } from "@/i18n/config";
+import { useTranslations } from "@/i18n/useTranslations";
 
 type SortOption = "recent" | "alphabetical";
 
@@ -27,17 +27,6 @@ type FilterState = {
 };
 
 const SORT_OPTIONS: SortOption[] = ["recent", "alphabetical"];
-
-const SORT_LABELS: Record<Locale, Record<SortOption, string>> = {
-  fr: {
-    recent: "Plus récents",
-    alphabetical: "Nom A→Z",
-  },
-  en: {
-    recent: "Newest",
-    alphabetical: "Name A→Z",
-  },
-};
 
 const PROJECT_ORDER = new Map<string, number>(PROJECT_SLUG_ORDER.map((slug, index) => [slug, index]));
 
@@ -56,83 +45,6 @@ function sortProjects(projects: Project[], sort: SortOption): Project[] {
     return a.name.localeCompare(b.name, "fr-FR", { sensitivity: "base" });
   });
 }
-
-const PROJECTS_COPY: Record<Locale, {
-  head: { title: string; description: string };
-  intro: { eyebrow: string; title: string; description: string };
-  searchPlaceholder: string;
-  reset: string;
-  filtersAria: string;
-  allProjects: string;
-  resultsLabel: (count: number) => string;
-  noResultsTitle: string;
-  noResultsDescription: string;
-  listAria: string;
-  cardViewLabel: (name: string) => string;
-  viewButton: string;
-  modalPlaceholder: string;
-  badgesTitle: string;
-  copyLink: string;
-  linkCopied: string;
-  viewOnGitHub: string;
-}> = {
-  fr: {
-    head: {
-      title: "Projets — Frédéric Tischler",
-      description:
-        "Mellow, RealTimeForum, Forum, Groupie-tracker, Lem-in et autres projets: temps réel, graphes, outils.",
-    },
-    intro: {
-      eyebrow: "Projets",
-      title: "Réalisations & expérimentations",
-      description:
-        "Explorez mes réalisations en Go, TypeScript, Angular, Java et SQL : du temps réel aux applications full-stack, en passant par l’optimisation des performances.",
-    },
-    searchPlaceholder: "Rechercher un projet, une techno...",
-    reset: "Réinitialiser",
-    filtersAria: "Filtrer par technologies",
-    allProjects: "Tous les projets",
-    resultsLabel: (count) => `${count} résultat(s)`,
-    noResultsTitle: "Aucun projet ne correspond",
-    noResultsDescription: "Ajustez votre recherche ou vos filtres pour explorer d’autres réalisations.",
-    listAria: "Liste des projets filtrés",
-    cardViewLabel: (name) => `Ouvrir ${name} sur GitHub`,
-    viewButton: "Voir",
-    modalPlaceholder: "Aperçu indisponible",
-    badgesTitle: "Technologies",
-    copyLink: "Copier le lien",
-    linkCopied: "Lien copié",
-    viewOnGitHub: "Voir sur GitHub",
-  },
-  en: {
-    head: {
-      title: "Projects — Frédéric Tischler",
-      description:
-        "Mellow, RealTimeForum, Forum, Groupie-tracker, Lem-in and more projects: real-time systems, graph challenges, tooling.",
-    },
-    intro: {
-      eyebrow: "Projects",
-      title: "Work & experiments",
-      description:
-        "Discover my work in Go, TypeScript, Angular, Java and SQL: from real-time apps to full-stack products and performance improvements.",
-    },
-    searchPlaceholder: "Search a project or technology...",
-    reset: "Reset",
-    filtersAria: "Filter by technologies",
-    allProjects: "All projects",
-    resultsLabel: (count) => `${count} result${count > 1 ? "s" : ""}`,
-    noResultsTitle: "No project matches",
-    noResultsDescription: "Adjust your query or filters to browse other builds.",
-    listAria: "Filtered project list",
-    cardViewLabel: (name) => `Open ${name} on GitHub`,
-    viewButton: "View",
-    modalPlaceholder: "Preview unavailable",
-    badgesTitle: "Technologies",
-    copyLink: "Copy link",
-    linkCopied: "Link copied",
-    viewOnGitHub: "View on GitHub",
-  },
-};
 
 function filterProjects(projects: Project[], state: FilterState): Project[] {
   const normalizedQuery = state.query.trim().toLowerCase();
@@ -202,8 +114,8 @@ function useProjectFilters(): {
 
 export default function ProjectsPage() {
   const { locale, buildPath } = useLocale();
-  const pageCopy = PROJECTS_COPY[locale];
-  const sortLabels = SORT_LABELS[locale];
+  const pageCopy = useTranslations("projects");
+  const sortLabels = pageCopy.sortLabels;
 
   usePageMetadata({
     title: pageCopy.head.title,
@@ -235,6 +147,11 @@ export default function ProjectsPage() {
     [projects, state],
   );
   const noResults = filteredProjects.length === 0;
+  const resultsCountLabel = filteredProjects.length === 0
+    ? pageCopy.resultsLabel.zero.replace("{{count}}", "0")
+    : filteredProjects.length === 1
+      ? pageCopy.resultsLabel.one.replace("{{count}}", "1")
+      : pageCopy.resultsLabel.other.replace("{{count}}", String(filteredProjects.length));
   const hasFilters = deferredQuery.trim().length > 0 || state.tech.size > 0;
 
   const gridVariants = useMemo(
@@ -329,7 +246,7 @@ export default function ProjectsPage() {
         <div className="space-y-6">
           <div className="flex items-center justify-between gap-3">
             <h2 className="text-2xl font-semibold text-foreground">{pageCopy.allProjects}</h2>
-            <span className="text-sm text-muted-foreground">{pageCopy.resultsLabel(filteredProjects.length)}</span>
+            <span className="text-sm text-muted-foreground">{resultsCountLabel}</span>
           </div>
           {noResults ? (
             <div className="rounded-[2rem] border border-border/60 bg-background/80 p-10 text-center shadow-lg">
@@ -359,19 +276,28 @@ export default function ProjectsPage() {
                     }
                     onSelect={() => openQuickView(project)}
                     actions={
-                      <ActionButtonGroup className="gap-2">
+                      <ActionButtonGroup>
+                        <ActionButton
+                          size="sm"
+                          onClick={(event) => {
+                            event.stopPropagation();
+                            openQuickView(project);
+                          }}
+                        >
+                          {pageCopy.projectActions.preview}
+                        </ActionButton>
                         <ActionButton
                           size="sm"
                           variant="outline"
-                          className="gap-2 btn-cta-outline"
+                          className="gap-2"
                           href={project.url}
                           target="_blank"
                           rel="noreferrer"
                           onClick={(event) => event.stopPropagation()}
                           icon={<GitHubIcon className="h-4 w-4" aria-hidden="true" />}
-                          aria-label={pageCopy.cardViewLabel(project.name)}
+                          aria-label={pageCopy.cardViewLabel.replace("{{name}}", project.name)}
                         >
-                          {pageCopy.viewButton}
+                          {pageCopy.projectActions.viewOnGitHub}
                         </ActionButton>
                       </ActionButtonGroup>
                     }
@@ -391,7 +317,7 @@ export default function ProjectsPage() {
               description={quickView.description}
               image={quickView.thumbnail}
               placeholderLabel={pageCopy.modalPlaceholder}
-              badgesTitle={pageCopy.badgesTitle}
+              badgesTitle={pageCopy.projectActions.badgesTitle}
               badges={quickView.tech}
               badgeVariant="secondary"
               motionProps={{
@@ -407,7 +333,7 @@ export default function ProjectsPage() {
                     onClick={() => copy(shareUrl(quickView))}
                     icon={<LinkIcon className="h-4 w-4" aria-hidden="true" />}
                   >
-                    {copied ? pageCopy.linkCopied : pageCopy.copyLink}
+                    {copied ? pageCopy.projectActions.linkCopied : pageCopy.projectActions.copyLink}
                   </ActionButton>
                   <ActionButton
                     className="gap-2 btn-cta"
@@ -416,7 +342,7 @@ export default function ProjectsPage() {
                     rel="noreferrer"
                     icon={<GitHubIcon className="h-4 w-4" aria-hidden="true" />}
                   >
-                    {pageCopy.viewOnGitHub}
+                    {pageCopy.projectActions.viewOnGitHub}
                   </ActionButton>
                 </ActionButtonGroup>
               )}

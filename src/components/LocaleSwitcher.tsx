@@ -2,6 +2,7 @@ import { Link, useLocation } from "react-router-dom";
 
 import { useLocale } from "@/i18n/LocaleProvider";
 import { stripLocaleFromPath, type Locale } from "@/i18n/config";
+import { useTranslations } from "@/i18n/useTranslations";
 
 type LocaleSwitcherProps = {
   variant?: "default" | "ghost";
@@ -9,6 +10,7 @@ type LocaleSwitcherProps = {
 
 export function LocaleSwitcher({ variant = "default" }: LocaleSwitcherProps) {
   const { locale, switchPath } = useLocale();
+  const copy = useTranslations("localeSwitcher");
   const { pathname, search, hash } = useLocation();
 
   const targetLocale: Locale = locale === "fr" ? "en" : "fr";
@@ -16,7 +18,7 @@ export function LocaleSwitcher({ variant = "default" }: LocaleSwitcherProps) {
   const destination = `${switchPath(basePath || "/", targetLocale)}${search}${hash}`;
 
   const label = targetLocale.toUpperCase();
-  const aria = targetLocale === "fr" ? "Basculer en français" : "Switch to English";
+  const aria = copy.aria[targetLocale];
 
   const baseClasses =
     "inline-flex items-center justify-center gap-1 rounded-full px-3 py-1 text-xs font-semibold uppercase tracking-[0.35em] transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/40";

@@ -6,48 +6,13 @@ import { TechBadge } from "@/components/TechBadge";
 import { getProfile } from "@/data/profile";
 import { usePageMetadata } from "@/lib/metadata";
 import { useLocale } from "@/i18n/LocaleProvider";
+import { useTranslations } from "@/i18n/useTranslations";
 import type { Locale } from "@/i18n/config";
-
-const EXPERIENCE_COPY: Record<Locale, {
-  head: { title: string; description: string };
-  eyebrow: string;
-  heroTitle: string;
-  heroDescription: string;
-  highlightsTitle: string;
-  impactTitle: string;
-  stackTitle: string;
-}> = {
-  fr: {
-    head: {
-      title: "Expérience — Frédéric Tischler",
-      description: "Alternance WeNégoce, DII, Zone01 : Angular, Java, Go, CI/CD, documentation, ateliers.",
-    },
-    eyebrow: "Expérience",
-    heroTitle: "Transformer l’existant en plateforme web durable",
-    heroDescription:
-      "J’interviens sur des applications critiques pour les équipes terrain : refonte Angular/Java, conventions partagées et amélioration continue des performances et de l’UX.",
-    highlightsTitle: "Succès marquants",
-    impactTitle: "Impact",
-    stackTitle: "Compétences mobilisées",
-  },
-  en: {
-    head: {
-      title: "Experience — Frédéric Tischler",
-      description: "Apprenticeship at WeNégoce, DII mission, Zone01 bootcamp: Angular, Java, Go, CI/CD, documentation, workshops.",
-    },
-    eyebrow: "Experience",
-    heroTitle: "Turning legacy systems into sustainable web platforms",
-    heroDescription:
-      "I work on business-critical tools: Angular/Java modernisation, shared conventions and continuous improvements on performance and UX.",
-    highlightsTitle: "Key wins",
-    impactTitle: "Impact",
-    stackTitle: "Skills in action",
-  },
-};
+import type { ExperienceMessages } from "@/i18n/types";
 
 type PeriodObject = { start?: string; end?: string };
 
-function formatPeriod(period?: unknown, locale: Locale = "fr") {
+function formatPeriod(period: unknown, locale: Locale, labels: ExperienceMessages["periodLabels"]) {
   if (!period) return "";
   if (typeof period === "string") {
     return period;
@@ -60,16 +25,18 @@ function formatPeriod(period?: unknown, locale: Locale = "fr") {
     const endDate = end ? new Date(end) : null;
     const formatter = new Intl.DateTimeFormat(locale === "fr" ? "fr-FR" : "en-GB", options);
     const startLabel = formatter.format(startDate);
-    if (!endDate) return locale === "fr" ? `Depuis ${startLabel}` : `Since ${startLabel}`;
+    if (!endDate) {
+      return labels.since.replace("{{date}}", startLabel);
+    }
     const endLabel = formatter.format(endDate);
-    return `${startLabel} – ${endLabel}`;
+    return `${startLabel}${labels.separator}${endLabel}`;
   }
   return "";
 }
 
 export default function ExperiencePage() {
   const { locale } = useLocale();
-  const copy = EXPERIENCE_COPY[locale];
+  const copy = useTranslations("experience");
   const profile = getProfile(locale);
   const experiences = profile.experiences;
 
@@ -83,9 +50,9 @@ export default function ExperiencePage() {
     () =>
       experiences.map((experience) => ({
         ...experience,
-        periodLabel: formatPeriod(experience.period, locale),
+        periodLabel: formatPeriod(experience.period, locale, copy.periodLabels),
       })),
-    [experiences, locale],
+    [copy.periodLabels, experiences, locale],
   );
 
   return (

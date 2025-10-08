@@ -5,7 +5,7 @@ import { ActionButton } from "@/components/ActionButtons";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
-import type { Locale } from "@/i18n/config";
+import { useTranslations } from "@/i18n/useTranslations";
 
 type FormState = {
   name: string;
@@ -15,73 +15,16 @@ type FormState = {
 
 const INITIAL_STATE: FormState = { name: "", email: "", message: "" };
 
-const CONTACT_FORM_COPY: Record<Locale, {
-  labels: { name: string; email: string; message: string };
-  button: string;
-  directEmail: string;
-  success: string;
-  fallbackNotice: string;
-  sending: string;
-  error: string;
-  mailtoHint: string;
-  errors: {
-    name: string;
-    emailRequired: string;
-    emailInvalid: string;
-    message: string;
-  };
-  mailSubject: string;
-  mailGreeting: string;
-}> = {
-  fr: {
-    labels: { name: "Nom", email: "Email", message: "Message" },
-    button: "M’écrire",
-    directEmail: "Ou écrire directement par email",
-    success: "Merci pour votre message — je reviens vers vous rapidement.",
-    fallbackNotice: "Si l’envoi direct n’est pas disponible, votre client mail s’ouvrira pour finaliser le message.",
-    sending: "Envoi en cours...",
-    error: "Impossible d’envoyer le message. Réessayez ou utilisez le lien email.",
-    mailtoHint: "Une fenêtre email vient de s’ouvrir avec votre message pré-rempli.",
-    errors: {
-      name: "Merci d’indiquer votre nom.",
-      emailRequired: "L’email est requis.",
-      emailInvalid: "Format d’email invalide.",
-      message: "Ajoutez un message.",
-    },
-    mailSubject: "Contact portfolio",
-    mailGreeting: "Bonjour Frédéric,",
-  },
-  en: {
-    labels: { name: "Name", email: "Email", message: "Message" },
-    button: "Send a message",
-    directEmail: "Or reach out directly by email",
-    success: "Thanks for your message — I’ll get back to you shortly.",
-    fallbackNotice: "If direct sending isn’t available, your email client will open with a pre-filled draft.",
-    sending: "Sending...",
-    error: "The message could not be sent. Please try again or use the email link.",
-    mailtoHint: "An email window opened with your message pre-filled.",
-    errors: {
-      name: "Please tell me your name.",
-      emailRequired: "Email is required.",
-      emailInvalid: "Email format looks incorrect.",
-      message: "Add a short message.",
-    },
-    mailSubject: "Portfolio contact",
-    mailGreeting: "Hello Frédéric,",
-  },
-};
-
 type ContactFormProps = {
   mailto: string;
-  locale: Locale;
 };
 
-export function ContactForm({ mailto, locale }: ContactFormProps) {
+export function ContactForm({ mailto }: ContactFormProps) {
   const [form, setForm] = useState<FormState>(INITIAL_STATE);
   const [errors, setErrors] = useState<Partial<FormState>>({});
   const [status, setStatus] = useState<"idle" | "success" | "error" | "mailto">("idle");
   const [submitting, setSubmitting] = useState(false);
-  const copy = CONTACT_FORM_COPY[locale];
+  const copy = useTranslations("contactForm");
   const hasEndpoint = Boolean(import.meta.env.VITE_CONTACT_FORM_ENDPOINT);
 
   const mailtoHref = useMemo(() => {

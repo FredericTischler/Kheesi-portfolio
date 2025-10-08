@@ -6,125 +6,13 @@ import { ContactForm } from "@/components/ContactForm";
 import { getProfile } from "@/data/profile";
 import { usePageMetadata } from "@/lib/metadata";
 import { useLocale } from "@/i18n/LocaleProvider";
-import type { Locale } from "@/i18n/config";
-
-const CONTACT_FOCUS_AREAS: Record<Locale, Array<{ title: string; description: string }>> = {
-  fr: [
-    {
-      title: "Modernisation d’app métier",
-      description: "Audit de vos écrans existants, architecture cible Angular/Java et roadmap de migration progressive.",
-    },
-    {
-      title: "Base de composants Angular",
-      description: "Design tokens, composants factorisés, conventions de revue et documentation prête à diffuser.",
-    },
-    {
-      title: "CI/CD pragmatique",
-      description: "Pipelines lint/test/build, automatisation des releases et checklist qualité activable rapidement.",
-    },
-  ],
-  en: [
-    {
-      title: "Modernising legacy apps",
-      description: "Audit existing screens, define the Angular/Java target architecture and build a progressive migration roadmap.",
-    },
-    {
-      title: "Angular component foundations",
-      description: "Design tokens, shared components, review conventions and ready-to-share documentation.",
-    },
-    {
-      title: "Pragmatic CI/CD",
-      description: "Lint/test/build pipelines, automated releases and a quality checklist your team can activate fast.",
-    },
-  ],
-};
-
-const CONTACT_PREP_ITEMS: Record<Locale, string[]> = {
-  fr: [
-    "Votre stack actuelle et la taille de l’équipe",
-    "L’objectif ou l’irritant principal à résoudre",
-    "L’échéance ou jalon business à tenir",
-  ],
-  en: [
-    "Your current stack and team size",
-    "The goal or main pain point to tackle",
-    "Any deadline or business milestone to meet",
-  ],
-};
-
-const CONTACT_COPY: Record<Locale, {
-  head: { title: string; description: string };
-  eyebrow: string;
-  title: string;
-  paragraphs: string[];
-  focusTitle: string;
-  prepTitle: string;
-  coordsTitle: string;
-  responseValue: string;
-  availabilityValue: string;
-  contactLabels: {
-    email: string;
-    linkedin: string;
-    response: string;
-    location: string;
-    availability: string;
-  };
-}> = {
-  fr: {
-    head: {
-      title: "Contact — Frédéric Tischler",
-      description: "Parlons de votre projet: Angular, Go, TypeScript, Java, temps réel, modernisation d’apps métier.",
-    },
-    eyebrow: "Contact",
-    title: "Travaillons ensemble",
-    paragraphs: [
-      "Modernisation d’app legacy, base de composants Angular, pipelines CI/CD pragmatiques ou intégration temps réel : parlons de votre contexte et de la valeur à délivrer rapidement.",
-      "Dites-m’en plus sur votre équipe, les irritants rencontrés et l’impact recherché. Je reviens vers vous avec une première analyse et des pistes d’actions concrètes.",
-    ],
-    focusTitle: "Ce que je débloque rapidement",
-    prepTitle: "Pour préparer notre échange",
-    coordsTitle: "Coordonnées",
-    responseValue: "Sous 48h ouvrées",
-    availabilityValue: "Créneaux 9h – 18h CET",
-    contactLabels: {
-      email: "Email direct",
-      linkedin: "LinkedIn",
-      response: "Réponse",
-      location: "Basé à",
-      availability: "Disponibilités",
-    },
-  },
-  en: {
-    head: {
-      title: "Contact — Frédéric Tischler",
-      description: "Let’s talk about your project: Angular, Go, TypeScript, Java, real-time, legacy modernisation.",
-    },
-    eyebrow: "Contact",
-    title: "Let’s work together",
-    paragraphs: [
-      "Legacy modernisation, Angular component foundations, pragmatic CI/CD or real-time features: tell me about your context and the value you want to unlock quickly.",
-      "Share a bit about your team, current blockers and expected impact. I’ll follow up with an initial analysis and concrete next steps.",
-    ],
-    focusTitle: "Where I add value fast",
-    prepTitle: "Before we talk",
-    coordsTitle: "Contact details",
-    responseValue: "Within 48 business hours",
-    availabilityValue: "Slots 9am – 6pm CET",
-    contactLabels: {
-      email: "Direct email",
-      linkedin: "LinkedIn",
-      response: "Response time",
-      location: "Based in",
-      availability: "Availability",
-    },
-  },
-};
+import { useTranslations } from "@/i18n/useTranslations";
 
 export function ContactPage() {
   const { locale } = useLocale();
-  const copy = CONTACT_COPY[locale];
-  const focusAreas = CONTACT_FOCUS_AREAS[locale];
-  const prepItems = CONTACT_PREP_ITEMS[locale];
+  const copy = useTranslations("contact");
+  const focusAreas = copy.focusAreas;
+  const prepItems = copy.prepItems;
   const profile = getProfile(locale);
 
   usePageMetadata({
@@ -260,7 +148,7 @@ export function ContactPage() {
           </div>
         </div>
         <div className="rounded-[2rem] border border-border/60 bg-background/80 p-8 shadow-lg">
-          <ContactForm mailto={profile.socials.email} locale={locale} />
+          <ContactForm mailto={profile.socials.email} />
         </div>
       </Section>
     </div>
