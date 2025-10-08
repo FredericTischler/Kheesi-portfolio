@@ -79,6 +79,19 @@ Créer un fichier `.env` à la racine si nécessaire.
 - **SEO & méta** : `src/lib/metadata.ts` gère titres, descriptions et alternates ; les valeurs par défaut sont à adapter.
 - **Identité visuelle** : ajustez les tokens couleurs, rayons et fonds dans `src/styles/index.css` (variants clair/sombre/contraste).
 
+## Workflow i18n
+
+- **Structure** : chaque langue dispose d’un fichier JSON unique (`src/i18n/fr.json`, `src/i18n/en.json`) qui regroupe des *namespaces* (`home`, `projects`, `navbar`, etc.). Les typages attendus se trouvent dans `src/i18n/types.ts`; la moindre évolution de schéma doit y être reflétée.
+- **Chargement** : les pages et composants consomment leurs textes via le hook `useTranslations(namespace)` (exemples : `src/pages/Projects.tsx`, `src/components/Navbar.tsx`). Les identifiants de navigation (`src/data/navigation.ts`) pointent vers des clés de traduction plutôt que des libellés codés en dur.
+- **Validation** : `src/i18n/validation.ts` vérifie à l’exécution que chaque JSON respecte le contrat défini dans `types.ts`. Toute clé manquante ou valeur mal typée provoque un échec du build (`npm run build`).
+- **Placeholders** : les chaînes paramétrées utilisent la syntaxe `{{placeholder}}` (ex. `projects.resultsLabel.other`). Remplacez-les côté code avec `string.replace("{{placeholder}}", valeur)` pour conserver la logique dans les traductions.
+- **Ajout d’un namespace** :
+  1. Définir sa forme dans `src/i18n/types.ts`.
+  2. Étendre la fonction `validateMessages` (et, si besoin, ajouter un validateur dédié).
+  3. Ajouter les clés correspondantes dans chaque fichier JSON.
+  4. Consommer le nouveau namespace via `useTranslations`.
+- **Nouveaux textes/pages** : privilégiez la mise à jour des JSON plutôt que des composants. Un `npm run build` permet de vérifier qu’aucune clé n’a été oubliée.
+
 ## Déploiement
 
 Le build produit un site 100 % statique. Après `npm run build`, servez le contenu du dossier `dist/` (Vercel, Netlify, GitHub Pages, Cloudflare Pages…).
