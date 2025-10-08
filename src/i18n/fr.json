@@ -1,0 +1,70 @@
+{
+  "home": {
+    "head": {
+      "title": "Frédéric Tischler — Développeur Full-Stack (Angular, Go, TypeScript, Java)",
+      "description": "Applications web modernes et maintenables. Alternant chez WeNégoce, formé à Zone01."
+    },
+    "hero": {
+      "title": "Développeur full-stack",
+      "lead": "Alternant chez WeNégoce et formé à Zone01, je transforme des applications métier en plateformes Angular/Java prêtes pour la mise en production continue : composants réutilisables, performances maîtrisées, documentation utile.",
+      "ctaProjects": "Voir mes projets",
+      "ctaContact": "Me contacter"
+    },
+    "stats": [
+      {
+        "label": "Projets Zone01",
+        "value": "20+",
+        "description": "Temps réel, algorithmes, outillage"
+      },
+      {
+        "label": "Licence informatique",
+        "value": "3 ans",
+        "description": "Algorithmique, POO Java, bases de données"
+      },
+      {
+        "label": "Alternance",
+        "value": "WeNégoce",
+        "description": "Modernisation Angular/Java en continu"
+      }
+    ],
+    "skillsSection": {
+      "eyebrow": "Stacks maîtrisées",
+      "title": "Compétences principales",
+      "description": "Focus sur les technologies que j’utilise au quotidien : architecture backend robuste, interfaces réactives et industrialisation de la livraison.",
+      "ariaList": "Compétences principales",
+      "ariaMarquee": "Compétences principales défilantes",
+      "categories": {
+        "languages": "Langages",
+        "frontend": "Frontend",
+        "backendDevops": "Backend & DevOps",
+        "databases": "Bases de données"
+      }
+    },
+    "pillars": [
+      {
+        "title": "Architecture solide",
+        "description": "Modules clairs, composants génériques, dette technique maîtrisée."
+      },
+      {
+        "title": "Expérience fluide",
+        "description": "UX pragmatique, performances et accessibilité by design."
+      },
+      {
+        "title": "Livrables propres",
+        "description": "Typage strict, documentation utile et tests ciblés."
+      }
+    ],
+    "projectsIntro": {
+      "eyebrow": "À la une",
+      "title": "Sélection de projets",
+      "description": "Du temps réel aux algorithmes, en passant par la modernisation d’applications métier."
+    },
+    "projectActions": {
+      "preview": "Aperçu",
+      "viewOnGitHub": "Voir sur GitHub",
+      "badgesTitle": "Technologies",
+      "copyLink": "Copier le lien",
+      "linkCopied": "Lien copié"
+    }
+  }
+}

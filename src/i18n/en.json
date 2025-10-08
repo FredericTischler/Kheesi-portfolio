@@ -1,0 +1,70 @@
+{
+  "home": {
+    "head": {
+      "title": "Frédéric Tischler — Full-Stack Developer (Angular, Go, TypeScript, Java)",
+      "description": "Modern, maintainable web applications. Apprentice at WeNégoce, trained at Zone01."
+    },
+    "hero": {
+      "title": "Full-stack developer",
+      "lead": "Apprentice at WeNégoce and trained at Zone01, I turn business apps into Angular/Java platforms ready for continuous delivery: reusable components, controlled performance and actionable documentation.",
+      "ctaProjects": "Explore my projects",
+      "ctaContact": "Contact me"
+    },
+    "stats": [
+      {
+        "label": "Zone01 projects",
+        "value": "20+",
+        "description": "Real-time apps, algorithms, tooling"
+      },
+      {
+        "label": "Computer science degree",
+        "value": "3 years",
+        "description": "Algorithms, Java OOP, databases"
+      },
+      {
+        "label": "Apprenticeship",
+        "value": "WeNégoce",
+        "description": "Angular/Java modernisation at scale"
+      }
+    ],
+    "skillsSection": {
+      "eyebrow": "Core stacks",
+      "title": "Core capabilities",
+      "description": "Technologies I rely on every day: robust backends, reactive interfaces and industrialised delivery.",
+      "ariaList": "Core skills",
+      "ariaMarquee": "Scrolling core skills",
+      "categories": {
+        "languages": "Languages",
+        "frontend": "Frontend",
+        "backendDevops": "Backend & DevOps",
+        "databases": "Databases"
+      }
+    },
+    "pillars": [
+      {
+        "title": "Solid architecture",
+        "description": "Clear modules, reusable components, controlled technical debt."
+      },
+      {
+        "title": "Smooth experience",
+        "description": "Pragmatic UX, performance and accessibility by design."
+      },
+      {
+        "title": "Clean deliverables",
+        "description": "Strict typing, useful documentation and focused tests."
+      }
+    ],
+    "projectsIntro": {
+      "eyebrow": "Highlights",
+      "title": "Featured projects",
+      "description": "From real-time systems and graph algorithms to modernised business applications."
+    },
+    "projectActions": {
+      "preview": "Quick view",
+      "viewOnGitHub": "View on GitHub",
+      "badgesTitle": "Technologies",
+      "copyLink": "Copy link",
+      "linkCopied": "Link copied"
+    }
+  }
+}
