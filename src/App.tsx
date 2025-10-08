@@ -96,7 +96,7 @@ function ScrollToTop() {
   const prefersReducedMotion = useReducedMotion();
 
   useEffect(() => {
-    window.scrollTo({ top: 0, behavior: prefersReducedMotion ? "auto" : "smooth" });
+    window.scrollTo({ top: 0, behavior: "auto" });
   }, [pathname, prefersReducedMotion]);
 
   return null;
